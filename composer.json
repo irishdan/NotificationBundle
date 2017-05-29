@@ -22,10 +22,6 @@
             "Irishdan\\NotificationsBundle\\": ""
         }
     },
-    "suggest": {
-        "guzzlehttp/guzzle": "Required to use the Slack transport.",
-        "nexmo/client": "Required to use the Nexmo transport."
-    },
     "config": {
         "sort-packages": true
     },
