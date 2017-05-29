@@ -1,16 +1,6 @@
-# ResponsiveImageBundle
+# NotificationBundle
 
-## Before release
-- docs
-- tests
-- review all @TODO's
-- make sure all dependencies are correct in composer.json
-- create generator for database notification
-- email twig templates
-- ensure configuration throws no errors if not set
-- license all files
-- suggested dependency on pusher lib
-
+This is a work in progress. 
 
 ```
 <script>
