@@ -1,0 +1,143 @@
+<?php
+
+namespace {{ namespace }}\Notification;
+
+{% block use_statements %}
+use NotificationBundle\Notification\NotificationInterface;
+use NotificationBundle\Notification\NotifiableInterface;
+{% endblock use_statements %}
+
+{% block class_definition %}
+/**
+ * Class {{ class_name }}
+ *
+ * @package {{ namespace }}\Notification
+ */
+class {{ class_name }} implements NotificationInterface
+{% endblock class_definition %}
+{
+{% block class_body %}
+    /**
+     * The recipient of this notification
+     *
+     * @var NotifiableInterface
+     */
+    protected $notifiable;
+
+    /**
+     * The channel that this instance is sent using
+     *
+     * @var string
+     */
+    protected $channel;
+
+    /**
+     * A unique identifier for this notification.
+     * Will be commen acroos different channels.
+     *
+     * @var
+     */
+    protected $uuid;
+
+    /**
+     * Sets the channel that this notification instance is sent using
+     *
+     * @param $channel
+     */
+    public function setChannel($channel)
+    {
+        $this->channel = $channel;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUuid()
+    {
+        return $this->uuid;
+    }
+
+    /**
+     * @param mixed $uuid
+     */
+    public function setUuid($uuid)
+    {
+        $this->uuid = $uuid;
+    }
+
+    /**
+     * Returns the channel this notification was sent using
+     *
+     * @return mixed
+     */
+    public function getChannel()
+    {
+        return $this->channel;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getNotifiable()
+    {
+        return $this->notifiable;
+    }
+
+    /**
+     * @param NotifiableInterface $notifiable
+     */
+    public function setNotifiable(NotifiableInterface $notifiable)
+    {
+        $this->notifiable = $notifiable;
+    }
+
+    /**
+     * Returns an array of channels that the nofication should be sent via.
+     * Note if a user is not subscribed to a channel then its not sent with that channel.
+     *
+     * @return array
+     */
+    public function getChannels()
+    {
+        return ['mail', 'database', 'pusher'];
+    }
+
+    /**
+     * Returns the array of notification data which is used by all channels,
+     * to generate the notification.
+     *
+     * @return array
+     */
+    public function getDataArray()
+    {
+        // @TODO: Customise with your content.
+        $messageData = [
+            'title' => 'New member',
+            'body' => 'New member, %s, just joined',
+            'action' => [
+                'url' => 'http://danbyrne.me',
+                'text' => 'click here',
+            ],
+        ];
+
+        // @TODO: You can alter the data depending on the current channel eg:
+        // switch ($this->channel) {
+        //     case 'database':
+        //         $messageData['database specific data']
+        //         break;
+        // case 'pusher':
+        //         $messageData['icon'] = 'pusher-icon-class'
+        //         break;
+        // }
+
+        return $messageData;
+    }
+
+    public function getTemplate()
+    {
+        // The view template to use for this message. can switch depending on the channel.
+        return 'NotificationBundle:{{ name }}:' . $this->channel . '.message.html.twig';
+    }
+
+{% endblock class_body %}
+}

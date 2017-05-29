@@ -1,0 +1,196 @@
+<?php
+
+
+namespace AppBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+use NotificationBundle\Notification\DatabaseNotificationInterface;
+use NotificationBundle\Notification\NotifiableInterface;
+
+/**
+ * @ORM\Table(name="notification")
+ * @ORM\Entity(repositoryClass="NotificationBundle\Repository\NotificationRepository")
+ * @ORM\HasLifecycleCallbacks()
+ */
+class Notification implements DatabaseNotificationInterface
+{
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
+     */
+    private $id;
+    /**
+     * @ORM\Column(type="guid")
+     */
+    private $uuid;
+    /**
+     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $notifiable;
+    /**
+     * @ORM\Column(type="string", unique=false)
+     */
+    private $type;
+    /**
+     * @var string
+     * @ORM\Column(name="body", type="json_array", nullable=true)
+     */
+    private $data;
+    /**
+     * Starting date and time
+     *
+     * @var \DateTime
+     * @ORM\Column(name="read_at", type="datetime", nullable=true)
+     */
+    private $readAt;
+    /**
+     * @ORM\Column(type="datetime", unique=false, nullable=true)
+     */
+    private $created;
+    /**
+     * @var \DateTime
+     * @ORM\Column(name="updated", type="datetime")
+     */
+    private $updated;
+
+    /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+    * @return mixed
+    */
+    public function getUuid()
+    {
+        return $this->uuid;
+    }
+
+    /**
+    * @param mixed $uuid
+    */
+    public function setUuid($uuid)
+    {
+        $this->uuid = $uuid;
+    }
+
+    /**
+    * @return mixed
+    */
+    public function getNotifiable()
+    {
+        return $this->notifiable;
+    }
+
+    /**
+    * @param mixed $notifiable
+    */
+    public function setNotifiable(NotifiableInterface $notifiable)
+    {
+        $this->notifiable = $notifiable;
+    }
+
+    /**
+    * @return mixed
+    */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+    * @param mixed $type
+    */
+    public function setType($type)
+    {
+        $this->type = $type;
+    }
+
+    /**
+    * @return string
+    */
+    public function getData()
+    {
+        return $this->data;
+    }
+
+    /**
+    * @param string $data
+    */
+    public function setData($data)
+    {
+        $this->data = $data;
+    }
+
+    /**
+    * @return \DateTime
+    */
+    public function getReadAt()
+    {
+        return $this->readAt;
+    }
+
+    /**
+    * @param \DateTime $readAt
+    */
+    public function setReadAt($readAt)
+    {
+        $this->readAt = $readAt;
+    }
+
+    /**
+    * @return mixed
+    */
+    public function getCreated()
+    {
+        return $this->created;
+    }
+
+    /**
+    * @return \DateTime
+    */
+    public function getUpdated()
+    {
+        return $this->updated;
+    }
+
+    /**
+    * @param \DateTime $updated
+    * @ORM\PreUpdate
+    */
+    public function updated()
+    {
+        $updated = new \DateTime();
+        $this->updated = $updated;
+    }
+
+    /**
+    * @ORM\PrePersist
+    */
+    public function prePersist()
+    {
+        $date = new \DateTime();
+        $this->created = $date;
+        $this->updated = $date;
+    }
+
+    public function markAsRead()
+    {
+        // TODO: Implement markAsRead() method.
+    }
+
+    public function isRead()
+    {
+        // TODO: Implement isRead() method.
+    }
+
+    public function isUnread()
+    {
+        // TODO: Implement isUnread() method.
+    }
+}
