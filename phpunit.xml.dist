@@ -10,27 +10,16 @@
          syntaxCheck="false"
          bootstrap="Tests/bootstrap.php"
 >
-         
+
     <testsuites>
         <testsuite name="NotificationBundle Test Suite">
-            <directory>./Tests</directory>
+            <directory>./Test</directory>
         </testsuite>
     </testsuites>
-    
+
     <groups>
         <exclude>
             <group>performance</group>
         </exclude>
     </groups>
-    <filter>
-        <whitelist>
-            <directory>./</directory>
-            <file>JMSSerializerBundle.php</file>
-            <exclude>
-                <directory>./Resources</directory>
-                <directory>./Tests</directory>
-                <directory>./vendor</directory>
-            </exclude>
-        </whitelist>
-    </filter>
 </phpunit>
