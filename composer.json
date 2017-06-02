@@ -1,12 +1,8 @@
 {
-    "name": "irishdan/notifications-bundle",
-    "description": "A notifications bundle for symfony framework",
+    "name": "irishdan/notification-bundle",
+    "description": "A notification bundle for symfony framework",
     "license": "MIT",
-    "homepage": "https://nomadapi.io",
-    "support": {
-        "issues": "https://nomadapi.io/issues",
-        "source": "https://nomadapi.io/framework"
-    },
+    "homepage": "https://danbyrne.me/notification-bundle",
     "authors": [
         {
             "name": "Daniel Byrne",
@@ -19,7 +15,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Irishdan\\NotificationsBundle\\": ""
+            "IrishDan\\NotificationBundle\\": ""
         }
     },
     "config": {

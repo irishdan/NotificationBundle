@@ -1,6 +1,6 @@
 <?php
 
-namespace NotificationBundle\Generator;
+namespace IrishDan\NotificationBundle\Generator;
 
 use Sensio\Bundle\GeneratorBundle\Generator\Generator;
 use Symfony\Component\Filesystem\Filesystem;

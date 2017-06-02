@@ -1,9 +1,9 @@
 <?php
 
-namespace NotificationBundle\Formatter;
+namespace IrishDan\NotificationBundle\Formatter;
 
-use NotificationBundle\Message\MailMessage;
-use NotificationBundle\Notification\NotificationInterface;
+use IrishDan\NotificationBundle\Message\MailMessage;
+use IrishDan\NotificationBundle\Notification\NotificationInterface;
 
 class MailDataFormatter extends BaseFormatter implements MessageFormatterInterface
 {

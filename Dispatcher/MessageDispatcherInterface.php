@@ -1,8 +1,8 @@
 <?php
 
-namespace NotificationBundle\Dispatcher;
+namespace IrishDan\NotificationBundle\Dispatcher;
 
-use NotificationBundle\Message\BaseMessage;
+use IrishDan\NotificationBundle\Message\BaseMessage;
 
 /**
  * Interface MessageDispatcherInterface

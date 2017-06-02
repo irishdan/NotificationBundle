@@ -1,8 +1,8 @@
 <?php
 
-namespace NotificationBundle\Command;
+namespace IrishDan\NotificationBundle\Command;
 
-use NotificationBundle\Generator\DatabaseNotificationGenerator;
+use IrishDan\NotificationBundle\Generator\DatabaseNotificationGenerator;
 use Sensio\Bundle\GeneratorBundle\Command\GeneratorCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;

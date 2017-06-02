@@ -1,6 +1,6 @@
 <?php
 
-namespace NotificationBundle\Message;
+namespace IrishDan\NotificationBundle\Message;
 
 /**
  * Class MailMessage

@@ -1,9 +1,9 @@
 <?php
 
-namespace NotificationBundle\Repository;
+namespace IrishDan\NotificationBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
-use NotificationBundle\Notification\NotifiableInterface;
+use IrishDan\NotificationBundle\Notification\NotifiableInterface;
 
 
 class NotificationRepository extends EntityRepository

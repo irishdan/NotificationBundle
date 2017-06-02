@@ -1,9 +1,9 @@
 <?php
 
-namespace NotificationBundle\Formatter;
+namespace IrishDan\NotificationBundle\Formatter;
 
-use NotificationBundle\Notification\NotificationInterface;
-use NotificationBundle\Message\BaseMessage;
+use IrishDan\NotificationBundle\Notification\NotificationInterface;
+use IrishDan\NotificationBundle\Message\BaseMessage;
 
 /**
  * Interface MessageFormatterInterface

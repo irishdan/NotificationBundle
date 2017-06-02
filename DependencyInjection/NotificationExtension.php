@@ -1,6 +1,6 @@
 <?php
 
-namespace NotificationBundle\DependencyInjection;
+namespace IrishDan\NotificationBundle\DependencyInjection;
 
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;

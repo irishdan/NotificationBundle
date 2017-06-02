@@ -1,8 +1,8 @@
 <?php
 
-namespace NotificationBundle\Controller;
+namespace IrishDan\NotificationBundle\Controller;
 
-use NotificationBundle\PusherChannel;
+use IrishDan\NotificationBundle\PusherChannel;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;

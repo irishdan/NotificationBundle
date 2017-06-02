@@ -1,6 +1,6 @@
 <?php
 
-namespace NotificationBundle;
+namespace IrishDan\NotificationBundle;
 
 class PusherChannel
 {

@@ -1,10 +1,10 @@
 <?php
 
-namespace NotificationBundle\Security;
+namespace IrishDan\NotificationBundle\Security;
 
 
-use NotificationBundle\Notification\NotifiableInterface;
-use NotificationBundle\PusherChannel;
+use IrishDan\NotificationBundle\Notification\NotifiableInterface;
+use IrishDan\NotificationBundle\PusherChannel;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 

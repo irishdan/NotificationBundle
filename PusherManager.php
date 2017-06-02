@@ -1,8 +1,8 @@
 <?php
 
-namespace NotificationBundle;
+namespace IrishDan\NotificationBundle;
 
-use NotificationBundle\Notification\NotifiableInterface;
+use IrishDan\NotificationBundle\Notification\NotifiableInterface;
 
 /**
  * Class PusherManager

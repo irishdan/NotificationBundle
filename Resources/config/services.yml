@@ -1,12 +1,12 @@
 services:
     notification:
-        class: NotificationBundle\NotificationManager
+        class: IrishDan\NotificationBundle\NotificationManager
         arguments: [ '@notification.channel_manager' ]
         calls:
             - [setDatabaseNotificationManager, ['@notification.database_notification_manager']]
 
     notification.channel_manager:
-        class: NotificationBundle\ChannelManager
+        class: IrishDan\NotificationBundle\ChannelManager
         arguments: [ '@event_dispatcher', '%notification.available_channels%' ]
         calls:
             - [setChannel, ['database', '@notification.database_channel']]
@@ -14,30 +14,30 @@ services:
             - [setChannel, ['pusher', '@notification.pusher_channel']]
 
     notification.database_notification_manager:
-        class: NotificationBundle\DatabaseNotificationManager
+        class: IrishDan\NotificationBundle\DatabaseNotificationManager
         arguments: [ '@doctrine.orm.entity_manager', '%notification.database_channel.configuration%' ]
 
     notification.pusher_manager:
-        class: NotificationBundle\PusherManager
+        class: IrishDan\NotificationBundle\PusherManager
         arguments: [ '%notification.pusher_channel.configuration%' ]
 
     # Channels
     notification.database_channel:
-        class: NotificationBundle\Channel\DefaultChannel
+        class: IrishDan\NotificationBundle\Channel\DefaultChannel
         arguments: [ '%notification.database_channel.enabled%' ]
         calls:
             - [ setDataFormatter, [ '@notification.database_data_formatter']]
             - [ setDispatcher, [ '@notification.database_message_dispatcher']]
 
     notification.mail_channel:
-        class: NotificationBundle\Channel\DefaultChannel
+        class: IrishDan\NotificationBundle\Channel\DefaultChannel
         arguments: [ '%notification.mail_channel.enabled%' ]
         calls:
             - [ setDataFormatter, [ '@notification.mail_data_formatter']]
             - [ setDispatcher, [ '@notification.mail_message_dispatcher']]
 
     notification.pusher_channel:
-        class: NotificationBundle\Channel\DefaultChannel
+        class: IrishDan\NotificationBundle\Channel\DefaultChannel
         arguments: [ '%notification.pusher_channel.enabled%' ]
         calls:
             - [ setDataFormatter, [ '@notification.pusher_data_formatter']]
@@ -45,37 +45,37 @@ services:
 
     # Formatters
     notification.database_data_formatter:
-        class: NotificationBundle\Formatter\DatabaseDataFormatter
+        class: IrishDan\NotificationBundle\Formatter\DatabaseDataFormatter
         calls:
             - [setTemplating, ['@twig']]
 
     notification.mail_data_formatter:
-        class: NotificationBundle\Formatter\MailDataFormatter
+        class: IrishDan\NotificationBundle\Formatter\MailDataFormatter
         arguments: [ '%notification.mail_channel.configuration%' ]
         calls:
             - [setTemplating, ['@twig']]
 
     notification.pusher_data_formatter:
-        class: NotificationBundle\Formatter\PusherDataFormatter
+        class: IrishDan\NotificationBundle\Formatter\PusherDataFormatter
         calls:
             - [setTemplating, ['@twig']]
 
     # Dispatchers
     notification.database_message_dispatcher:
-        class: NotificationBundle\Dispatcher\DatabaseMessageDispatcher
+        class: IrishDan\NotificationBundle\Dispatcher\DatabaseMessageDispatcher
         arguments: [ '@doctrine.orm.entity_manager', '%notification.database_channel.configuration%' ]
 
     notification.mail_message_dispatcher:
-        class: NotificationBundle\Dispatcher\MailMessageDispatcher
+        class: IrishDan\NotificationBundle\Dispatcher\MailMessageDispatcher
         arguments: [ '@mailer' ]
 
     notification.pusher_message_dispatcher:
-        class: NotificationBundle\Dispatcher\PusherMessageDispatcher
+        class: IrishDan\NotificationBundle\Dispatcher\PusherMessageDispatcher
         arguments: [ '@notification.pusher_manager' ]
 
     # Voters
     notification.pusher_channel_voter:
-        class: NotificationBundle\Security\PusherChannelVoter
+        class: IrishDan\NotificationBundle\Security\PusherChannelVoter
         arguments: [ '%notification.pusher_channel.enabled%', '%notification.pusher_channel.configuration%' ]
         tags:
             - { name: security.voter }
@@ -83,7 +83,7 @@ services:
 
     # Twig extensions
     notification.twig_extension:
-        class: NotificationBundle\Twig\NotificationExtension
+        class: IrishDan\NotificationBundle\Twig\NotificationExtension
         public: false
         arguments: [ '@notification.pusher_manager', '@router', '@notification']
         tags:
@@ -91,14 +91,14 @@ services:
 
     # Commands
     notification.generation_command:
-        class: NotificationBundle\Command\CreateNotificationCommand
+        class: IrishDan\NotificationBundle\Command\CreateNotificationCommand
         calls:
             - [setEnabledChannels, ['%notification.available_channels%']]
         tags:
             - { name: console.command }
 
     notification.command.generate_database_notification:
-        class: NotificationBundle\Command\CreateDatabaseNotificationCommand
+        class: IrishDan\NotificationBundle\Command\CreateDatabaseNotificationCommand
         calls:
             - [setEntityName, ['%notification.database_channel.configuration%']]
         tags:

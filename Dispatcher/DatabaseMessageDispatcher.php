@@ -1,9 +1,9 @@
 <?php
 
-namespace NotificationBundle\Dispatcher;
+namespace IrishDan\NotificationBundle\Dispatcher;
 
 use Doctrine\ORM\EntityManager;
-use NotificationBundle\Message\BaseMessage;
+use IrishDan\NotificationBundle\Message\BaseMessage;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
 class DatabaseMessageDispatcher implements MessageDispatcherInterface

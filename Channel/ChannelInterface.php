@@ -1,10 +1,10 @@
 <?php
 
-namespace NotificationBundle\Channel;
+namespace IrishDan\NotificationBundle\Channel;
 
-use NotificationBundle\Notification\NotificationInterface;
-use NotificationBundle\Formatter\MessageFormatterInterface;
-use NotificationBundle\Dispatcher\MessageDispatcherInterface;
+use IrishDan\NotificationBundle\Notification\NotificationInterface;
+use IrishDan\NotificationBundle\Formatter\MessageFormatterInterface;
+use IrishDan\NotificationBundle\Dispatcher\MessageDispatcherInterface;
 
 interface ChannelInterface
 {

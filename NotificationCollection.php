@@ -1,6 +1,6 @@
 <?php
 
-namespace NotificationBundle;
+namespace IrishDan\NotificationBundle;
 
 use Doctrine\Common\Collections\ArrayCollection;
 

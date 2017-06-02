@@ -1,14 +1,14 @@
 <?php
 
-namespace NotificationBundle;
+namespace IrishDan\NotificationBundle;
 
 use InvalidArgumentException;
-use NotificationBundle\Channel\ChannelInterface;
-use NotificationBundle\Event\NotificationFailedEvent;
-use NotificationBundle\Event\NotificationSentEvent;
-use NotificationBundle\Notification\NotifiableInterface;
-use NotificationBundle\Notification\NotificationInterface;
-use NotificationBundle\Event\NotificationSendingEvent;
+use IrishDan\NotificationBundle\Channel\ChannelInterface;
+use IrishDan\NotificationBundle\Event\NotificationFailedEvent;
+use IrishDan\NotificationBundle\Event\NotificationSentEvent;
+use IrishDan\NotificationBundle\Notification\NotifiableInterface;
+use IrishDan\NotificationBundle\Notification\NotificationInterface;
+use IrishDan\NotificationBundle\Event\NotificationSendingEvent;
 use Symfony\Component\EventDispatcher\Debug\TraceableEventDispatcher;
 
 /**

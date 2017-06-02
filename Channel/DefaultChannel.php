@@ -1,6 +1,6 @@
 <?php
 
-namespace NotificationBundle\Channel;
+namespace IrishDan\NotificationBundle\Channel;
 
 /**
  * Class DefaultChannel

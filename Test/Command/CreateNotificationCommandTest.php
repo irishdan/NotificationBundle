@@ -1,6 +1,6 @@
 <?php
 
-namespace NotificationBundle\Command;
+namespace IrishDan\NotificationBundle\Command;
 
 class CreateNotificationCommandTest
 {

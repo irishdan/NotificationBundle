@@ -1,6 +1,6 @@
 <?php
 
-namespace NotificationBundle\Formatter;
+namespace IrishDan\NotificationBundle\Formatter;
 
 abstract class BaseFormatter
 {

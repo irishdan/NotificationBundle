@@ -1,10 +1,10 @@
 <?php
 
-namespace NotificationBundle\Formatter;
+namespace IrishDan\NotificationBundle\Formatter;
 
-use NotificationBundle\Notification\NotifiableInterface;
-use NotificationBundle\Notification\NotificationInterface;
-use NotificationBundle\Message\PusherMessage;
+use IrishDan\NotificationBundle\Notification\NotifiableInterface;
+use IrishDan\NotificationBundle\Notification\NotificationInterface;
+use IrishDan\NotificationBundle\Message\PusherMessage;
 
 class PusherDataFormatter extends BaseFormatter implements MessageFormatterInterface
 {

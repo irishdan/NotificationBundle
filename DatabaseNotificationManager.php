@@ -1,11 +1,11 @@
 <?php
 
-namespace NotificationBundle;
+namespace IrishDan\NotificationBundle;
 
 use Doctrine\ORM\EntityManager;
-use NotificationBundle\Notification\DatabaseNotificationInterface;
-use NotificationBundle\Notification\NotifiableInterface;
-use NotificationBundle\Notification\NotificationInterface;
+use IrishDan\NotificationBundle\Notification\DatabaseNotificationInterface;
+use IrishDan\NotificationBundle\Notification\NotifiableInterface;
+use IrishDan\NotificationBundle\Notification\NotificationInterface;
 
 class DatabaseNotificationManager
 {

@@ -1,10 +1,10 @@
 <?php
 
-namespace NotificationBundle\Twig;
+namespace IrishDan\NotificationBundle\Twig;
 
-use NotificationBundle\Notification\NotifiableInterface;
-use NotificationBundle\NotificationManager;
-use NotificationBundle\PusherManager;
+use IrishDan\NotificationBundle\Notification\NotifiableInterface;
+use IrishDan\NotificationBundle\NotificationManager;
+use IrishDan\NotificationBundle\PusherManager;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
 
 class NotificationExtension extends \Twig_Extension implements \Twig_Extension_GlobalsInterface

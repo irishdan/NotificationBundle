@@ -1,10 +1,10 @@
 <?php
 
-namespace NotificationBundle\Formatter;
+namespace IrishDan\NotificationBundle\Formatter;
 
-use NotificationBundle\Message\DatabaseMessage;
-use NotificationBundle\Notification\NotifiableInterface;
-use NotificationBundle\Notification\NotificationInterface;
+use IrishDan\NotificationBundle\Message\DatabaseMessage;
+use IrishDan\NotificationBundle\Notification\NotifiableInterface;
+use IrishDan\NotificationBundle\Notification\NotificationInterface;
 
 class DatabaseDataFormatter extends BaseFormatter implements MessageFormatterInterface
 {

@@ -1,8 +1,8 @@
 <?php
 
-namespace NotificationBundle\Event;
+namespace IrishDan\NotificationBundle\Event;
 
-use NotificationBundle\Notification\NotificationInterface;
+use IrishDan\NotificationBundle\Notification\NotificationInterface;
 use Symfony\Component\EventDispatcher\Event;
 
 class NotificationSendingEvent extends Event

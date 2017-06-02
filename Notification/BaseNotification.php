@@ -1,6 +1,6 @@
 <?php
 
-namespace NotificationBundle\Notification;
+namespace IrishDan\NotificationBundle\Notification;
 
 abstract class BaseNotification implements NotificationInterface
 {

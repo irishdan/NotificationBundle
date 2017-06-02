@@ -1,10 +1,9 @@
 <?php
 
-namespace NotificationBundle;
+namespace IrishDan\NotificationBundle;
 
-use NotificationBundle\Notification\BaseNotification;
-use NotificationBundle\Notification\NotifiableInterface;
-use NotificationBundle\Notification\NotificationInterface;
+use IrishDan\NotificationBundle\Notification\NotifiableInterface;
+use IrishDan\NotificationBundle\Notification\NotificationInterface;
 
 /**
  * Class NotificationManager

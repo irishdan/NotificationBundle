@@ -1,9 +1,9 @@
 <?php
 
-namespace NotificationBundle\Dispatcher;
+namespace IrishDan\NotificationBundle\Dispatcher;
 
-use NotificationBundle\PusherManager;
-use NotificationBundle\Message\BaseMessage;
+use IrishDan\NotificationBundle\PusherManager;
+use IrishDan\NotificationBundle\Message\BaseMessage;
 
 class PusherMessageDispatcher implements MessageDispatcherInterface
 {

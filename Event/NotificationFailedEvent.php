@@ -1,6 +1,6 @@
 <?php
 
-namespace NotificationBundle\Event;
+namespace IrishDan\NotificationBundle\Event;
 
 use Symfony\Component\EventDispatcher\Event;
 
