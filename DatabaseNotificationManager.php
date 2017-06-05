@@ -5,7 +5,6 @@ namespace IrishDan\NotificationBundle;
 use Doctrine\ORM\EntityManager;
 use IrishDan\NotificationBundle\Notification\DatabaseNotificationInterface;
 use IrishDan\NotificationBundle\Notification\NotifiableInterface;
-use IrishDan\NotificationBundle\Notification\NotificationInterface;
 
 class DatabaseNotificationManager
 {
@@ -51,13 +50,11 @@ class DatabaseNotificationManager
         }
     }
 
-    public function getUsersUnreadNotificationCount(NotifiableInterface $user, $status = '')
+    public function getUsersNotificationCount(NotifiableInterface $user, $status = '')
     {
         $entity = $this->notificationEntityName();
         if (!empty($entity)) {
             $count = $this->entityManager->getRepository($entity)->getNotificationsCount($user, $status);
-
-            dump('count: ' . $count);
 
             return $count;
         }

@@ -18,6 +18,10 @@
             "IrishDan\\NotificationBundle\\": ""
         }
     },
+    "suggest": {
+        "nexmo/client": "@beta",
+        "pusher/pusher-php-server": "^2.6"
+    },
     "config": {
         "sort-packages": true
     },

@@ -3,7 +3,7 @@ services:
         class: IrishDan\NotificationBundle\NotificationManager
         arguments: [ '@notification.channel_manager' ]
         calls:
-            - [setDatabaseNotificationManager, ['@notification.database_notification_manager']]
+            # - [setDatabaseNotificationManager, ['@notification.database_notification_manager']]
 
     notification.channel_manager:
         class: IrishDan\NotificationBundle\ChannelManager
@@ -12,6 +12,7 @@ services:
             - [setChannel, ['database', '@notification.database_channel']]
             - [setChannel, ['mail', '@notification.mail_channel']]
             - [setChannel, ['pusher', '@notification.pusher_channel']]
+            - [setChannel, ['nexmo', '@notification.nexmo_channel']]
 
     notification.database_notification_manager:
         class: IrishDan\NotificationBundle\DatabaseNotificationManager
@@ -43,6 +44,13 @@ services:
             - [ setDataFormatter, [ '@notification.pusher_data_formatter']]
             - [ setDispatcher, [ '@notification.pusher_message_dispatcher']]
 
+    notification.nexmo_channel:
+        class: IrishDan\NotificationBundle\Channel\DefaultChannel
+        arguments: [ '%notification.nexmo_channel.enabled%' ]
+        calls:
+            - [ setDataFormatter, [ '@notification.nexmo_data_formatter']]
+            - [ setDispatcher, [ '@notification.nexmo_message_dispatcher']]
+
     # Formatters
     notification.database_data_formatter:
         class: IrishDan\NotificationBundle\Formatter\DatabaseDataFormatter
@@ -60,6 +68,11 @@ services:
         calls:
             - [setTemplating, ['@twig']]
 
+    notification.nexmo_data_formatter:
+        class: IrishDan\NotificationBundle\Formatter\NexmoDataFormatter
+        calls:
+            - [setTemplating, ['@twig']]
+
     # Dispatchers
     notification.database_message_dispatcher:
         class: IrishDan\NotificationBundle\Dispatcher\DatabaseMessageDispatcher
@@ -73,6 +86,10 @@ services:
         class: IrishDan\NotificationBundle\Dispatcher\PusherMessageDispatcher
         arguments: [ '@notification.pusher_manager' ]
 
+    notification.nexmo_message_dispatcher:
+        class: IrishDan\NotificationBundle\Dispatcher\NexmoMessageDispatcher
+        arguments: [ '%notification.nexmo_channel.configuration%' ]
+
     # Voters
     notification.pusher_channel_voter:
         class: IrishDan\NotificationBundle\Security\PusherChannelVoter
@@ -85,7 +102,7 @@ services:
     notification.twig_extension:
         class: IrishDan\NotificationBundle\Twig\NotificationExtension
         public: false
-        arguments: [ '@notification.pusher_manager', '@router', '@notification']
+        arguments: [ '@notification.pusher_manager', '@router', '@notification.database_notification_manager', '%notification.available_channels%']
         tags:
           - { name: twig.extension }
 

@@ -16,7 +16,7 @@ class NotificationExtension extends Extension
             $config = array_merge($config, $subConfig);
         }
 
-        $channels = ['mail_channel', 'database_channel', 'pusher_channel'];
+        $channels = ['mail_channel', 'database_channel', 'pusher_channel', 'nexmo_channel'];
         $enabledChannels = [];
 
         foreach ($channels as $channel) {
@@ -37,6 +37,7 @@ class NotificationExtension extends Extension
 
                 case 'database_channel':
                 case 'pusher_channel':
+                case 'nexmo_channel':
                     $configuration = empty($config[$channel]) ? [] : $config[$channel];
                     $container->setParameter('notification.' . $channel . '.configuration', $configuration);
                     break;

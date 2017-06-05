@@ -41,7 +41,7 @@ class Configuration implements ConfigurationInterface
                         ->end()
                     ->end()
                 ->end()
-                // Push notification channel
+                // Pusher notification channel
                 ->arrayNode('pusher_channel')
                     ->children()
                         ->booleanNode('enabled')->defaultFalse()->end()
@@ -52,6 +52,15 @@ class Configuration implements ConfigurationInterface
                         ->booleanNode('encrypted')->defaultTrue()->end()
                         ->scalarNode('channel_name')->defaultValue('')->end()
                         ->scalarNode('event')->defaultValue('')->end()
+                    ->end()
+                ->end()
+                // Nexmo sms channel
+                ->arrayNode('nexmo_channel')
+                    ->children()
+                        ->booleanNode('enabled')->defaultFalse()->end()
+                        ->scalarNode('api_key')->defaultValue('')->end()
+                        ->scalarNode('api_secret')->defaultValue('')->end()
+                        ->scalarNode('from')->defaultValue('')->end()
                     ->end()
                 ->end()
             ->end();

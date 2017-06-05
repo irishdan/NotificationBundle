@@ -6,7 +6,7 @@ abstract class BaseFormatter
 {
     protected $twig;
 
-    public function setTemplating($twig)
+    public function setTemplating(\Twig_Environment $twig)
     {
         $this->twig = $twig;
     }

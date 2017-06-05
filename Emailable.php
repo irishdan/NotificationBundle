@@ -1,7 +1,6 @@
 <?php
 
-namespace IrishDan\NotificationBundle\Notification;
-
+namespace IrishDan\NotificationBundle;
 
 interface Emailable
 {

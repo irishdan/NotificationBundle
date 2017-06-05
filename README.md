@@ -18,7 +18,7 @@ notification:
         app_id: 1
         cluster: 'eu' # Set default value
         encrypted: true # Set default value
-        channel_name: 'private-app_channel_' # will get suffux od user id for private channel
+        channel_name: 'private-app_channel_' # will get suffux of user id for private channel. Must begin with 'private-'!
         event: 'notification-event'
 ```
 ## twig 

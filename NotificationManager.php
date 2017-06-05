@@ -80,9 +80,8 @@ class NotificationManager
     public function notificationCount(NotifiableInterface $user, $status = '')
     {
         // try {
-        dump('notificationCount');
 
-        return $this->databaseNotificationManager->getUsersUnreadNotificationCount($user, $status);
+        return $this->databaseNotificationManager->getUsersNotificationCount($user, $status);
         // } catch (\Exception $exception) {
         //     // @TODO:
         // }

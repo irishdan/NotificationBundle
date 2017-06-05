@@ -2,8 +2,8 @@
 
 namespace IrishDan\NotificationBundle\Twig;
 
+use IrishDan\NotificationBundle\DatabaseNotificationManager;
 use IrishDan\NotificationBundle\Notification\NotifiableInterface;
-use IrishDan\NotificationBundle\NotificationManager;
 use IrishDan\NotificationBundle\PusherManager;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
 
@@ -11,13 +11,20 @@ class NotificationExtension extends \Twig_Extension implements \Twig_Extension_G
 {
     private $pusherManager;
     private $router;
-    private $notificationManager;
+    private $databaseNotificationManager;
+    private $availableChannels = [];
 
-    public function __construct(PusherManager $pusherManager, Router $router, NotificationManager $notificationManager)
+    public function __construct(
+        PusherManager $pusherManager,
+        Router $router,
+        DatabaseNotificationManager $databaseNotificationManager,
+        array $availableChannels
+    )
     {
         $this->pusherManager = $pusherManager;
         $this->router = $router;
-        $this->notificationManager = $notificationManager;
+        $this->databaseNotificationManager = $databaseNotificationManager;
+        $this->availableChannels = $availableChannels;
     }
 
     public function getFunctions()
@@ -39,35 +46,58 @@ class NotificationExtension extends \Twig_Extension implements \Twig_Extension_G
 
     public function getGlobals()
     {
-        return [
-            'notification_pusher_auth_endpoint' => $this->getAuthEndpoint(),
-            'notification_pusher_auth_key' => $this->pusherManager->getAuthKey(),
-            'notification_pusher_app_id' => $this->pusherManager->getAppId(),
-            'notification_pusher_event' => $this->pusherManager->getEvent(),
-            'notification_pusher_cluster' => $this->pusherManager->getCluster(),
-            'notification_pusher_encrypted' => $this->pusherManager->getEncrypted(),
-        ];
+        if ($this->channelEnabled()) {
+            return [
+                'notification_pusher_auth_endpoint' => $this->getAuthEndpoint(),
+                'notification_pusher_auth_key' => $this->pusherManager->getAuthKey(),
+                'notification_pusher_app_id' => $this->pusherManager->getAppId(),
+                'notification_pusher_event' => $this->pusherManager->getEvent(),
+                'notification_pusher_cluster' => $this->pusherManager->getCluster(),
+                'notification_pusher_encrypted' => $this->pusherManager->getEncrypted(),
+            ];
+        }
+
+        return [];
+    }
+
+    protected function channelEnabled($channel = 'pusher_channel')
+    {
+        return in_array($channel, $this->availableChannels);
     }
 
     public function getUserAllCount(NotifiableInterface $user)
     {
-        return $this->notificationManager->notificationCount($user);
+        if ($this->channelEnabled('database_channel')) {
+            return $this->databaseNotificationManager->getUsersNotificationCount($user, '');
+        }
+
+        return '';
     }
 
     public function getUserUnreadCount(NotifiableInterface $user)
     {
-        return $this->notificationManager->unreadNotificationCount($user);
+        if ($this->channelEnabled('database_channel')) {
+            return $this->databaseNotificationManager->getUsersNotificationCount($user, 'unread');
+        }
+
+        return '';
     }
 
     public function getUserReadCount(NotifiableInterface $user)
     {
-        return $this->notificationManager->readNotificationCount($user);
+        if ($this->channelEnabled('database_channel')) {
+            return $this->databaseNotificationManager->getUsersNotificationCount($user, 'read');
+        }
+
+        return '';
     }
 
     public function getUserChannelName(NotifiableInterface $user)
     {
-        if ($user) {
-            return $this->pusherManager->getUserChannelName($user);
+        if ($this->channelEnabled()) {
+            if ($user) {
+                return $this->pusherManager->getUserChannelName($user);
+            }
         }
 
         return '';
@@ -75,25 +105,35 @@ class NotificationExtension extends \Twig_Extension implements \Twig_Extension_G
 
     public function createNewPusherChannelJS(NotifiableInterface $user)
     {
-        $channelName = $this->getUserChannelName($user);
+        if ($this->channelEnabled()) {
+            $channelName = $this->getUserChannelName($user);
 
-        return "var channel = pusher.subscribe('" . $channelName . "');";
+            return "var channel = pusher.subscribe('" . $channelName . "');";
+        }
+
+        return '';
     }
 
     public function createNewPusherJS()
     {
-        return 'var pusher = new Pusher("' . $this->pusherManager->getAuthKey() . '", {
+        if ($this->channelEnabled()) {
+            return 'var pusher = new Pusher("' . $this->pusherManager->getAuthKey() . '", {
                 authEndpoint: "' . $this->getAuthEndpoint() . '",
                 cluster: "' . $this->pusherManager->getCluster() . '",
                 encrypted: ' . $this->pusherManager->getEncrypted() . '
             });';
+        }
+
+        return '';
     }
 
     public function getAuthEndpoint()
     {
-        $exists = $this->router->getRouteCollection()->get('notification_pusher_auth');
-        if (null !== $exists) {
-            return $this->router->generate('notification_pusher_auth');
+        if ($this->channelEnabled()) {
+            $exists = $this->router->getRouteCollection()->get('notification_pusher_auth');
+            if (null !== $exists) {
+                return $this->router->generate('notification_pusher_auth');
+            }
         }
 
         return '';
