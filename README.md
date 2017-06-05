@@ -20,7 +20,36 @@ notification:
         encrypted: true # Set default value
         channel_name: 'private-app_channel_' # will get suffux of user id for private channel. Must begin with 'private-'!
         event: 'notification-event'
+    nexmo_channel:
+        enabled: true
+        api_key: abc
+        api_secret: 123
+        from: "Dan"
 ```
+
+## Channels
+
+## Notifications
+
+## Commands
+
+Can use a command to generate a notification object, eg NewMemberNotification. 
+This command will also generate twig templates for each enabled channel
+
+```
+  notification:create
+  notification:create-database-notification  
+```
+
+
+
+## sending notifications
+```
+$notification = new NewMemberNotification();
+$this->get('notification')->send($notification, [$user]);
+        
+```
+
 ## twig 
 
 ```
@@ -56,5 +85,3 @@ notification:
         });
     </script>
 ```
-
-@TODO: Add nexmo channel
