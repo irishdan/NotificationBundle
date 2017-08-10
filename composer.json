@@ -1,29 +1,32 @@
 {
-    "name": "irishdan/notification-bundle",
-    "description": "A notification bundle for symfony framework",
-    "license": "MIT",
-    "homepage": "https://danbyrne.me/notification-bundle",
-    "authors": [
-        {
-            "name": "Daniel Byrne",
-            "email": "danielbyrne@outlook.com"
-        }
-    ],
-    "require": {
-        "php": ">=5.6.4",
-        "symfony/framework-bundle": "^3.0"
-    },
-    "autoload": {
-        "psr-4": {
-            "IrishDan\\NotificationBundle\\": ""
-        }
-    },
-    "suggest": {
-        "nexmo/client": "@beta",
-        "pusher/pusher-php-server": "^2.6"
-    },
-    "config": {
-        "sort-packages": true
-    },
-    "minimum-stability": "dev"
+  "name": "irishdan/notification-bundle",
+  "description": "A notification bundle for the Symfony framework",
+  "license": "MIT",
+  "homepage": "https://danbyrne.me/notification-bundle",
+  "authors": [
+    {
+      "name": "Daniel Byrne",
+      "email": "danielbyrne@outlook.com"
+    }
+  ],
+  "require": {
+    "php": ">=5.6.4",
+    "symfony/framework-bundle": "^3.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "~4.8"
+  },
+  "autoload": {
+    "psr-4": {
+      "IrishDan\\NotificationBundle\\": ""
+    }
+  },
+  "suggest": {
+    "nexmo/client": "@beta",
+    "pusher/pusher-php-server": "^2.6"
+  },
+  "config": {
+    "sort-packages": true
+  },
+  "minimum-stability": "dev"
 }
