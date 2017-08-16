@@ -27,11 +27,17 @@ class CreateNotificationCommand extends GeneratorCommand
         $this
             ->setName('notification:create')
             ->setDescription('Create a new notification class')
-            ->setDefinition([
-                new InputOption('bundle', '', InputOption::VALUE_REQUIRED, 'The bundle for this notification'),
-                new InputOption('notification_name', '', InputOption::VALUE_REQUIRED, 'The name of the notification'),
-                new InputOption('channel_templates', '', InputOption::VALUE_REQUIRED, 'The name of the notification'),
-            ]);
+            ->setDefinition(
+                [
+                    new InputOption('bundle', '', InputOption::VALUE_REQUIRED, 'The bundle for this notification'),
+                    new InputOption(
+                        'notification_name', '', InputOption::VALUE_REQUIRED, 'The name of the notification'
+                    ),
+                    new InputOption(
+                        'channel_templates', '', InputOption::VALUE_REQUIRED, 'The name of the notification'
+                    ),
+                ]
+            );
     }
 
     protected function interact(InputInterface $input, OutputInterface $output)
@@ -40,52 +46,67 @@ class CreateNotificationCommand extends GeneratorCommand
         $questionHelper->writeSection($output, 'Welcome to the Notification generator');
 
         // Get the Bundle to generate it in
-        $output->writeln([
-            'This command helps you generate a Notification class',
-            '',
-            'First, give the name of the bundle to generate the notification in (eg <comment>AppBundle</comment>)',
-        ]);
+        $output->writeln(
+            [
+                'This command helps you generate a Notification class',
+                '',
+                'First, give the name of the bundle to generate the notification in (eg <comment>AppBundle</comment>)',
+            ]
+        );
 
-        $question = new Question($questionHelper->getQuestion('The bundle name', $input->getOption('bundle')), $input->getOption('bundle'));
+        $question = new Question(
+            $questionHelper->getQuestion('The bundle name', $input->getOption('bundle')),
+            $input->getOption('bundle')
+        );
 
         // @TODO: Add existing bundle validation
         $question->setValidator(['Sensio\Bundle\GeneratorBundle\Command\Validators', 'validateBundleName']);
-        $question->setNormalizer(function ($value) {
-            return $value ? trim($value) : '';
-        });
+        $question->setNormalizer(
+            function ($value) {
+                return $value ? trim($value) : '';
+            }
+        );
         $question->setMaxAttempts(2);
 
         $bundle = $questionHelper->ask($input, $output, $question);
         $input->setOption('bundle', $bundle);
 
         // Get the Bundle to generate it in
-        $output->writeln([
-            '',
-            'Now, give the name of the new notification class (eg <comment>NewMember</comment>)',
-        ]);
+        $output->writeln(
+            [
+                '',
+                'Now, give the name of the new notification class (eg <comment>NewMember</comment>)',
+            ]
+        );
 
         // Get the new class name and validate it.
-        $question = new Question($questionHelper->getQuestion('The notification name', $input->getOption('notification_name')), $input->getOption('notification_name'));
-        $question->setValidator(function ($answer) {
-            // Should only contain letters.
-            $valid = preg_match('/^[a-zA-Z]+$/', $answer);
-            if (!$valid) {
-                throw new \RuntimeException(
-                    'The class name should only contain letters'
-                );
-            }
+        $question = new Question(
+            $questionHelper->getQuestion('The notification name', $input->getOption('notification_name')),
+            $input->getOption('notification_name')
+        );
+        $question->setValidator(
+            function ($answer) {
+                // Should only contain letters.
+                $valid = preg_match('/^[a-zA-Z]+$/', $answer);
+                if (!$valid) {
+                    throw new \RuntimeException(
+                        'The class name should only contain letters'
+                    );
+                }
 
-            return $answer;
-        });
-        $question->setNormalizer(function ($value) {
-            return $value ? trim($value) : '';
-        });
+                return $answer;
+            }
+        );
+        $question->setNormalizer(
+            function ($value) {
+                return $value ? trim($value) : '';
+            }
+        );
 
         $notificationName = $questionHelper->ask($input, $output, $question);
         $input->setOption('notification_name', $notificationName);
 
         // ask whether to generate templates for enabled channels.
-        var_dump($this->channels);
         foreach ($this->channels as $channel) {
             $question = $this->createYesNoQuestion($questionHelper, $input, $channel);
 
@@ -101,7 +122,10 @@ class CreateNotificationCommand extends GeneratorCommand
         $questionHelper = $this->getQuestionHelper();
 
         if ($input->isInteractive()) {
-            $question = new ConfirmationQuestion($questionHelper->getQuestion('Do you confirm generation', 'yes', '?'), true);
+            $question = new ConfirmationQuestion(
+                $questionHelper->getQuestion('Do you confirm generation', 'yes', '?'),
+                true
+            );
             if (!$questionHelper->ask($input, $output, $question)) {
                 $output->writeln('<error>Command aborted</error>');
 
@@ -112,7 +136,7 @@ class CreateNotificationCommand extends GeneratorCommand
         $style = new SymfonyStyle($input, $output);
 
         $bundle = $input->getOption('bundle');
-        $name = $input->getOption('notification_name');
+        $name   = $input->getOption('notification_name');
 
         $style->text('Generating New notification class ' . $name . ' generated in ' . $bundle);
 
@@ -125,32 +149,43 @@ class CreateNotificationCommand extends GeneratorCommand
         $generator = $this->getGenerator($bundle);
         $generator->generate($bundle, $name);
 
-        $output->writeln(sprintf('Generated the <info>%s</info> notification in <info>%s</info>', $name, $bundle->getName()));
+        $output->writeln(
+            sprintf('Generated the <info>%s</info> notification in <info>%s</info>', $name, $bundle->getName())
+        );
         $questionHelper->writeGeneratorSummary($output, []);
     }
 
     protected function createYesNoQuestion($questionHelper, $input, $channel)
     {
-        $question = new Question($questionHelper->getQuestion('Generate a message template for the ' . $channel . ' <comment>[yes]</comment>', 'channel_templates'), 'yes');
-        $question->setNormalizer(function ($value) {
-            return $value[0] == 'y' ? 'y' : 'n';
-        });
-
-        $question->setValidator(function ($answer) {
-            // Should only contain letters.
-            $allowed = [
-                'y',
-                'n',
-            ];
-            $valid = in_array($answer, $allowed);
-            if (!$valid) {
-                throw new \RuntimeException(
-                    'Only allowed value are ' . implode(', ', $allowed)
-                );
+        $question = new Question(
+            $questionHelper->getQuestion(
+                'Generate a message template for the ' . $channel . ' <comment>[yes]</comment>',
+                'channel_templates'
+            ), 'yes'
+        );
+        $question->setNormalizer(
+            function ($value) {
+                return $value[0] == 'y' ? 'y' : 'n';
             }
+        );
 
-            return $answer;
-        });
+        $question->setValidator(
+            function ($answer) {
+                // Should only contain letters.
+                $allowed = [
+                    'y',
+                    'n',
+                ];
+                $valid   = in_array($answer, $allowed);
+                if (!$valid) {
+                    throw new \RuntimeException(
+                        'Only allowed value are ' . implode(', ', $allowed)
+                    );
+                }
+
+                return $answer;
+            }
+        );
 
         return $question;
     }
