@@ -4,6 +4,7 @@ namespace IrishDan\NotificationBundle\Dispatcher;
 
 use Doctrine\ORM\EntityManager;
 use IrishDan\NotificationBundle\Message\BaseMessage;
+use IrishDan\NotificationBundle\Message\MessageInterface;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
 class DatabaseMessageDispatcher implements MessageDispatcherInterface
@@ -18,8 +19,12 @@ class DatabaseMessageDispatcher implements MessageDispatcherInterface
         $this->configuration = $configuration;
     }
 
-    public function dispatch(BaseMessage $message)
+    public function dispatch(MessageInterface $message)
     {
+        // Get the dispatch and message data from the message.
+        $dispatchData = $message->getDispatchData();
+        $messageData = $message->getMessageData();
+
         // Create the database notification entity
         $databaseNotification = $this->createDatabaseNotificationEntity($message);
         if ($databaseNotification) {

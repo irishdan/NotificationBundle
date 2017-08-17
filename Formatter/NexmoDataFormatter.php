@@ -2,30 +2,51 @@
 
 namespace IrishDan\NotificationBundle\Formatter;
 
-use IrishDan\NotificationBundle\Message\NexmoMessage;
-use IrishDan\NotificationBundle\Notification\NotifiableInterface;
+use IrishDan\NotificationBundle\Message\Message;
 use IrishDan\NotificationBundle\Notification\NotificationInterface;
+use IrishDan\NotificationBundle\Textable;
 
 class NexmoDataFormatter extends BaseFormatter implements MessageFormatterInterface
 {
+    protected $nexmoConfiguration;
+
+    public function __construct(array $nexmoConfiguration = [])
+    {
+        $this->nexmoConfiguration = $nexmoConfiguration;
+    }
+
     public function format(NotificationInterface $notification)
     {
-        /** @var NotifiableInterface $notifiable */
-        $notifiable = $notification->getNotifiable();
+        $message          = new Message();
         $notificationData = $notification->getDataArray();
 
-        if (!empty($this->twig) && $notification->getTemplate()) {
-            $notificationData['body'] = $this->renderTwigTemplate($notificationData, $notifiable, $notification->getTemplate());
+        // The User/Notifiable must implement Textable interface in order to receive SMSs
+        $notifiable = $notification->getNotifiable();
+        if (!$notifiable instanceof Textable) {
+            throw new \RuntimeException('Notifiable does not implement Texable interface');
         }
 
-        $data = new NexmoMessage();
+        // Build the dispatch data array.
+        $dispatchData = [
+            'to'   => $notifiable->getNumber(),
+            'from' => empty($this->nexmoConfiguration['from']) ? '' : $this->nexmoConfiguration['from'],
+        ];
 
-        $data->setData($notificationData);
+        // Build the message data array.
+        $messageData = [];
+        // @TODO: Works but not when body is dynamic??
+        $messageData['body'] = 'A Hoi hoi! Marcus!';
+        // if (!empty($this->twig) && $notification->getTemplate()) {
+        //     $messageData['body'] = $this->renderTwigTemplate(
+        //         $notificationData,
+        //         $notifiable,
+        //         $notification->getTemplate()
+        //     );
+        // }
 
-        // @TODO: Check for textable interface.
+        $message->setDispatchData($dispatchData);
+        $message->setMessageData($messageData);
 
-        $data->setTo($notifiable->getNumber());
-
-        return $data;
+        return $message;
     }
 }

@@ -2,8 +2,8 @@
 
 namespace IrishDan\NotificationBundle\Dispatcher;
 
+use IrishDan\NotificationBundle\Message\MessageInterface;
 use IrishDan\NotificationBundle\PusherManager;
-use IrishDan\NotificationBundle\Message\BaseMessage;
 
 class PusherMessageDispatcher implements MessageDispatcherInterface
 {
@@ -14,15 +14,20 @@ class PusherMessageDispatcher implements MessageDispatcherInterface
         $this->pusherManager = $pusherManager;
     }
 
-    public function dispatch(BaseMessage $data)
+    public function dispatch(MessageInterface $message)
     {
+        // Get the dispatch and message data from the message.
+        $dispatchData = $message->getDispatchData();
+        $messageData = $message->getMessageData();
+
+
         $pusher = $this->pusherManager->getPusherClient();
 
         $pusherData = $data->getData();
-        $channel = [
+        $channel    = [
             $this->pusherManager->getChannelName($data->getChannelIdentifier()),
         ];
-        $event = $this->pusherManager->getEvent();
+        $event      = $this->pusherManager->getEvent();
 
         return $pusher->trigger($channel, $event, $pusherData);
     }

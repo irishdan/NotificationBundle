@@ -2,6 +2,17 @@
 
 This is a work in progress. 
 
+How it works?
+- Users that implement NotifiableInterface interface can be subscribed to different notification 'channels'
+    NotifiableInterface::getSubscribedChannels()
+- Channels include, database, email, pusher, nexio (sms), custom channels can be defined easily
+- Notifications are classes, which can be generated with:
+    php bin/console notification:create  
+    php bin/console notification:create-database-notification 
+- Each notification can be sent via one or more channels
+- Each channel has a formatter (twig, templates etc) and a dispatcher
+- It's all event driven
+
 ## config
 ```
 notification:

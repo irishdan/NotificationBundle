@@ -11,7 +11,7 @@ interface NotifiableInterface
      */
     public function getSubscribedChannels();
 
-    // Laravel Notifiable trail simply uses two traits below.
+    // Laravel Notifiable trait simply uses two traits below.
     // use HasDatabaseNotifications, RoutesNotifications;
     public function getEmail();
 

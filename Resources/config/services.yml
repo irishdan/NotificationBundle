@@ -70,6 +70,7 @@ services:
 
     notification.nexmo_data_formatter:
         class: IrishDan\NotificationBundle\Formatter\NexmoDataFormatter
+        arguments: ['%notification.nexmo_channel.configuration%']
         calls:
             - [setTemplating, ['@twig']]
 

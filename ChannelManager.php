@@ -10,6 +10,7 @@ use IrishDan\NotificationBundle\Notification\NotifiableInterface;
 use IrishDan\NotificationBundle\Notification\NotificationInterface;
 use IrishDan\NotificationBundle\Event\NotificationSendingEvent;
 use Symfony\Component\EventDispatcher\Debug\TraceableEventDispatcher;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Class ChannelManager
@@ -22,22 +23,14 @@ class ChannelManager
      * @var array
      */
     protected $channels = [];
-    /**
-     * @var TraceableEventDispatcher
-     */
+
     protected $eventDispatcher;
     /**
      * @var array
      */
     protected $configuredChannels;
 
-    /**
-     * ChannelManager constructor.
-     *
-     * @param TraceableEventDispatcher $eventDispatcher
-     * @param array                    $configuredChannels
-     */
-    public function __construct(TraceableEventDispatcher $eventDispatcher, array $configuredChannels)
+    public function __construct(EventDispatcherInterface $eventDispatcher, array $configuredChannels)
     {
         $this->eventDispatcher = $eventDispatcher;
         $this->configuredChannels = $configuredChannels;
@@ -68,10 +61,6 @@ class ChannelManager
         $this->sendNow($notifiables, $notification);
     }
 
-    /**
-     * @param array                 $recipients
-     * @param NotificationInterface $notification
-     */
     public function sendNow(array $recipients, NotificationInterface $notification)
     {
         // Clone the original notification as will need a copy for each recipient;
@@ -103,7 +92,14 @@ class ChannelManager
                     $sendingEvent = new NotificationSendingEvent($currentNotification);
                     $this->eventDispatcher->dispatch(NotificationSendingEvent::NAME, $sendingEvent);
 
-                    $response = $this->channels[$channel]->send($currentNotification);
+
+                    // @TODO: Perhaps send is the only method that should be in the interface
+                    // @TODO: or, use formatthe message and dispatch
+                    // $response = $this->channels[$channel]->send($currentNotification);
+                    $message = $this->channels[$channel]->format($currentNotification);
+                    $response = $this->channels[$channel]->dispatch($message);
+
+
                     if ($response) {
                         // Dispatch sent event.
                         $successEvent = new NotificationSentEvent($currentNotification);

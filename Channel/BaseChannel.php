@@ -3,6 +3,7 @@
 namespace IrishDan\NotificationBundle\Channel;
 
 use IrishDan\NotificationBundle\Message\BaseMessage;
+use IrishDan\NotificationBundle\Message\MessageInterface;
 use IrishDan\NotificationBundle\Notification\NotificationInterface;
 use IrishDan\NotificationBundle\Formatter\MessageFormatterInterface;
 use IrishDan\NotificationBundle\Dispatcher\MessageDispatcherInterface;
@@ -30,7 +31,7 @@ abstract class BaseChannel implements ChannelInterface
         return $this->configured;
     }
 
-    protected function format(NotificationInterface $notification)
+    public function format(NotificationInterface $notification)
     {
         if ($this->dataFormatter instanceof MessageFormatterInterface) {
             return $this->dataFormatter->format($notification);
@@ -39,22 +40,13 @@ abstract class BaseChannel implements ChannelInterface
         return false;
     }
 
-    protected function dispatch(BaseMessage $message)
-    {
-        if ($this->dispatcher instanceof MessageDispatcherInterface) {
-            return $this->dispatcher->dispatch($message);
-        }
-
-        return false;
-    }
-
-    public function send(NotificationInterface $notification)
+    public function dispatch(MessageInterface $message)
     {
         if ($this->channelIsConfigured()) {
             $data = $this->format($notification);
             if (!empty($data)) {
                 try {
-                    $this->dispatch($data);
+                    $this->send($data);
                 } catch (\Exception $exception) {
 
                     // Create a custom Exception message
@@ -68,6 +60,15 @@ abstract class BaseChannel implements ChannelInterface
                 'Channel not configured correctly'
             );
         }
+    }
+
+    protected function send(NotificationInterface $notification)
+    {
+        if ($this->dispatcher instanceof MessageDispatcherInterface) {
+            return $this->dispatcher->dispatch($message);
+        }
+
+        return false;
     }
 
     protected function exceptionMessage(\Exception $exception)

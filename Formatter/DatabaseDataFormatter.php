@@ -3,7 +3,6 @@
 namespace IrishDan\NotificationBundle\Formatter;
 
 use IrishDan\NotificationBundle\Message\DatabaseMessage;
-use IrishDan\NotificationBundle\Notification\NotifiableInterface;
 use IrishDan\NotificationBundle\Notification\NotificationInterface;
 
 class DatabaseDataFormatter extends BaseFormatter implements MessageFormatterInterface

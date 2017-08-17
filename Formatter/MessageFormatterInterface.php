@@ -3,7 +3,7 @@
 namespace IrishDan\NotificationBundle\Formatter;
 
 use IrishDan\NotificationBundle\Notification\NotificationInterface;
-use IrishDan\NotificationBundle\Message\BaseMessage;
+use Nexmo\Message\MessageInterface;
 
 /**
  * Interface MessageFormatterInterface
@@ -13,8 +13,12 @@ use IrishDan\NotificationBundle\Message\BaseMessage;
 interface MessageFormatterInterface
 {
     /**
+     * Takes a Notification, formats the content and delivery data
+     * and returns a Message object which a dispatcher dispatch.
+     *
      * @param NotificationInterface $notification
-     * @return BaseMessage
+     *
+     * @return MessageInterface
      */
     public function format(NotificationInterface $notification);
 }

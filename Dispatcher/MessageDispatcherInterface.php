@@ -2,7 +2,7 @@
 
 namespace IrishDan\NotificationBundle\Dispatcher;
 
-use IrishDan\NotificationBundle\Message\BaseMessage;
+use IrishDan\NotificationBundle\Message\MessageInterface;
 
 /**
  * Interface MessageDispatcherInterface
@@ -12,8 +12,9 @@ use IrishDan\NotificationBundle\Message\BaseMessage;
 interface MessageDispatcherInterface
 {
     /**
-     * @param BaseMessage $message
-     * @return mixed
+     * @param MessageInterface $message
+     *
+     * @return boolean
      */
-    public function dispatch(BaseMessage $message);
+    public function dispatch(MessageInterface $message);
 }

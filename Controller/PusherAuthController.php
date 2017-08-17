@@ -21,11 +21,10 @@ class PusherAuthController extends Controller
      */
     public function connectAction(Request $request)
     {
-        // @TODO: Write a blog post about this.
         $pusher = $this->get('notification.pusher_manager')->getPusherClient();
 
         $channelName = $request->get('channel_name');
-        $socketId = $request->get('socket_id');
+        $socketId    = $request->get('socket_id');
 
         $pusherChannel = new PusherChannel($channelName, $socketId);
 

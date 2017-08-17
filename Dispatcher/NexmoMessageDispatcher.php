@@ -2,7 +2,7 @@
 
 namespace IrishDan\NotificationBundle\Dispatcher;
 
-use IrishDan\NotificationBundle\Message\BaseMessage;
+use IrishDan\NotificationBundle\Message\MessageInterface;
 use Nexmo\Client;
 
 class NexmoMessageDispatcher implements MessageDispatcherInterface
@@ -18,17 +18,26 @@ class NexmoMessageDispatcher implements MessageDispatcherInterface
         $this->nexmoConfiguration = $nexmoConfiguration;
     }
 
-    public function dispatch(BaseMessage $data)
+    public function dispatch(MessageInterface $message)
     {
+        // Get the dispatch and message data from the message.
+        $dispatchData = $message->getDispatchData();
+        $messageData  = $message->getMessageData();
+
         if (empty($this->client)) {
-            $credentials = new Client\Credentials\Basic($this->nexmoConfiguration['api_key'], $this->nexmoConfiguration['api_secret']);
+            $credentials  = new Client\Credentials\Basic(
+                $this->nexmoConfiguration['api_key'],
+                $this->nexmoConfiguration['api_secret']
+            );
             $this->client = new Client($credentials);
         }
 
-        $message = $this->client->message()->send([
-            'to' => $data->getTo(),
-            'from' => $this->nexmoConfiguration['from'],
-            'text' => $data->getData()['body'],
-        ]);
+        return $this->client->message()->send(
+            [
+                'to'   => $dispatchData['to'],
+                'from' => $dispatchData['from'],
+                'text' => $messageData['body'],
+            ]
+        );
     }
 }
