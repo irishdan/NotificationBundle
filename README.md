@@ -1,6 +1,8 @@
 # NotificationBundle
 
-This is a work in progress. 
+This is a work in progress!!
+
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/irishdan/NotificationBundle/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/irishdan/NotificationBundle/?branch=master)
 
 How it works?
 - Users that implement NotifiableInterface interface can be subscribed to different notification 'channels'
