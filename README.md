@@ -12,6 +12,7 @@ How it works?
 - Each notification can be sent via one or more channels
 - Each channel has a formatter (twig, templates etc) and a dispatcher
 - It's all event driven
+- Broadcast is a notification sent to an external service eg a slack channel, mail chimp list, drip, hipchat
 
 ## config
 ```

@@ -17,6 +17,11 @@ use IrishDan\NotificationBundle\Notification\NotificationInterface;
  */
 class DefaultChannel implements ChannelInterface
 {
+    public function formatAndDispatch(NotificationInterface $notification)
+    {
+        // TODO: Implement formatAndDispatch() method.
+    }
+
     private $formatter;
     private $dispatcher;
 
@@ -41,8 +46,6 @@ class DefaultChannel implements ChannelInterface
         try {
             // Do the formatting.
             $message = $this->formatter->format($notification);
-            var_dump($message);
-
             return $message;
         } catch (\Exception $e) {
             throw new MessageFormatException(

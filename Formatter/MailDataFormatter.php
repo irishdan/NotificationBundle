@@ -3,44 +3,40 @@
 namespace IrishDan\NotificationBundle\Formatter;
 
 use IrishDan\NotificationBundle\Message\MailMessage;
+use IrishDan\NotificationBundle\Message\Message;
 use IrishDan\NotificationBundle\Notification\NotificationInterface;
 
 class MailDataFormatter extends BaseFormatter implements MessageFormatterInterface
 {
-    private $mailChannelConfiguration;
+    private $mailConfiguration;
 
-    public function __construct(array $mailChannelConfiguration)
+    public function __construct(array $mailConfiguration)
     {
-        $this->mailChannelConfiguration = $mailChannelConfiguration;
+        $this->mailConfiguration = $mailConfiguration;
     }
 
     public function format(NotificationInterface $notification)
     {
-        $notifiable = $notification->getNotifiable();
+        $message          = new Message();
         $notificationData = $notification->getDataArray();
 
-        if (!empty($this->twig) && $notification->getTemplate()) {
-            $notificationData['body'] = $this->renderTwigTemplate($notificationData, $notifiable, $notification->getTemplate());
-        }
+        $notifiable = $notification->getNotifiable();
+        // Build the dispatch data array.
+        $dispatchData = [
+            'to'   => $notifiable->getEmail(),
+            'from' => empty($this->mailConfiguration['default_sender']) ? 'dan@nomadapi.io' : $this->mailConfiguration['default_sender'],
+        ];
 
-        $message = $this->createMailMessage($notificationData, $notifiable);
+        // Build the message data array.
+        $messageData            = [];
+        $messageData['body']    = 'A Hoi hoi! Dan!';
+        $messageData['subject'] = 'E-Mail from Nomad';
+        // if (!empty($this->twig) && $notification->getTemplate()) {
+        //     $notificationData['body'] = $this->renderTwigTemplate($notificationData, $notifiable, $notification->getTemplate());
+        // }
 
-        return $message;
-    }
-
-    protected function createMailMessage($data, $user)
-    {
-        $message = new MailMessage();
-        $message->setSubject($data['title']);
-        $message->setBody($data['body']);
-
-        if (empty($data['sender'])) {
-            $message->setFrom($this->mailChannelConfiguration['default_sender']);
-        } else {
-            $message->setFrom($data['sender']);
-        }
-
-        $message->setTo($user->getEmail());
+        $message->setDispatchData($dispatchData);
+        $message->setMessageData($messageData);
 
         return $message;
     }

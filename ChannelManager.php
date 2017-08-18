@@ -23,7 +23,6 @@ class ChannelManager
      * @var array
      */
     protected $channels = [];
-
     protected $eventDispatcher;
     /**
      * @var array
@@ -32,12 +31,15 @@ class ChannelManager
 
     public function __construct(EventDispatcherInterface $eventDispatcher, array $configuredChannels)
     {
-        $this->eventDispatcher = $eventDispatcher;
+        $this->eventDispatcher    = $eventDispatcher;
         $this->configuredChannels = $configuredChannels;
+        // @TODO:
+        $this->configuredChannels[] = 'slack_channel';
     }
 
     /**
      * @param array $recipients
+     *
      * @return array
      */
     protected function formatRecipients(array $recipients)
@@ -70,6 +72,7 @@ class ChannelManager
         // Needed when marking as read across all channels.
         $uuid = uniqid();
 
+
         foreach ($recipients as $notifiable) {
             // Get all of the channels the notification would like to be send on.
             // Then check each channel against what is configured in the system,
@@ -95,8 +98,9 @@ class ChannelManager
 
                     // @TODO: Perhaps send is the only method that should be in the interface
                     // @TODO: or, use formatthe message and dispatch
+                    // ->formatAndDispatch
                     // $response = $this->channels[$channel]->send($currentNotification);
-                    $message = $this->channels[$channel]->format($currentNotification);
+                    $message  = $this->channels[$channel]->format($currentNotification);
                     $response = $this->channels[$channel]->dispatch($message);
 
 
@@ -125,6 +129,7 @@ class ChannelManager
      * @param  mixed  $notifiable
      * @param  mixed  $notification
      * @param  string $channel
+     *
      * @return bool
      */
     protected function shouldSendNotification(NotifiableInterface $notifiable, NotificationInterface $notification, $channel)
@@ -160,6 +165,7 @@ class ChannelManager
      * Get a channel service
      *
      * @param  string|null $name
+     *
      * @return mixed
      */
     public function getChannel($name = null)

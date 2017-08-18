@@ -29,6 +29,10 @@ class NotificationManager
         $this->channelManager = $channelManager;
     }
 
+    public function broadcast(NotificationInterface $notificatin, array $broadcasters  = null) {
+
+    }
+
     public function send(NotificationInterface $notification, $recipients)
     {
         if (!is_array($recipients)) {

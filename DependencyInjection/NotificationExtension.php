@@ -2,6 +2,7 @@
 
 namespace IrishDan\NotificationBundle\DependencyInjection;
 
+use IrishDan\NotificationBundle\DependencyInjection\Factory\Broadcaster\SlackBroadcasterFactory;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
@@ -10,13 +11,13 @@ class NotificationExtension extends Extension
     public function load(array $configs, ContainerBuilder $container)
     {
         $configuration = new Configuration();
-        $config = $this->processConfiguration($configuration, $configs);
+        $config        = $this->processConfiguration($configuration, $configs);
 
         foreach ($configs as $subConfig) {
             $config = array_merge($config, $subConfig);
         }
 
-        $channels = ['mail_channel', 'database_channel', 'pusher_channel', 'nexmo_channel'];
+        $channels        = ['mail_channel', 'database_channel', 'pusher_channel', 'nexmo_channel'];
         $enabledChannels = [];
 
         foreach ($channels as $channel) {
@@ -45,6 +46,26 @@ class NotificationExtension extends Extension
         }
 
         $container->setParameter('notification.available_channels', $enabledChannels);
+
+        // foreach ($config['channels'] as $name => $config) {
+        //     $adapters[$name] = $this->createAdapter($name, $config, $container);
+        // }
+
+        foreach ($config['broadcasters'] as $name => $config) {
+            $adapters[$name] = $this->createBroadcaster($name, $config, $container);
+        }
+    }
+
+    private function createBroadcaster($name, $broadcaster, $container)
+    {
+        // var_dump($name);
+        // var_dump($broadcaster);
+//
+        // $type = array_keys($broadcaster)[0];
+        // var_dump($type);
+        // // @TODO: Use to get the factory
+        // $factory = new SlackBroadcasterFactory();
+
     }
 
     private function mailChannelConfiguration($config)

@@ -25,6 +25,17 @@ class Configuration implements ConfigurationInterface
         // Add basic configurations.
         $rootNode
             ->children()
+                // Broadcasters
+                ->arrayNode('broadcasters')
+                    ->useAttributeAsKey('name')
+                    ->prototype('array')
+                    ->children()
+                        ->arrayNode('slack')
+                            ->prototype('scalar')->end()
+                            ->end()
+                        ->end()
+                    ->end()
+                ->end()
                 // Email channel settings.
                 ->arrayNode('mail_channel')
                     ->children()
@@ -63,7 +74,14 @@ class Configuration implements ConfigurationInterface
                         ->scalarNode('from')->defaultValue('')->end()
                     ->end()
                 ->end()
-            ->end();
+                // Database channel.
+                ->arrayNode('slack_channel')
+                    ->children()
+                    ->booleanNode('enabled')->defaultFalse()->end()
+                    ->end()
+                    ->end()
+                    ->end()
+                ->end();
 
         return $treeBuilder;
     }

@@ -2,7 +2,6 @@
 
 namespace IrishDan\NotificationBundle\Dispatcher;
 
-use IrishDan\NotificationBundle\Message\BaseMessage;
 use IrishDan\NotificationBundle\Message\MessageInterface;
 
 class MailMessageDispatcher implements MessageDispatcherInterface
@@ -22,11 +21,11 @@ class MailMessageDispatcher implements MessageDispatcherInterface
 
 
         $mail = \Swift_Message::newInstance()
-                              ->setSubject($message->getSubject())
-                              ->setBody($message->getBody());
+                              ->setSubject($messageData['subject'])
+                              ->setBody($messageData['body']);
 
-        $mail->setFrom($message->getFrom());
-        $mail->setTo($message->getTo());
+        $mail->setFrom($dispatchData['from']);
+        $mail->setTo($dispatchData['to']);
 
         return $this->mailer->send($mail);
     }

@@ -23,7 +23,7 @@ class NexmoDataFormatter extends BaseFormatter implements MessageFormatterInterf
         // The User/Notifiable must implement Textable interface in order to receive SMSs
         $notifiable = $notification->getNotifiable();
         if (!$notifiable instanceof Textable) {
-            throw new \RuntimeException('Notifiable does not implement Texable interface');
+            throw new \RuntimeException('Notifiable mustimplement Textable interface in order to send SMS');
         }
 
         // Build the dispatch data array.
