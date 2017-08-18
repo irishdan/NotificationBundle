@@ -16,20 +16,14 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  *
  * @package NotificationBundle\Channel
  */
-class EventChannel implements ChannelInterface
+class EventChannel extends BaseChannel implements ChannelInterface
 {
-    private $formatter;
     private $dispatchers = [];
     private $eventDispatcher;
 
-    public function setDispatchers($dispatcherKey, MessageDispatcherInterface $dispatcher)
+    public function formatAndDispatch(NotificationInterface $notification)
     {
-        $this->dispatchers[$dispatcherKey] = $dispatcher;
-    }
-
-    public function setDataFormatter(MessageFormatterInterface $formatter)
-    {
-        $this->formatter = $formatter;
+        $this->format($notification);
     }
 
     public function __construct($configured = false, $channel = 'default', EventDispatcherInterface $eventDispatcher)

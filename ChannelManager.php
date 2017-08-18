@@ -33,8 +33,6 @@ class ChannelManager
     {
         $this->eventDispatcher    = $eventDispatcher;
         $this->configuredChannels = $configuredChannels;
-        // @TODO:
-        $this->configuredChannels[] = 'slack_channel';
     }
 
     /**
@@ -72,7 +70,6 @@ class ChannelManager
         // Needed when marking as read across all channels.
         $uuid = uniqid();
 
-
         foreach ($recipients as $notifiable) {
             // Get all of the channels the notification would like to be send on.
             // Then check each channel against what is configured in the system,
@@ -95,14 +92,7 @@ class ChannelManager
                     $sendingEvent = new NotificationSendingEvent($currentNotification);
                     $this->eventDispatcher->dispatch(NotificationSendingEvent::NAME, $sendingEvent);
 
-
-                    // @TODO: Perhaps send is the only method that should be in the interface
-                    // @TODO: or, use formatthe message and dispatch
-                    // ->formatAndDispatch
-                    // $response = $this->channels[$channel]->send($currentNotification);
-                    $message  = $this->channels[$channel]->format($currentNotification);
-                    $response = $this->channels[$channel]->dispatch($message);
-
+                    $response = $this->channels[$channel]->formatAndDispatch($currentNotification);
 
                     if ($response) {
                         // Dispatch sent event.

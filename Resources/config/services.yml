@@ -5,58 +5,59 @@ services:
         calls:
             # - [setDatabaseNotificationManager, ['@notification.database_notification_manager']]
 
-    notification.channel_manager:
-        class: IrishDan\NotificationBundle\ChannelManager
-        arguments: [ '@event_dispatcher', '%notification.available_channels%' ]
-        calls: # These should be built automatically
-            - [setChannel, ['database', '@notification.channel.database']]
-            - [setChannel, ['mail', '@notification.channel.mail']]
-            - [setChannel, ['pusher', '@notification.channel.pusher']]
-            - [setChannel, ['nexmo', '@notification.channel.nexmo']]
-            - [setChannel, ['slack','@notification.channel.slack']]
+    # notification.channel_manager:
+    #     class: IrishDan\NotificationBundle\ChannelManager
+    #     arguments: [ '@event_dispatcher', '%notification.available_channels%' ]
+    #     calls:
+    #         - [setChannel, ['database', '@notification.channel.database']]
+    #         - [setChannel, ['mail', '@notification.channel.mail']]
+    #         - [setChannel, ['pusher', '@notification.channel.pusher']]
+    #         - [setChannel, ['nexmo', '@notification.channel.nexmo']]
+    #         - [setChannel, ['slack','@notification.channel.slack']]
 
     notification.database_notification_manager:
         class: IrishDan\NotificationBundle\DatabaseNotificationManager
-        arguments: [ '@doctrine.orm.entity_manager', '%notification.database_channel.configuration%' ]
+        arguments: [ '@doctrine.orm.entity_manager', '%notification.channel.database.configuration%' ]
 
     notification.pusher_manager:
         class: IrishDan\NotificationBundle\PusherManager
-        arguments: [ '%notification.pusher_channel.configuration%' ]
+        arguments: [ '%notification.channel.pusher.configuration%' ]
 
     # Channels
-    notification.channel.database:
-        class: IrishDan\NotificationBundle\Channel\DefaultChannel
-        arguments: [ '%notification.database_channel.enabled%' ]
-        calls:
-            - [ setDataFormatter, [ '@notification.database_data_formatter']]
-            - [ setDispatcher, [ '@notification.database_message_dispatcher']]
+    # notification.channel.database:
+    #     class: IrishDan\NotificationBundle\Channel\DefaultChannel
+    #     arguments: [ '%notification.channel.database.enabled%', '%notification.channel.database.configuration%']
+    #     calls:
+    #         - [ setDataFormatter, [ '@notification.database_data_formatter']]
+    #         - [ setDispatcher, [ '@notification.database_message_dispatcher']]
 
-    notification.channel.mail:
-        class: IrishDan\NotificationBundle\Channel\DefaultChannel
-        arguments: [ '%notification.mail_channel.enabled%' ]
-        calls:
-            - [ setDataFormatter, [ '@notification.mail_data_formatter']]
-            - [ setDispatcher, [ '@notification.mail_message_dispatcher']]
+    # notification.channel.mail:
+    #     class: IrishDan\NotificationBundle\Channel\DefaultChannel
+    #     arguments: [ '%notification.channel.mail.enabled%', '%notification.channel.mail.configuration%' ]
+    #     calls:
+    #         - [ setDataFormatter, [ '@notification.mail_data_formatter']]
+    #         - [ setDispatcher, [ '@notification.mail_message_dispatcher']]
 
-    notification.channel.pusher:
-        class: IrishDan\NotificationBundle\Channel\DefaultChannel
-        arguments: [ '%notification.pusher_channel.enabled%' ]
-        calls:
-            - [ setDataFormatter, [ '@notification.pusher_data_formatter']]
-            - [ setDispatcher, [ '@notification.pusher_message_dispatcher']]
+    # notification.channel.pusher:
+    #     class: IrishDan\NotificationBundle\Channel\DefaultChannel
+    #     arguments: [ '%notification.channel.pusher.enabled%', '%notification.channel.pusher.configuration%' ]
+    #     calls:
+    #         - [ setDataFormatter, [ '@notification.pusher_data_formatter']]
+    #         - [ setDispatcher, [ '@notification.pusher_message_dispatcher']]
 
-    notification.channel.nexmo:
-        class: IrishDan\NotificationBundle\Channel\DefaultChannel
-        arguments: [ '%notification.nexmo_channel.enabled%' ]
-        calls:
-            - [ setDataFormatter, [ '@notification.nexmo_data_formatter']]
-            - [ setDispatcher, [ '@notification.nexmo_message_dispatcher']]
+    # notification.channel.nexmo:
+    #     class: IrishDan\NotificationBundle\Channel\DefaultChannel
+    #     arguments: [ '%notification.channel.nexmo.enabled%', '%notification.channel.nexmo.configuration%' ]
+    #     calls:
+    #         - [ setDataFormatter, [ '@notification.nexmo_data_formatter']]
+    #         - [ setDispatcher, [ '@notification.nexmo_message_dispatcher']]
 
-    notification.channel.slack:
-        class: IrishDan\NotificationBundle\Channel\DefaultChannel
-        calls:
-            - [ setDataFormatter, [ '@notification.slack_data_formatter']]
-            - [ setDispatcher, [ '@notification.slack_message_dispatcher']]
+    # notification.channel.slack:
+    #     class: IrishDan\NotificationBundle\Channel\DefaultChannel
+    #     arguments: [ '%notification.channel.slack.enabled%', '%notification.channel.slack.configuration%' ]
+    #     calls:
+    #         - [ setDataFormatter, [ '@notification.slack_data_formatter']]
+    #         - [ setDispatcher, [ '@notification.slack_message_dispatcher']]
 
     # Formatters
     notification.database_data_formatter:
@@ -66,7 +67,7 @@ services:
 
     notification.mail_data_formatter:
         class: IrishDan\NotificationBundle\Formatter\MailDataFormatter
-        arguments: [ '%notification.mail_channel.configuration%' ]
+        arguments: [ '%notification.channel.mail.configuration%' ]
         # calls:
         #    - [setTemplating, ['@twig']]
 
@@ -77,7 +78,7 @@ services:
 
     notification.nexmo_data_formatter:
         class: IrishDan\NotificationBundle\Formatter\NexmoDataFormatter
-        arguments: ['%notification.nexmo_channel.configuration%']
+        arguments: ['%notification.channel.nexmo.configuration%']
         calls:
             - [setTemplating, ['@twig']]
 
@@ -87,7 +88,7 @@ services:
     # Dispatchers
     notification.database_message_dispatcher:
         class: IrishDan\NotificationBundle\Dispatcher\DatabaseMessageDispatcher
-        arguments: [ '@doctrine.orm.entity_manager', '%notification.database_channel.configuration%' ]
+        arguments: [ '@doctrine.orm.entity_manager', '%notification.channel.database.configuration%' ]
 
     notification.mail_message_dispatcher:
         class: IrishDan\NotificationBundle\Dispatcher\MailMessageDispatcher
@@ -99,7 +100,7 @@ services:
 
     notification.nexmo_message_dispatcher:
         class: IrishDan\NotificationBundle\Dispatcher\NexmoMessageDispatcher
-        arguments: [ '%notification.nexmo_channel.configuration%' ]
+        arguments: [ '%notification.channel.nexmo.configuration%' ]
 
     notification.slack_message_dispatcher:
         class: IrishDan\NotificationBundle\Dispatcher\SlackWebhookMessageDispatcher
@@ -107,7 +108,7 @@ services:
     # Voters
     notification.pusher_channel_voter:
         class: IrishDan\NotificationBundle\Security\PusherChannelVoter
-        arguments: [ '%notification.pusher_channel.enabled%', '%notification.pusher_channel.configuration%' ]
+        arguments: [ '%notification.channel.pusher.enabled%', '%notification.channel.pusher.configuration%' ]
         tags:
             - { name: security.voter }
         public: false
@@ -131,7 +132,7 @@ services:
     notification.command.generate_database_notification:
         class: IrishDan\NotificationBundle\Command\CreateDatabaseNotificationCommand
         calls:
-            - [setEntityName, ['%notification.database_channel.configuration%']]
+            - [setEntityName, ['%notification.channel.database.configuration%']]
         tags:
             - { name: console.command }
 
@@ -143,9 +144,3 @@ services:
     notification.broadcast.the_three_amigos:
         class: IrishDan\NotificationBundle\Broadcast\Broadcaster
         arguments: [ '@notification.broadcast.notifiable', '@notification.channel.slack', '%notification.broadcast.config.the_three_amigos%' ]
-
-parameters:
-    notification.broadcast.config.the_three_amigos:
-        webhook: 'https://hooks.slack.com/services/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'
-        token: 'A token'
-        channel_type: default

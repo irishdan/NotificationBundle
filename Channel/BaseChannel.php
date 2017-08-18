@@ -2,19 +2,23 @@
 
 namespace IrishDan\NotificationBundle\Channel;
 
-use IrishDan\NotificationBundle\Message\BaseMessage;
-use IrishDan\NotificationBundle\Message\MessageInterface;
-use IrishDan\NotificationBundle\Notification\NotificationInterface;
 use IrishDan\NotificationBundle\Formatter\MessageFormatterInterface;
 use IrishDan\NotificationBundle\Dispatcher\MessageDispatcherInterface;
-use RuntimeException;
 
 abstract class BaseChannel implements ChannelInterface
 {
-    protected $configured;
-    protected $dataFormatter;
-    protected $dispatcher;
+    protected $channelEnabled;
+    protected $channelConfiguration;
     protected $channel;
+    protected $formatter;
+    protected $dispatcher;
+
+    public function __construct($channelEnabled = true, array $channelConfiguration = [], $channel = '')
+    {
+        $this->channelEnabled       = $channelEnabled;
+        $this->channelConfiguration = $channelConfiguration;
+        $this->channel              = $channel;
+    }
 
     public function setDispatcher(MessageDispatcherInterface $dispatcher)
     {
@@ -23,56 +27,6 @@ abstract class BaseChannel implements ChannelInterface
 
     public function setDataFormatter(MessageFormatterInterface $formatter)
     {
-        $this->dataFormatter = $formatter;
-    }
-
-    protected function channelIsConfigured()
-    {
-        return $this->configured;
-    }
-
-    public function format(NotificationInterface $notification)
-    {
-        if ($this->dataFormatter instanceof MessageFormatterInterface) {
-            return $this->dataFormatter->format($notification);
-        }
-
-        return false;
-    }
-
-    public function dispatch(MessageInterface $message)
-    {
-        if ($this->channelIsConfigured()) {
-            $data = $this->format($notification);
-            if (!empty($data)) {
-                try {
-                    $this->send($data);
-                } catch (\Exception $exception) {
-
-                    // Create a custom Exception message
-                    throw new RuntimeException(
-                        $this->exceptionMessage($exception)
-                    );
-                }
-            }
-        } else {
-            throw new RuntimeException(
-                'Channel not configured correctly'
-            );
-        }
-    }
-
-    protected function send(NotificationInterface $notification)
-    {
-        if ($this->dispatcher instanceof MessageDispatcherInterface) {
-            return $this->dispatcher->dispatch($message);
-        }
-
-        return false;
-    }
-
-    protected function exceptionMessage(\Exception $exception)
-    {
-        return sprintf('Notification not sent: %s. File: %s. Line %s ', $exception->getMessage(), $exception->getFile(), $exception->getLine());
+        $this->formatter = $formatter;
     }
 }

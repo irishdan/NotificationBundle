@@ -15,30 +15,13 @@ use IrishDan\NotificationBundle\Notification\NotificationInterface;
  *
  * @package NotificationBundle\Channel
  */
-class DefaultChannel implements ChannelInterface
+class DefaultChannel extends BaseChannel implements ChannelInterface
 {
     public function formatAndDispatch(NotificationInterface $notification)
     {
-        // TODO: Implement formatAndDispatch() method.
-    }
+        $message = $this->format($notification);
 
-    private $formatter;
-    private $dispatcher;
-
-    public function setDispatcher(MessageDispatcherInterface $dispatcher)
-    {
-        $this->dispatcher = $dispatcher;
-    }
-
-    public function setDataFormatter(MessageFormatterInterface $formatter)
-    {
-        $this->formatter = $formatter;
-    }
-
-    public function __construct($configured = false, $channel = 'default')
-    {
-        $this->configured = $configured;
-        $this->channel    = $channel;
+        return $this->dispatch($message);
     }
 
     public function format(NotificationInterface $notification)
@@ -46,15 +29,13 @@ class DefaultChannel implements ChannelInterface
         try {
             // Do the formatting.
             $message = $this->formatter->format($notification);
+
             return $message;
         } catch (\Exception $e) {
             throw new MessageFormatException(
                 $e->getMessage() . ' ' . $e->getCode() . ' ' . $e->getFile() . ' ' . $e->getLine()
             );
         }
-
-        // Dispatch the message
-        // $this->dispatch($message);
     }
 
     public function dispatch(MessageInterface $message)
