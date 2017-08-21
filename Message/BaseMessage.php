@@ -32,4 +32,9 @@ abstract class BaseMessage implements MessageInterface
     {
         return $this->channel;
     }
+
+    public function setChannel($channel)
+    {
+        $this->channel = $channel;
+    }
 }

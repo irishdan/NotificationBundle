@@ -21,7 +21,6 @@ class PusherMessageDispatcher implements MessageDispatcherInterface
         $messageData  = $message->getMessageData();
 
         // @TODO: Pusher channel
-
         $pusher = $this->pusherManager->getPusherClient();
 
         $pusherData = $data->getData();

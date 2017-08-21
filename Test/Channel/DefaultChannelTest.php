@@ -3,7 +3,6 @@
 namespace IrishDan\NotificationBundle\Test\Channel;
 
 use IrishDan\NotificationBundle\Channel\DefaultChannel;
-use IrishDan\NotificationBundle\Formatter\MessageFormatterInterface;
 use IrishDan\NotificationBundle\Test\NotificationTestCase;
 
 class DefaultChannelTest extends NotificationTestCase

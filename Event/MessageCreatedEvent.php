@@ -3,8 +3,9 @@
 namespace IrishDan\NotificationBundle\Event;
 
 use IrishDan\NotificationBundle\Message\MessageInterface;
+use Symfony\Component\EventDispatcher\Event;
 
-class MessageCreatedEvent
+class MessageCreatedEvent extends Event
 {
     const NAME = 'notification.message_created';
     protected $message;

@@ -26,10 +26,16 @@ class EventChannel extends BaseChannel implements ChannelInterface
         $this->format($notification);
     }
 
-    public function __construct($configured = false, $channel = 'default', EventDispatcherInterface $eventDispatcher)
+    public function setDispatchers($key, MessageDispatcherInterface $dispatcher)
     {
-        $this->configured      = $configured;
-        $this->channel         = $channel;
+        $this->dispatchers[$key] = $dispatcher;
+    }
+
+    public function __construct(EventDispatcherInterface $eventDispatcher)
+    {
+        // @TODO: Configured, for what??
+        // $this->configured      = $configured;
+        // $this->channel         = $channel;
         $this->eventDispatcher = $eventDispatcher;
     }
 
@@ -38,13 +44,17 @@ class EventChannel extends BaseChannel implements ChannelInterface
         try {
             // Do the formatting.
             $message = $this->formatter->format($notification);
-        } catch (\Exception $e) {
-            throw new MessageFormatException();
+        } catch (\Exception $exception) {
+            throw new MessageFormatException(
+                $exception->getMessage()
+            );
         }
 
         // Dispatch the message event
         $messageEvent = new MessageCreatedEvent($message);
         $this->eventDispatcher->dispatch(MessageCreatedEvent::NAME, $messageEvent);
+
+        return $message;
     }
 
     public function dispatchFromEvent(MessageCreatedEvent $event)
@@ -60,9 +70,20 @@ class EventChannel extends BaseChannel implements ChannelInterface
 
         // Dispatch the message
         try {
-
+            if (!empty($this->dispatchers[$dispatcherKey])) {
+                $this->dispatchers[$dispatcherKey]->dispatch($message);
+            }
+            else {
+                throw new MessageDispatchException(
+                    sprintf('No dispatcher available with key "%s"', $dispatcherKey)
+                );
+            }
         } catch (\Exception $exception) {
-            throw new MessageDispatchException();
+            throw new MessageDispatchException($exception->getMessage());
         }
+
+        // Dispatch the message event
+        $messageEvent = new MessageCreatedEvent($message);
+        $this->eventDispatcher->dispatch(MessageCreatedEvent::NAME, $messageEvent);
     }
 }
