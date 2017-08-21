@@ -1,0 +1,37 @@
+imports:
+    - { resource: "@NotificationBundle/Resources/config/services.yml" }
+
+parameters:
+    mailer_transport: smtp
+    mailer_host: 127.0.0.1
+    mailer_user: null
+    mailer_password: null
+    secret: 'secretThing'
+
+framework:
+    test: ~
+    secret: '%secret%'
+    session:
+        storage_id: session.storage.mock_file
+    profiler:
+        collect: false
+    php_errors:
+        log: true
+
+# Doctrine Configuration
+# doctrine:
+#     dbal:
+#         driver:   pdo_sqlite
+#         path:     '%kernel.cache_dir%/test.sqlite'
+#         charset: UTF8
+#     orm:
+#         auto_generate_proxy_classes: '%kernel.debug%'
+#         naming_strategy: doctrine.orm.naming_strategy.underscore
+#         auto_mapping: false
+#         mappings:
+#             ResponsiveImageBundle:
+#                 type: annotation
+#                 dir: '%kernel.root_dir%/Entity'
+#                 alias: 'TestImage'
+#                 prefix: 'NotificationBundle\Tests\Entity\TestImage'
+#                 is_bundle: false

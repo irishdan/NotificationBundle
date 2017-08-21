@@ -27,7 +27,7 @@ class SlackWebhookFormatter implements MessageFormatterInterface
 
         // Build the message data array.
         $messageData         = [];
-        $messageData['body'] = 'A Hoi hoi! Mullin!';
+        $messageData['body'] = 'Its time for a pint Mullin!!!!';
 
         $message->setDispatchData($dispatchData);
         $message->setMessageData($messageData);
