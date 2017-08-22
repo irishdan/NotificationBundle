@@ -19,6 +19,7 @@ class MailDataFormatter extends BaseFormatter implements MessageFormatterInterfa
 
     public function format(NotificationInterface $notification)
     {
+        $notification->setChannel(self::CHANNEL);
 
         $message          = new Message();
         $notificationData = $notification->getDataArray();
@@ -45,9 +46,13 @@ class MailDataFormatter extends BaseFormatter implements MessageFormatterInterfa
         $messageData['body']  = empty($notificationData['body']) ? '' : $notificationData['body'];
         $messageData['title'] = empty($notificationData['title']) ? '' : $notificationData['title'];
 
-        // if (!empty($this->twig) && $notification->getTemplate()) {
-        //     $notificationData['body'] = $this->renderTwigTemplate($notificationData, $notifiable, $notification->getTemplate());
-        // }
+        if (!empty($this->twig) && $notification->getTemplate()) {
+            $messageData['body'] = $this->renderTwigTemplate(
+                $notificationData,
+                $notifiable,
+                $notification->getTemplate()
+            );
+        }
 
         $message->setDispatchData($dispatchData);
         $message->setMessageData($messageData);

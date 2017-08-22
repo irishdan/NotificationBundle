@@ -12,6 +12,14 @@ abstract class FormatterTestCase extends NotificationTestCase
     {
         parent::setUp();
 
+        $this->setTwigTemplatesDirectory();
+
         $this->notification = $this->getNotificationWithUser();
+    }
+
+    protected function setTwigTemplatesDirectory()
+    {
+        $path = __DIR__ . '/../Resources/';
+        $this->getService('twig.loader')->addPath($path, $namespace = '__main__');
     }
 }

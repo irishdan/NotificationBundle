@@ -28,11 +28,9 @@ class MailDataFormatterTest extends FormatterTestCase
         $this->assertInstanceOf('IrishDan\NotificationBundle\Message\MessageInterface', $message);
 
         $this->assertValidDispatchData($message);
+        $this->assertMessageDataStructure($message);
 
         $messageData = $message->getMessageData();
-        $this->assertArrayHasKey('title', $messageData);
-        $this->assertArrayHasKey('body', $messageData);
-
         $this->assertEquals('New member', $messageData['title']);
         $this->assertEquals('A new member has just joined', $messageData['body']);
     }
@@ -44,8 +42,19 @@ class MailDataFormatterTest extends FormatterTestCase
         $message = $this->formatter->format($this->notification);
 
         $this->assertValidDispatchData($message);
+        $this->assertMessageDataStructure($message);
 
-        // @TODO:
+        $messageData = $message->getMessageData();
+
+        $this->assertEquals('New member', $messageData['title']);
+        $this->assertEquals('Mail notification message for jimBob', $messageData['body']);
+    }
+
+    public function assertMessageDataStructure(MessageInterface $message)
+    {
+        $messageData = $message->getMessageData();
+        $this->assertArrayHasKey('title', $messageData);
+        $this->assertArrayHasKey('body', $messageData);
     }
 
     public function assertValidDispatchData(MessageInterface $message)

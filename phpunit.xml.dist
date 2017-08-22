@@ -5,6 +5,8 @@
          backupGlobals="false"
          colors="true"
          bootstrap="Test/bootstrap.php"
+         failOnWarning="false"
+         failOnRisky="false"
 >
 
     <testsuites>

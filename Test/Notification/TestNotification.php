@@ -68,6 +68,8 @@ class TestNotification implements NotificationInterface
     public function getTemplate()
     {
         // The view template to use for this message. can switch depending on the channel.
-        return 'NotificationBundle:Test:' . $this->channel . '.message.html.twig';
+        // @TODO: Not really representative of the real template directory structure.
+        // return 'NotificationBundle:Test:' . $this->channel . '.message.html.twig';
+        return $this->channel . '.message.html.twig';
     }
 }
