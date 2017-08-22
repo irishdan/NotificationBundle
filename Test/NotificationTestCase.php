@@ -83,7 +83,7 @@ class NotificationTestCase extends \PHPUnit_Framework_TestCase
         $message->setMessageData(
             [
                 'title' => 'Hi!',
-                'body'  => 'Hi Jim, this is a notifiation',
+                'body'  => 'Hi Jim, this is a notification',
             ]
         );
 

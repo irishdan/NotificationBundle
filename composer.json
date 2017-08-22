@@ -1,32 +1,43 @@
 {
-  "name": "irishdan/notification-bundle",
-  "description": "A notification bundle for the Symfony framework",
-  "license": "MIT",
-  "homepage": "https://danbyrne.me/notification-bundle",
-  "authors": [
-    {
-      "name": "Daniel Byrne",
-      "email": "danielbyrne@outlook.com"
-    }
-  ],
-  "require": {
-    "php": ">=5.6.4",
-    "symfony/framework-bundle": "^3.0"
-  },
-  "require-dev": {
-    "phpunit/phpunit": "~4.8"
-  },
-  "autoload": {
-    "psr-4": {
-      "IrishDan\\NotificationBundle\\": ""
-    }
-  },
-  "suggest": {
-    "nexmo/client": "@beta",
-    "pusher/pusher-php-server": "^2.6"
-  },
-  "config": {
-    "sort-packages": true
-  },
-  "minimum-stability": "dev"
+    "name": "irishdan/notification-bundle",
+    "description": "A notification bundle for the Symfony framework",
+    "license": "MIT",
+    "homepage": "https://danbyrne.me/notification-bundle",
+    "authors": [
+        {
+            "name": "Daniel Byrne",
+            "email": "danielbyrne@outlook.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.6.4",
+        "sensio/generator-bundle": "^3.0",
+        "symfony/asset": "^3.3",
+        "symfony/framework-bundle": "^3.0",
+        "symfony/swiftmailer-bundle": "^2.3",
+        "symfony/templating": "^3.3",
+        "symfony/twig-bundle": "^3.3"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~4.8",
+        "doctrine/doctrine-bundle": "^1.6",
+        "doctrine/orm": "^2.5",
+        "symfony/monolog-bundle": "^3.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "IrishDan\\NotificationBundle\\": ""
+        }
+    },
+    "suggest": {
+        "nexmo/client": "@beta",
+        "pusher/pusher-php-server": "^2.6",
+        "doctrine/doctrine-bundle": "^1.6",
+        "doctrine/orm": "^2.5",
+        "symfony/monolog-bundle": "^3.1"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev"
 }

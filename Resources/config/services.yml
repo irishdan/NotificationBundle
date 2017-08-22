@@ -141,6 +141,6 @@ services:
     notification.broadcast.notifiable:
         class: IrishDan\NotificationBundle\Broadcast\Broadcast
 
-    notification.broadcast.the_three_amigos:
-        class: IrishDan\NotificationBundle\Broadcast\Broadcaster
-        arguments: [ '@notification.broadcast.notifiable', '@notification.channel.slack', '%notification.broadcast.config.the_three_amigos%' ]
+    # notification.broadcast.the_three_amigos:
+    #    class: IrishDan\NotificationBundle\Broadcast\Broadcaster
+    #     arguments: [ '@notification.broadcast.notifiable', '@notification.channel.slack', '%notification.broadcast.config.the_three_amigos%' ]

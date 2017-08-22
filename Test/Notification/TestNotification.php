@@ -48,14 +48,9 @@ class TestNotification implements NotificationInterface
 
     public function getDataArray()
     {
-        // @TODO: Customise with your content.
         $messageData = [
-            'title'  => 'New member',
-            'body'   => 'New member, %s, just joined',
-            'action' => [
-                'url'  => 'http://danbyrne.me',
-                'text' => 'click here',
-            ],
+            'title' => 'New member',
+            'body'  => 'A new member has just joined',
         ];
 
         // switch ($this->channel) {

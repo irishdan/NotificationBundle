@@ -17,7 +17,7 @@ class User implements NotifiableInterface, Emailable, Textable, Pusherable, Slac
 
     private $id = 1;
     private $username = 'jimBob';
-    private $email = 'jim@jim,.bob';
+    private $email = 'jim@jim.bob';
 
     public function getId()
     {
