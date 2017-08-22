@@ -6,4 +6,7 @@ use IrishDan\NotificationBundle\Test\NotificationTestCase;
 
 class NexmoDataFormatterTest extends NotificationTestCase
 {
+    public function testFormat() {
+
+    }
 }

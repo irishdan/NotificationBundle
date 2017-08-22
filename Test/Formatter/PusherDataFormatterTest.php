@@ -6,4 +6,7 @@ use IrishDan\NotificationBundle\Test\NotificationTestCase;
 
 class PusherDataFormatterTest extends NotificationTestCase
 {
+    public function testFormat() {
+
+    }
 }

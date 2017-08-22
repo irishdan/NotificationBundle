@@ -46,23 +46,19 @@ class TestNotification implements NotificationInterface
         return ['mail', 'database', 'pusher', 'nexmo', 'slack'];
     }
 
+    protected $dataArray = [
+        'title' => 'New member',
+        'body'  => 'A new member has just joined',
+    ];
+
     public function getDataArray()
     {
-        $messageData = [
-            'title' => 'New member',
-            'body'  => 'A new member has just joined',
-        ];
+        return $this->dataArray;
+    }
 
-        // switch ($this->channel) {
-        //     case 'database':
-        //         $messageData['database specific data']
-        //         break;
-        // case 'pusher':
-        //         $messageData['icon'] = 'pusher-icon-class'
-        //         break;
-        // }
-
-        return $messageData;
+    public function setDataArray(array $data)
+    {
+        $this->dataArray = $data;
     }
 
     public function getTemplate()

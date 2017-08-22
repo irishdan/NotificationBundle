@@ -2,6 +2,7 @@
 
 namespace IrishDan\NotificationBundle\Formatter;
 
+use IrishDan\NotificationBundle\Notification\NotificationInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 abstract class BaseFormatter
@@ -28,5 +29,19 @@ abstract class BaseFormatter
                 'user' => $user,
             ]
         );
+    }
+
+    public function format(NotificationInterface $notification)
+    {
+        if (!empty($this->twig) && $notification->getTemplate()) {
+            $data         = $notification->getDataArray();
+            $data['body'] = $this->renderTwigTemplate(
+                $data,
+                $notification->getNotifiable(),
+                $notification->getTemplate()
+            );
+
+            $notification->setDataArray($data);
+        }
     }
 }

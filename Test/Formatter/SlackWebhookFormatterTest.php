@@ -6,5 +6,8 @@ use IrishDan\NotificationBundle\Test\NotificationTestCase;
 
 class SlackWebhookFormatterTest extends NotificationTestCase
 {
+    public function testFormat()
+    {
 
+    }
 }
