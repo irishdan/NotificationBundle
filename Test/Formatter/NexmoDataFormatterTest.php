@@ -10,13 +10,8 @@ class NexmoDataFormatterTest extends FormatterTestCase
     public function setUp()
     {
         parent::setUp();
-
-        // @TODO: use config for nexmo.
-        $this->formatter = new NexmoDataFormatter(
-            [
-                'from' => 'JimBob',
-            ]
-        );
+        $parameters      = $this->getParametersFromContainer('notification.channel.nexmo.configuration');
+        $this->formatter = new NexmoDataFormatter($parameters);
     }
 
     public function testFormat()

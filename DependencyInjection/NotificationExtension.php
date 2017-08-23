@@ -25,18 +25,9 @@ class NotificationExtension extends Extension
             $container->setParameter('notification.channel.' . $channel . '.enabled', true);
 
             // Set a configuration parameter for each channel also.
-            switch ($channel) {
-                case 'mail':
-                    $configuration = empty($channelConfig) ? [] : $channelConfig;
-                    $container->setParameter('notification.channel.' . $channel . '.configuration', $configuration);
-
-                    break;
-
-                default:
-                    $configuration = empty($channelConfig) ? [] : $channelConfig;
-                    $container->setParameter('notification.channel.' . $channel . '.configuration', $configuration);
-                    break;
-            }
+            $configuration = empty($channelConfig) ? [] : $channelConfig;
+            $parameterName = 'notification.channel.' . $channel . '.configuration';
+            $container->setParameter($parameterName, $configuration);
 
             // Create a service for this channel.
             $this->createChannelService($channel, $container);
@@ -97,12 +88,6 @@ class NotificationExtension extends Extension
 
     private function createBroadcaster($name, $broadcaster, $container)
     {
-        //
-    }
-
-    private function mailChannelConfiguration($config)
-    {
-        // @TODO: If the email config is not set use the parameters.
-        return $config;
+        // @TODO:
     }
 }

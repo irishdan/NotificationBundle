@@ -46,6 +46,15 @@ class NotificationTestCase extends \PHPUnit_Framework_TestCase
         return $notification;
     }
 
+    protected function getContainer()
+    {
+        if (empty($this->testKernel)) {
+            $this->bootSymfony();
+        }
+
+        return $this->testKernel->getContainer();
+    }
+
     protected function getMockFormatter($withMessage = false)
     {
         $formatter = $this->getMockBuilder(MessageFormatterInterface::class)
@@ -92,13 +101,16 @@ class NotificationTestCase extends \PHPUnit_Framework_TestCase
 
     protected function getService($serviceName)
     {
-        if (empty($this->testKernel)) {
-            $this->bootSymfony();
-        }
-
-        $container = $this->testKernel->getContainer();
+        $container = $this->getContainer();
 
         return $container->get($serviceName);
+    }
+
+    protected function getParametersFromContainer($parameter)
+    {
+        $container = $this->getContainer();
+
+        return $container->getParameter($parameter);
     }
 
     protected function getParameters($key = '')

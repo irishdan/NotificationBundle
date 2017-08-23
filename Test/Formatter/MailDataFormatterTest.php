@@ -12,11 +12,8 @@ class MailDataFormatterTest extends FormatterTestCase
     {
         parent::setUp();
 
-        $this->formatter = new MailDataFormatter(
-            [
-                'default_sender' => 'test@jim.bob',
-            ]
-        );
+        $parameters      = $this->getParametersFromContainer('notification.channel.mail.configuration');
+        $this->formatter = new MailDataFormatter($parameters);
     }
 
     public function testFormat()

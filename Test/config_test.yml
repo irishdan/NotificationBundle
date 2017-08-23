@@ -46,7 +46,7 @@ doctrine:
 notification:
     channels:
         mail:
-            default_sender: 'hi@jim.bob'
+            default_sender: 'test@jim.bob'
         database:
         pusher:
             channel_name: 'pusher_test_'

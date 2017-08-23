@@ -25,6 +25,19 @@ class PusherDataFormatterTest extends FormatterTestCase
         $this->assertBasicMessageData($message);
     }
 
+    public function testFormatWithTwig()
+    {
+        $this->setTwig();
+        $message = $this->formatter->format($this->notification);
+
+        $this->assertValidDispatchData($message);
+        $this->assertMessageDataStructure($message);
+
+        $messageData = $message->getMessageData();
+        $this->assertEquals('New member', $messageData['title']);
+        $this->assertEquals('Pusher notification message for jimBob', $messageData['body']);
+    }
+
     public function assertValidDispatchData(MessageInterface $message)
     {
         $this->assertEquals('pusher', $message->getChannel());

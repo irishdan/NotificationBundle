@@ -2,27 +2,33 @@
 
 namespace IrishDan\NotificationBundle\Formatter;
 
-use IrishDan\NotificationBundle\Message\DatabaseMessage;
 use IrishDan\NotificationBundle\Notification\NotificationInterface;
 
 class DatabaseDataFormatter extends BaseFormatter implements MessageFormatterInterface
 {
+    const CHANNEL = 'database';
+
     public function format(NotificationInterface $notification)
     {
-        $notificationData = $notification->getDataArray();
+        $notification->setChannel(self::CHANNEL);
+        parent::format($notification);
+
+        // /** @var Emailable $notifiable */
         $notifiable = $notification->getNotifiable();
+        // @TODO:
+        // if (!$notifiable instanceof Emailable) {
+        //     throw new MessageFormatException(
+        //         'Notifiable must implement Emailable interface in order to format email message'
+        //     );
+        // }
 
-        if (!empty($this->twig) && $notification->getTemplate()) {
-            $notificationData['body'] = $this->renderTwigTemplate($notificationData, $notifiable, $notification->getTemplate());
-        }
+        // Build the dispatch data array.
+        $dispatchData = [
+            'id' => $notifiable->getId(),
+        ];
 
-        $message = new DatabaseMessage();
-
-        // Format data for databaseNotification
-        $message->setUuid($notification->getUuid());
-        $message->setData(serialize($notificationData));
-        $message->setType(get_class($notification));
-        $message->setNotifiable($notification->getNotifiable());
+        $messageData = self::createMessagaData($notification->getDataArray());
+        $message     = self::createMessage($dispatchData, $messageData, self::CHANNEL);
 
         return $message;
     }
