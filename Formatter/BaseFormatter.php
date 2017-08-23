@@ -2,6 +2,7 @@
 
 namespace IrishDan\NotificationBundle\Formatter;
 
+use IrishDan\NotificationBundle\Message\Message;
 use IrishDan\NotificationBundle\Notification\NotificationInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -43,5 +44,26 @@ abstract class BaseFormatter
 
             $notification->setDataArray($data);
         }
+    }
+
+    static protected function createMessage($dispatchData, $messageData, $channel = 'default')
+    {
+        $message = new Message();
+
+        $message->setChannel($channel);
+        $message->setDispatchData($dispatchData);
+        $message->setMessageData($messageData);
+
+        return $message;
+    }
+
+    static protected function createMessagaData(array $notificationData)
+    {
+        // Build the message data array.
+        $messageData          = [];
+        $messageData['body']  = empty($notificationData['body']) ? '' : $notificationData['body'];
+        $messageData['title'] = empty($notificationData['title']) ? '' : $notificationData['title'];
+
+        return $messageData;
     }
 }

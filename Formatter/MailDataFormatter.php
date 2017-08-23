@@ -4,7 +4,6 @@ namespace IrishDan\NotificationBundle\Formatter;
 
 use IrishDan\NotificationBundle\Emailable;
 use IrishDan\NotificationBundle\Exception\MessageFormatException;
-use IrishDan\NotificationBundle\Message\Message;
 use IrishDan\NotificationBundle\Notification\NotificationInterface;
 
 class MailDataFormatter extends BaseFormatter implements MessageFormatterInterface
@@ -22,10 +21,6 @@ class MailDataFormatter extends BaseFormatter implements MessageFormatterInterfa
         $notification->setChannel(self::CHANNEL);
         parent::format($notification);
 
-        // Build the message.
-        $message          = new Message();
-        $notificationData = $notification->getDataArray();
-
         /** @var Emailable $notifiable */
         $notifiable = $notification->getNotifiable();
         if (!$notifiable instanceof Emailable) {
@@ -34,22 +29,14 @@ class MailDataFormatter extends BaseFormatter implements MessageFormatterInterfa
             );
         }
 
-        // Set the channel key
-        $message->setChannel(self::CHANNEL);
-
         // Build the dispatch data array.
         $dispatchData = [
             'to'   => $notifiable->getEmail(),
             'from' => empty($this->mailConfiguration['default_sender']) ? '' : $this->mailConfiguration['default_sender'],
         ];
 
-        // Build the message data array.
-        $messageData          = [];
-        $messageData['body']  = empty($notificationData['body']) ? '' : $notificationData['body'];
-        $messageData['title'] = empty($notificationData['title']) ? '' : $notificationData['title'];
-
-        $message->setDispatchData($dispatchData);
-        $message->setMessageData($messageData);
+        $messageData = self::createMessagaData($notification->getDataArray());
+        $message     = self::createMessage($dispatchData, $messageData, self::CHANNEL);
 
         return $message;
     }

@@ -2,12 +2,13 @@
 
 namespace IrishDan\NotificationBundle\Formatter;
 
-use IrishDan\NotificationBundle\Message\Message;
+use IrishDan\NotificationBundle\Exception\MessageFormatException;
 use IrishDan\NotificationBundle\Notification\NotificationInterface;
 use IrishDan\NotificationBundle\Textable;
 
 class NexmoDataFormatter extends BaseFormatter implements MessageFormatterInterface
 {
+    const CHANNEL = 'nexmo';
     protected $nexmoConfiguration;
 
     public function __construct(array $nexmoConfiguration = [])
@@ -17,13 +18,15 @@ class NexmoDataFormatter extends BaseFormatter implements MessageFormatterInterf
 
     public function format(NotificationInterface $notification)
     {
-        $message          = new Message();
-        $notificationData = $notification->getDataArray();
+        $notification->setChannel(self::CHANNEL);
+        parent::format($notification);
 
-        // The User/Notifiable must implement Textable interface in order to receive SMSs
+        /** @var Textable $notifiable */
         $notifiable = $notification->getNotifiable();
         if (!$notifiable instanceof Textable) {
-            throw new \RuntimeException('Notifiable mustimplement Textable interface in order to send SMS');
+            throw new MessageFormatException(
+                'Notifiable must implement Emailable interface in order to format email message'
+            );
         }
 
         // Build the dispatch data array.
@@ -32,20 +35,8 @@ class NexmoDataFormatter extends BaseFormatter implements MessageFormatterInterf
             'from' => empty($this->nexmoConfiguration['from']) ? '' : $this->nexmoConfiguration['from'],
         ];
 
-        // Build the message data array.
-        $messageData = [];
-        // @TODO: Works but not when body is dynamic??
-        $messageData['body'] = 'A Hoi hoi! Marcus!';
-        // if (!empty($this->twig) && $notification->getTemplate()) {
-        //     $messageData['body'] = $this->renderTwigTemplate(
-        //         $notificationData,
-        //         $notifiable,
-        //         $notification->getTemplate()
-        //     );
-        // }
-
-        $message->setDispatchData($dispatchData);
-        $message->setMessageData($messageData);
+        $messageData = self::createMessagaData($notification->getDataArray());
+        $message     = self::createMessage($dispatchData, $messageData, self::CHANNEL);
 
         return $message;
     }

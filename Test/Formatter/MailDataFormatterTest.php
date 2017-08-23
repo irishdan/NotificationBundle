@@ -8,8 +8,6 @@ use IrishDan\NotificationBundle\Message\MessageInterface;
 
 class MailDataFormatterTest extends FormatterTestCase
 {
-    protected $formatter;
-
     public function setUp()
     {
         parent::setUp();
@@ -25,20 +23,15 @@ class MailDataFormatterTest extends FormatterTestCase
     {
         $message = $this->formatter->format($this->notification);
 
-        $this->assertInstanceOf('IrishDan\NotificationBundle\Message\MessageInterface', $message);
-
         $this->assertValidDispatchData($message);
         $this->assertMessageDataStructure($message);
 
-        $messageData = $message->getMessageData();
-        $this->assertEquals('New member', $messageData['title']);
-        $this->assertEquals('A new member has just joined', $messageData['body']);
+        $this->assertBasicMessageData($message);
     }
 
     public function testFormatWithTwig()
     {
-        $twig = $this->getService('twig');
-        $this->formatter->setTemplating($twig);
+        $this->setTwig();
         $message = $this->formatter->format($this->notification);
 
         $this->assertValidDispatchData($message);
@@ -50,14 +43,7 @@ class MailDataFormatterTest extends FormatterTestCase
         $this->assertEquals('Mail notification message for jimBob', $messageData['body']);
     }
 
-    public function assertMessageDataStructure(MessageInterface $message)
-    {
-        $messageData = $message->getMessageData();
-        $this->assertArrayHasKey('title', $messageData);
-        $this->assertArrayHasKey('body', $messageData);
-    }
-
-    public function assertValidDispatchData(MessageInterface $message)
+    private function assertValidDispatchData(MessageInterface $message)
     {
         $this->assertEquals('mail', $message->getChannel());
 
