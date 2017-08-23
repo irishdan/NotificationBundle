@@ -49,6 +49,8 @@ notification:
             default_sender: 'hi@jim.bob'
         database:
         pusher:
+            channel_name: 'pusher_test_'
+            event: 'pusher_event'
         slack:
         nexmo:
             api_key: 7777777

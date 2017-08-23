@@ -2,8 +2,6 @@
 
 namespace IrishDan\NotificationBundle;
 
-use IrishDan\NotificationBundle\Notification\NotifiableInterface;
-
 /**
  * Class PusherManager
  *
@@ -32,10 +30,10 @@ class PusherManager
     public function getPusherClient()
     {
         $options = [
-            'cluster' => $this->config['cluster'],
+            'cluster'   => $this->config['cluster'],
             'encrypted' => $this->config['encrypted'],
         ];
-        $pusher = new \Pusher(
+        $pusher  = new \Pusher(
             $this->config['auth_key'],
             $this->config['secret'],
             $this->config['app_id'],
@@ -46,16 +44,18 @@ class PusherManager
     }
 
     /**
-     * @param NotifiableInterface $user
+     * @param Pusherable $user
+     *
      * @return string
      */
-    public function getUserChannelName(NotifiableInterface $user)
+    public function getUserChannelName(Pusherable $user)
     {
-        return $this->config['channel_name'] . $user->getNotifiableDetailsForChannel('pusher');
+        return $this->config['channel_name'] . $user->getChannelSuffix();
     }
 
     /**
      * @param $suffix
+     *
      * @return string
      */
     public function getChannelName($suffix)

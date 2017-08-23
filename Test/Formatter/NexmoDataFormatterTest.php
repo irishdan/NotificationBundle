@@ -11,6 +11,7 @@ class NexmoDataFormatterTest extends FormatterTestCase
     {
         parent::setUp();
 
+        // @TODO: use config for nexmo.
         $this->formatter = new NexmoDataFormatter(
             [
                 'from' => 'JimBob',

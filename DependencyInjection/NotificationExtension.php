@@ -27,18 +27,18 @@ class NotificationExtension extends Extension
             // Set a configuration parameter for each channel also.
             switch ($channel) {
                 case 'mail':
-                    $configuration = empty($config[$channel]) ? [] : $config[$channel];
+                    $configuration = empty($channelConfig) ? [] : $channelConfig;
                     $container->setParameter('notification.channel.' . $channel . '.configuration', $configuration);
 
                     break;
 
                 default:
-                    $configuration = empty($config[$channel]) ? [] : $config[$channel];
+                    $configuration = empty($channelConfig) ? [] : $channelConfig;
                     $container->setParameter('notification.channel.' . $channel . '.configuration', $configuration);
                     break;
             }
 
-            // Create a sevice for this channel.
+            // Create a service for this channel.
             $this->createChannelService($channel, $container);
         }
 

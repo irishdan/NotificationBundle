@@ -46,7 +46,7 @@ abstract class BaseFormatter
         }
     }
 
-    static protected function createMessage($dispatchData, $messageData, $channel = 'default')
+    protected static function createMessage($dispatchData, $messageData, $channel = 'default')
     {
         $message = new Message();
 
@@ -57,7 +57,7 @@ abstract class BaseFormatter
         return $message;
     }
 
-    static protected function createMessagaData(array $notificationData)
+    protected static function createMessagaData(array $notificationData)
     {
         // Build the message data array.
         $messageData          = [];

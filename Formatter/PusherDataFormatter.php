@@ -2,31 +2,44 @@
 
 namespace IrishDan\NotificationBundle\Formatter;
 
-use IrishDan\NotificationBundle\Notification\NotifiableInterface;
+use IrishDan\NotificationBundle\Exception\MessageFormatException;
 use IrishDan\NotificationBundle\Notification\NotificationInterface;
-use IrishDan\NotificationBundle\Message\PusherMessage;
+use IrishDan\NotificationBundle\Pusherable;
+use IrishDan\NotificationBundle\PusherManager;
 
-class PusherDataFormatter implements MessageFormatterInterface
+class PusherDataFormatter extends BaseFormatter implements MessageFormatterInterface
 {
+    const CHANNEL = 'pusher';
+    protected $pusherConfiguration;
+    protected $pusherManager;
+
+    public function __construct(PusherManager $pusherManager)
+    {
+        $this->pusherManager = $pusherManager;
+    }
+
     public function format(NotificationInterface $notification)
     {
-        /** @var NotifiableInterface $notifiable */
-        $notifiable       = $notification->getNotifiable();
-        $notificationData = $notification->getDataArray();
+        $notification->setChannel(self::CHANNEL);
+        parent::format($notification);
 
-        // if (!empty($this->twig) && $notification->getTemplate()) {
-        //     $notificationData['body'] = $this->renderTwigTemplate(
-        //         $notificationData,
-        //         $notifiable,
-        //         $notification->getTemplate()
-        //     );
-        // }
+        /** @var Pusherable $notifiable */
+        $notifiable = $notification->getNotifiable();
+        if (!$notifiable instanceof Pusherable) {
+            throw new MessageFormatException(
+                'Notifiable must implement Pusherable interface in order to format email message'
+            );
+        }
 
-        $data = new PusherMessage();
+        // Build the dispatch data array.
+        $dispatchData = [
+            'channel' => $this->pusherManager->getUserChannelName($notifiable),
+            'event'   => $this->pusherManager->getEvent(),
+        ];
 
-        $data->setData($notificationData);
-        $data->setChannelIdentifier($notifiable->getNotifiableDetailsForChannel('pusher'));
+        $messageData = self::createMessagaData($notification->getDataArray());
+        $message     = self::createMessage($dispatchData, $messageData, self::CHANNEL);
 
-        return $data;
+        return $message;
     }
 }

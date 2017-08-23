@@ -73,8 +73,9 @@ services:
 
     notification.pusher_data_formatter:
         class: IrishDan\NotificationBundle\Formatter\PusherDataFormatter
-        # calls:
-        #     - [setTemplating, ['@twig']]
+        arguments: [ '@notification.pusher_manager']
+        calls:
+            - [setTemplating, ['@twig']]
 
     notification.nexmo_data_formatter:
         class: IrishDan\NotificationBundle\Formatter\NexmoDataFormatter

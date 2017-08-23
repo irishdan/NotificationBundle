@@ -2,9 +2,9 @@
 
 namespace IrishDan\NotificationBundle\Formatter;
 
-use IrishDan\NotificationBundle\Test\NotificationTestCase;
+use IrishDan\NotificationBundle\Test\Formatter\FormatterTestCase;
 
-class SlackWebhookFormatterTest extends NotificationTestCase
+class SlackWebhookFormatterTest extends FormatterTestCase
 {
     public function testFormat()
     {
