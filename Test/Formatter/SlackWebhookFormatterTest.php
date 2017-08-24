@@ -33,7 +33,13 @@ class SlackWebhookFormatterTest extends FormatterTestCase
 
         $messageData = $message->getMessageData();
         $this->assertEquals('New member', $messageData['title']);
-        $this->assertEquals('Slack notification message for jimBob', $messageData['body']);
+        $message = 'Hello jimBob
+Notification message for jimBob
+Sincerely yours,
+NotificationBundle
+Sent via slack channel.';
+
+        $this->assertEquals($message, $messageData['body']);
     }
 
     public function assertValidDispatchData(MessageInterface $message)
@@ -41,6 +47,7 @@ class SlackWebhookFormatterTest extends FormatterTestCase
         $this->assertEquals('slack', $message->getChannel());
 
         $dispatchData = $message->getDispatchData();
-        $this->assertEquals('https://hooks.slack.com/services/salty/salt/1234567890', $dispatchData['webhook']);
+        $this->assertEquals('https://hooks.slack.com/services/salty/salt/1234567890',
+            $dispatchData['webhook']);
     }
 }

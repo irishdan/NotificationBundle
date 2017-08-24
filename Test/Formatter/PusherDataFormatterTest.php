@@ -11,7 +11,7 @@ class PusherDataFormatterTest extends FormatterTestCase
     {
         parent::setUp();
 
-        $pusherManager   = $this->getService('notification.pusher_manager');
+        $pusherManager = $this->getService('notification.pusher_manager');
         $this->formatter = new PusherDataFormatter($pusherManager);
     }
 
@@ -35,7 +35,13 @@ class PusherDataFormatterTest extends FormatterTestCase
 
         $messageData = $message->getMessageData();
         $this->assertEquals('New member', $messageData['title']);
-        $this->assertEquals('Pusher notification message for jimBob', $messageData['body']);
+        $message = 'Hello jimBob
+Notification message for jimBob
+Sincerely yours,
+NotificationBundle
+Sent via pusher channel.';
+
+        $this->assertEquals($message, $messageData['body']);
     }
 
     public function assertValidDispatchData(MessageInterface $message)

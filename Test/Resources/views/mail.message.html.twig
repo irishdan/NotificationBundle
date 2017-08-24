@@ -1,2 +1,8 @@
-{# Split templates into different sections, use inherit so there's only one file with the body text #}
-Mail notification message for {{ user.username }}
+{#% include all of the parts of the message %#}
+{% include 'greeting.html.twig' %}
+
+{% include 'body.html.twig' %}
+
+{% include 'signature.html.twig' %}
+
+Sent via mail channel.

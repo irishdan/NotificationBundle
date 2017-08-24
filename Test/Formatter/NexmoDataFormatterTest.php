@@ -10,7 +10,7 @@ class NexmoDataFormatterTest extends FormatterTestCase
     public function setUp()
     {
         parent::setUp();
-        $parameters      = $this->getParametersFromContainer('notification.channel.nexmo.configuration');
+        $parameters = $this->getParametersFromContainer('notification.channel.nexmo.configuration');
         $this->formatter = new NexmoDataFormatter($parameters);
     }
 
@@ -34,7 +34,14 @@ class NexmoDataFormatterTest extends FormatterTestCase
 
         $messageData = $message->getMessageData();
         $this->assertEquals('New member', $messageData['title']);
-        $this->assertEquals('Nexmo notification message for jimBob', $messageData['body']);
+
+        $message = 'Hello jimBob
+Notification message for jimBob
+Sincerely yours,
+NotificationBundle
+Sent via nexmo channel.';
+
+        $this->assertEquals($message, $messageData['body']);
     }
 
     private function assertValidDispatchData(MessageInterface $message)

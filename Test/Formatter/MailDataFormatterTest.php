@@ -12,7 +12,7 @@ class MailDataFormatterTest extends FormatterTestCase
     {
         parent::setUp();
 
-        $parameters      = $this->getParametersFromContainer('notification.channel.mail.configuration');
+        $parameters = $this->getParametersFromContainer('notification.channel.mail.configuration');
         $this->formatter = new MailDataFormatter($parameters);
     }
 
@@ -37,7 +37,13 @@ class MailDataFormatterTest extends FormatterTestCase
         $messageData = $message->getMessageData();
 
         $this->assertEquals('New member', $messageData['title']);
-        $this->assertEquals('Mail notification message for jimBob', $messageData['body']);
+        $message = 'Hello jimBob
+Notification message for jimBob
+Sincerely yours,
+NotificationBundle
+Sent via mail channel.';
+
+        $this->assertEquals($message, $messageData['body']);
     }
 
     private function assertValidDispatchData(MessageInterface $message)

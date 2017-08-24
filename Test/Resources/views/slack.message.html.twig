@@ -1,1 +1,8 @@
-Slack notification message for {{ user.username }}
+{#% include all of the parts of the message %#}
+{% include 'greeting.html.twig' %}
+
+{% include 'body.html.twig' %}
+
+{% include 'signature.html.twig' %}
+
+Sent via slack channel.
