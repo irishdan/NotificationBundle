@@ -2,22 +2,23 @@
 
 namespace IrishDan\NotificationBundle\Test\Entity;
 
+use IrishDan\NotificationBundle\DatabaseNotifiableInterface;
 use IrishDan\NotificationBundle\EmailableInterface;
 use IrishDan\NotificationBundle\Notification\NotifiableInterface;
 use IrishDan\NotificationBundle\PusherableInterface;
 use IrishDan\NotificationBundle\SlackableInterface;
 use IrishDan\NotificationBundle\TextableInterface;
 
-class User implements NotifiableInterface, EmailableInterface, TextableInterface, PusherableInterface, SlackableInterface
+class User implements NotifiableInterface, EmailableInterface, TextableInterface, PusherableInterface, SlackableInterface, DatabaseNotifiableInterface
 {
+    private $id = 1;
+    private $username = 'jimBob';
+    private $email = 'jim@jim.bob';
+
     public function getNumber()
     {
         return '+44755667788';
     }
-
-    private $id = 1;
-    private $username = 'jimBob';
-    private $email = 'jim@jim.bob';
 
     public function getId()
     {
@@ -42,32 +43,6 @@ class User implements NotifiableInterface, EmailableInterface, TextableInterface
     public function setEmail($email)
     {
         $this->email = $email;
-    }
-
-    // Notifiable methods
-    public function notifications()
-    {
-        // TODO: Implement notifications() method.
-    }
-
-    public function readNotifications()
-    {
-        // TODO: Implement readNotifications() method.
-    }
-
-    public function unreadNotifications()
-    {
-        // TODO: Implement unreadNotifications() method.
-    }
-
-    public function notify($instance)
-    {
-        // TODO: Implement notify() method.
-    }
-
-    public function getNotifiableDetailsForChannel($driver)
-    {
-        // TODO: Implement getNotifiableDetailsForChannel() method.
     }
 
     public function isSubscribedToChannel($channel)
@@ -96,5 +71,10 @@ class User implements NotifiableInterface, EmailableInterface, TextableInterface
     public function getSlackWebhook()
     {
         return 'https://hooks.slack.com/services/salty/salt/1234567890';
+    }
+
+    public function getIdentifier()
+    {
+        return $this->getId();
     }
 }

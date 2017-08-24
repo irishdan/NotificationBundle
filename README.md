@@ -2,6 +2,7 @@
 
 This is a work in progress!!
 
+[![Build Status](https://travis-ci.org/irishdan/NotificationBundle.svg?branch=master)](https://travis-ci.org/irishdan/NotificationBundle)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/irishdan/NotificationBundle/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/irishdan/NotificationBundle/?branch=master)
 
 How it works?
