@@ -2,6 +2,8 @@
 
 namespace IrishDan\NotificationBundle\Formatter;
 
+use IrishDan\NotificationBundle\DatabaseNotifiableInterface;
+use IrishDan\NotificationBundle\Exception\MessageFormatException;
 use IrishDan\NotificationBundle\Notification\NotificationInterface;
 
 class DatabaseDataFormatter extends BaseFormatter implements MessageFormatterInterface
@@ -13,14 +15,13 @@ class DatabaseDataFormatter extends BaseFormatter implements MessageFormatterInt
         $notification->setChannel(self::CHANNEL);
         parent::format($notification);
 
-        // /** @var Emailable $notifiable */
+        // /** @var DatabaseNotifiableInterface $notifiable */
         $notifiable = $notification->getNotifiable();
-        // @TODO:
-        // if (!$notifiable instanceof Emailable) {
-        //     throw new MessageFormatException(
-        //         'Notifiable must implement Emailable interface in order to format email message'
-        //     );
-        // }
+        if (!$notifiable instanceof DatabaseNotifiableInterface) {
+            throw new MessageFormatException(
+                'Notifiable must implement DatabaseNotifiableInterface interface in order to format email message'
+            );
+        }
 
         // Build the dispatch data array.
         $dispatchData = [
@@ -28,7 +29,7 @@ class DatabaseDataFormatter extends BaseFormatter implements MessageFormatterInt
         ];
 
         $messageData = self::createMessagaData($notification->getDataArray());
-        $message     = self::createMessage($dispatchData, $messageData, self::CHANNEL);
+        $message = self::createMessage($dispatchData, $messageData, self::CHANNEL);
 
         return $message;
     }

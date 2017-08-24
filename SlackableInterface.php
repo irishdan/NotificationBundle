@@ -2,7 +2,7 @@
 
 namespace IrishDan\NotificationBundle;
 
-interface Slackable
+interface SlackableInterface
 {
     public function getSlackWebhook();
 }

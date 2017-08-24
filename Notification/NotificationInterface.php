@@ -61,4 +61,6 @@ interface NotificationInterface
 
     // @TODO: Explain, doc block
     public function getTemplate();
+
+    public function setDataArray(array $data);
 }

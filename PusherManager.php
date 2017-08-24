@@ -44,13 +44,12 @@ class PusherManager
     }
 
     /**
-     * @param Pusherable $user
-     *
+     * @param PusherableInterface $user
      * @return string
      */
-    public function getUserChannelName(Pusherable $user)
+    public function getUserChannelName(PusherableInterface $user)
     {
-        return $this->config['channel_name'] . $user->getChannelSuffix();
+        return $this->config['channel_name'] . $user->getPusherChannelSuffix();
     }
 
     /**

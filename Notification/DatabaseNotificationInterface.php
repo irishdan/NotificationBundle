@@ -16,7 +16,7 @@ interface DatabaseNotificationInterface
      */
     public function markAsRead();
 
-    public function setReadAt(\DateTime $date); // @TODO: We dont need both.
+    public function setReadAt(\DateTime $date);
 
     /**
      * Determine if a notification has been read.

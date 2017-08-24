@@ -3,10 +3,10 @@
 namespace IrishDan\NotificationBundle\Broadcast;
 
 use IrishDan\NotificationBundle\Notification\NotifiableInterface;
-use IrishDan\NotificationBundle\Slackable;
+use IrishDan\NotificationBundle\SlackableInterface;
 
 
-class Broadcast implements BroadcastNotifiableInterface, NotifiableInterface, Slackable
+class Broadcast implements BroadcastNotifiableInterface, NotifiableInterface, SlackableInterface
 {
     protected $slackWebhook;
     private $subscribedChannels = [

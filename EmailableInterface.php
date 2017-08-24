@@ -2,7 +2,7 @@
 
 namespace IrishDan\NotificationBundle;
 
-interface Emailable
+interface EmailableInterface
 {
     public function getEmail();
 }

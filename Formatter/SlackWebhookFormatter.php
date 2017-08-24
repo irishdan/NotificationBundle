@@ -4,7 +4,7 @@ namespace IrishDan\NotificationBundle\Formatter;
 
 use IrishDan\NotificationBundle\Exception\MessageFormatException;
 use IrishDan\NotificationBundle\Notification\NotificationInterface;
-use IrishDan\NotificationBundle\Slackable;
+use IrishDan\NotificationBundle\SlackableInterface;
 
 class SlackWebhookFormatter extends BaseFormatter implements MessageFormatterInterface
 {
@@ -15,11 +15,11 @@ class SlackWebhookFormatter extends BaseFormatter implements MessageFormatterInt
         $notification->setChannel(self::CHANNEL);
         parent::format($notification);
 
-        /** @var Slackable $notifiable */
+        /** @var SlackableInterface $notifiable */
         $notifiable = $notification->getNotifiable();
-        if (!$notifiable instanceof Slackable) {
+        if (!$notifiable instanceof SlackableInterface) {
             throw new MessageFormatException(
-                'Notifiable must implement Slackable interface in order to format email message'
+                'Notifiable must implement SlackableInterface interface in order to format email message'
             );
         }
 

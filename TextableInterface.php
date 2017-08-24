@@ -2,7 +2,7 @@
 
 namespace IrishDan\NotificationBundle;
 
-interface Textable
+interface TextableInterface
 {
     public function getNumber();
 }

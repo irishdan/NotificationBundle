@@ -4,8 +4,6 @@ namespace IrishDan\NotificationBundle\Controller;
 
 use IrishDan\NotificationBundle\PusherChannel;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -13,11 +11,6 @@ class PusherAuthController extends Controller
 {
     /**
      * Routing for private pusher channel authentication.
-     * @Route(
-     *     path = "/pusher/auth",
-     *     name = "notification_pusher_auth"
-     * )
-     * @Method("POST")
      */
     public function connectAction(Request $request)
     {

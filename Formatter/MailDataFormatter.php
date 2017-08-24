@@ -2,7 +2,7 @@
 
 namespace IrishDan\NotificationBundle\Formatter;
 
-use IrishDan\NotificationBundle\Emailable;
+use IrishDan\NotificationBundle\EmailableInterface;
 use IrishDan\NotificationBundle\Exception\MessageFormatException;
 use IrishDan\NotificationBundle\Notification\NotificationInterface;
 
@@ -21,11 +21,11 @@ class MailDataFormatter extends BaseFormatter implements MessageFormatterInterfa
         $notification->setChannel(self::CHANNEL);
         parent::format($notification);
 
-        /** @var Emailable $notifiable */
+        /** @var EmailableInterface $notifiable */
         $notifiable = $notification->getNotifiable();
-        if (!$notifiable instanceof Emailable) {
+        if (!$notifiable instanceof EmailableInterface) {
             throw new MessageFormatException(
-                'Notifiable must implement Emailable interface in order to format email message'
+                'Notifiable must implement EmailableInterface interface in order to format email message'
             );
         }
 

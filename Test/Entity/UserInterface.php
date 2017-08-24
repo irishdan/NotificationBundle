@@ -2,13 +2,13 @@
 
 namespace IrishDan\NotificationBundle\Test\Entity;
 
-use IrishDan\NotificationBundle\Emailable;
+use IrishDan\NotificationBundle\EmailableInterface;
 use IrishDan\NotificationBundle\Notification\NotifiableInterface;
-use IrishDan\NotificationBundle\Pusherable;
-use IrishDan\NotificationBundle\Slackable;
-use IrishDan\NotificationBundle\Textable;
+use IrishDan\NotificationBundle\PusherableInterface;
+use IrishDan\NotificationBundle\SlackableInterface;
+use IrishDan\NotificationBundle\TextableInterface;
 
-class User implements NotifiableInterface, Emailable, Textable, Pusherable, Slackable
+class User implements NotifiableInterface, EmailableInterface, TextableInterface, PusherableInterface, SlackableInterface
 {
     public function getNumber()
     {
@@ -88,7 +88,7 @@ class User implements NotifiableInterface, Emailable, Textable, Pusherable, Slac
         ];
     }
 
-    public function getChannelSuffix()
+    public function getPusherChannelSuffix()
     {
         return $this->id;
     }

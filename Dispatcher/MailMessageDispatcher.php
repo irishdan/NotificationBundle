@@ -30,6 +30,6 @@ class MailMessageDispatcher implements MessageDispatcherInterface
 
         $sent = $this->mailer->send($mail);
 
-        return ! empty($sent);
+        return !empty($sent);
     }
 }

@@ -40,6 +40,6 @@ class NexmoMessageDispatcher implements MessageDispatcherInterface
             ]
         );
 
-        return ! empty($sent);
+        return !empty($sent);
     }
 }
