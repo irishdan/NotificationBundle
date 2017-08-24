@@ -2,14 +2,24 @@
 
 namespace IrishDan\NotificationBundle\Formatter;
 
-use IrishDan\NotificationBundle\Exception\MessageFormatException;
 use IrishDan\NotificationBundle\Notification\NotificationInterface;
 use IrishDan\NotificationBundle\SlackableInterface;
 
+/**
+ * Class SlackWebhookFormatter
+ *
+ * @package IrishDan\NotificationBundle\Formatter
+ */
 class SlackWebhookFormatter extends BaseFormatter implements MessageFormatterInterface
 {
     const CHANNEL = 'slack';
 
+    /**
+     * Generates a message object
+     *
+     * @param NotificationInterface $notification
+     * @return \IrishDan\NotificationBundle\Message\Message
+     */
     public function format(NotificationInterface $notification)
     {
         $notification->setChannel(self::CHANNEL);
@@ -27,8 +37,7 @@ class SlackWebhookFormatter extends BaseFormatter implements MessageFormatterInt
         ];
 
         $messageData = self::createMessagaData($notification->getDataArray());
-        $message = self::createMessage($dispatchData, $messageData, self::CHANNEL);
 
-        return $message;
+        return self::createMessage($dispatchData, $messageData, self::CHANNEL);
     }
 }

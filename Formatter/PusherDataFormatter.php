@@ -2,11 +2,15 @@
 
 namespace IrishDan\NotificationBundle\Formatter;
 
-use IrishDan\NotificationBundle\Exception\MessageFormatException;
 use IrishDan\NotificationBundle\Notification\NotificationInterface;
 use IrishDan\NotificationBundle\PusherableInterface;
 use IrishDan\NotificationBundle\PusherManager;
 
+/**
+ * Class PusherDataFormatter
+ *
+ * @package IrishDan\NotificationBundle\Formatter
+ */
 class PusherDataFormatter extends BaseFormatter implements MessageFormatterInterface
 {
     const CHANNEL = 'pusher';
@@ -18,6 +22,12 @@ class PusherDataFormatter extends BaseFormatter implements MessageFormatterInter
         $this->pusherManager = $pusherManager;
     }
 
+    /**
+     * Generates a message object
+     *
+     * @param NotificationInterface $notification
+     * @return \IrishDan\NotificationBundle\Message\Message
+     */
     public function format(NotificationInterface $notification)
     {
         $notification->setChannel(self::CHANNEL);
@@ -36,8 +46,7 @@ class PusherDataFormatter extends BaseFormatter implements MessageFormatterInter
         ];
 
         $messageData = self::createMessagaData($notification->getDataArray());
-        $message = self::createMessage($dispatchData, $messageData, self::CHANNEL);
 
-        return $message;
+        return self::createMessage($dispatchData, $messageData, self::CHANNEL);
     }
 }

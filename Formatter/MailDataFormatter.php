@@ -3,9 +3,13 @@
 namespace IrishDan\NotificationBundle\Formatter;
 
 use IrishDan\NotificationBundle\EmailableInterface;
-use IrishDan\NotificationBundle\Exception\MessageFormatException;
 use IrishDan\NotificationBundle\Notification\NotificationInterface;
 
+/**
+ * Class MailDataFormatter
+ *
+ * @package IrishDan\NotificationBundle\Formatter
+ */
 class MailDataFormatter extends BaseFormatter implements MessageFormatterInterface
 {
     const CHANNEL = 'mail';
@@ -16,6 +20,12 @@ class MailDataFormatter extends BaseFormatter implements MessageFormatterInterfa
         $this->mailConfiguration = $mailConfiguration;
     }
 
+    /**
+     * Generates a Message object
+     *
+     * @param NotificationInterface $notification
+     * @return \IrishDan\NotificationBundle\Message\Message
+     */
     public function format(NotificationInterface $notification)
     {
         $notification->setChannel(self::CHANNEL);
@@ -34,8 +44,7 @@ class MailDataFormatter extends BaseFormatter implements MessageFormatterInterfa
         ];
 
         $messageData = self::createMessagaData($notification->getDataArray());
-        $message = self::createMessage($dispatchData, $messageData, self::CHANNEL);
 
-        return $message;
+        return self::createMessage($dispatchData, $messageData, self::CHANNEL);
     }
 }
