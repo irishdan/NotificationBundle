@@ -22,22 +22,24 @@ class NexmoMessageDispatcher implements MessageDispatcherInterface
     {
         // Get the dispatch and message data from the message.
         $dispatchData = $message->getDispatchData();
-        $messageData  = $message->getMessageData();
+        $messageData = $message->getMessageData();
 
         if (empty($this->client)) {
-            $credentials  = new Client\Credentials\Basic(
+            $credentials = new Client\Credentials\Basic(
                 $this->nexmoConfiguration['api_key'],
                 $this->nexmoConfiguration['api_secret']
             );
             $this->client = new Client($credentials);
         }
 
-        return $this->client->message()->send(
+        $sent = $this->client->message()->send(
             [
-                'to'   => $dispatchData['to'],
+                'to' => $dispatchData['to'],
                 'from' => $dispatchData['from'],
                 'text' => $messageData['body'],
             ]
         );
+
+        return ! empty($sent);
     }
 }

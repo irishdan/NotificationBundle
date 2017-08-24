@@ -17,16 +17,19 @@ class MailMessageDispatcher implements MessageDispatcherInterface
     {
         // Get the dispatch and message data from the message.
         $dispatchData = $message->getDispatchData();
-        $messageData  = $message->getMessageData();
+        $messageData = $message->getMessageData();
 
-
+        // @TODO: Need to allow for more advanced mail.
+        // @TODO: Should be able to handle attachments
         $mail = \Swift_Message::newInstance()
-                              ->setSubject($messageData['subject'])
-                              ->setBody($messageData['body']);
+            ->setSubject($messageData['subject'])
+            ->setBody($messageData['body']);
 
         $mail->setFrom($dispatchData['from']);
         $mail->setTo($dispatchData['to']);
 
-        return $this->mailer->send($mail);
+        $sent = $this->mailer->send($mail);
+
+        return ! empty($sent);
     }
 }
