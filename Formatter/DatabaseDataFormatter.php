@@ -15,12 +15,10 @@ class DatabaseDataFormatter extends BaseFormatter implements MessageFormatterInt
         $notification->setChannel(self::CHANNEL);
         parent::format($notification);
 
-        // /** @var DatabaseNotifiableInterface $notifiable */
+        /** @var DatabaseNotifiableInterface $notifiable */
         $notifiable = $notification->getNotifiable();
         if (!$notifiable instanceof DatabaseNotifiableInterface) {
-            throw new MessageFormatException(
-                'Notifiable must implement DatabaseNotifiableInterface interface in order to format email message'
-            );
+            $this->createFormatterException(DatabaseNotifiableInterface::class, self::CHANNEL);
         }
 
         // Build the dispatch data array.

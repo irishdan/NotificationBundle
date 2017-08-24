@@ -26,9 +26,7 @@ class PusherDataFormatter extends BaseFormatter implements MessageFormatterInter
         /** @var PusherableInterface $notifiable */
         $notifiable = $notification->getNotifiable();
         if (!$notifiable instanceof PusherableInterface) {
-            throw new MessageFormatException(
-                'Notifiable must implement Pusherable interface in order to format email message'
-            );
+            $this->createFormatterException(PusherableInterface::class, self::CHANNEL);
         }
 
         // Build the dispatch data array.

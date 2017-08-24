@@ -2,6 +2,7 @@
 
 namespace IrishDan\NotificationBundle\Formatter;
 
+use IrishDan\NotificationBundle\Exception\MessageFormatException;
 use IrishDan\NotificationBundle\Message\Message;
 use IrishDan\NotificationBundle\Notification\NotificationInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -35,7 +36,7 @@ abstract class BaseFormatter
     public function format(NotificationInterface $notification)
     {
         if (!empty($this->twig) && $notification->getTemplate()) {
-            $data         = $notification->getDataArray();
+            $data = $notification->getDataArray();
             $data['body'] = $this->renderTwigTemplate(
                 $data,
                 $notification->getNotifiable(),
@@ -60,10 +61,19 @@ abstract class BaseFormatter
     protected static function createMessagaData(array $notificationData)
     {
         // Build the message data array.
-        $messageData          = [];
-        $messageData['body']  = empty($notificationData['body']) ? '' : $notificationData['body'];
+        $messageData = [];
+        $messageData['body'] = empty($notificationData['body']) ? '' : $notificationData['body'];
         $messageData['title'] = empty($notificationData['title']) ? '' : $notificationData['title'];
 
         return $messageData;
+    }
+
+    protected static function createFormatterException($shouldImplement, $type)
+    {
+        $message = sprintf('Notifiable must implement %s interface in order to format as a %s message',
+            $shouldImplement, $type);
+        throw new MessageFormatException(
+            $message
+        );
     }
 }

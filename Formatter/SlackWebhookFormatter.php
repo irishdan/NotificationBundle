@@ -18,9 +18,7 @@ class SlackWebhookFormatter extends BaseFormatter implements MessageFormatterInt
         /** @var SlackableInterface $notifiable */
         $notifiable = $notification->getNotifiable();
         if (!$notifiable instanceof SlackableInterface) {
-            throw new MessageFormatException(
-                'Notifiable must implement SlackableInterface interface in order to format email message'
-            );
+            $this->createFormatterException(SlackableInterface::class, self::CHANNEL);
         }
 
         // Build the dispatch data array.
@@ -29,7 +27,7 @@ class SlackWebhookFormatter extends BaseFormatter implements MessageFormatterInt
         ];
 
         $messageData = self::createMessagaData($notification->getDataArray());
-        $message     = self::createMessage($dispatchData, $messageData, self::CHANNEL);
+        $message = self::createMessage($dispatchData, $messageData, self::CHANNEL);
 
         return $message;
     }

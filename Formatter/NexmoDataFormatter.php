@@ -24,9 +24,7 @@ class NexmoDataFormatter extends BaseFormatter implements MessageFormatterInterf
         /** @var TextableInterface $notifiable */
         $notifiable = $notification->getNotifiable();
         if (!$notifiable instanceof TextableInterface) {
-            throw new MessageFormatException(
-                'Notifiable must implement TextableInterface interface in order to format email message'
-            );
+            $this->createFormatterException(TextableInterface::class, self::CHANNEL);
         }
 
         // Build the dispatch data array.

@@ -24,19 +24,17 @@ class MailDataFormatter extends BaseFormatter implements MessageFormatterInterfa
         /** @var EmailableInterface $notifiable */
         $notifiable = $notification->getNotifiable();
         if (!$notifiable instanceof EmailableInterface) {
-            throw new MessageFormatException(
-                'Notifiable must implement EmailableInterface interface in order to format email message'
-            );
+            $this->createFormatterException(EmailableInterface::class, self::CHANNEL);
         }
 
         // Build the dispatch data array.
         $dispatchData = [
-            'to'   => $notifiable->getEmail(),
+            'to' => $notifiable->getEmail(),
             'from' => empty($this->mailConfiguration['default_sender']) ? '' : $this->mailConfiguration['default_sender'],
         ];
 
         $messageData = self::createMessagaData($notification->getDataArray());
-        $message     = self::createMessage($dispatchData, $messageData, self::CHANNEL);
+        $message = self::createMessage($dispatchData, $messageData, self::CHANNEL);
 
         return $message;
     }
