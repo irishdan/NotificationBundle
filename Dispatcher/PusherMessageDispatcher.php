@@ -26,6 +26,6 @@ class PusherMessageDispatcher implements MessageDispatcherInterface
             $dispatchData['channel'],
         ];
 
-        return $pusher->trigger($channel, $dispatchData['event'], $messageData);
+        return !empty($pusher->trigger($channel, $dispatchData['event'], $messageData));
     }
 }
