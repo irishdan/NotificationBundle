@@ -21,10 +21,6 @@ class DatabaseMessageDispatcher implements MessageDispatcherInterface
 
     public function dispatch(MessageInterface $message)
     {
-        // Get the dispatch and message data from the message.
-        $dispatchData = $message->getDispatchData();
-        $messageData = $message->getMessageData();
-
         // Create the database notification entity
         $databaseNotification = $this->createDatabaseNotificationEntity($message);
         if ($databaseNotification) {
@@ -38,11 +34,16 @@ class DatabaseMessageDispatcher implements MessageDispatcherInterface
         return false;
     }
 
-    protected function createDatabaseNotificationEntity($data)
+    protected function createDatabaseNotificationEntity($message)
     {
         if ($this->accessor === null) {
             $this->accessor = PropertyAccess::createPropertyAccessor();
         }
+
+        // Get the dispatch and message data from the message.
+        $dispatchData = $message->getDispatchData();
+        $messageData = $message->getMessageData();
+        $data = $dispatchData + $messageData;
 
         $entity = $this->configuration['entity'];
         if (!empty($entity)) {
@@ -51,9 +52,9 @@ class DatabaseMessageDispatcher implements MessageDispatcherInterface
             $object = new $class();
 
             // Transfer values from message to databaseNotification.
-            $properties = ['notifiable', 'uuid', 'type', 'data'];
+            $properties = ['notifiable', 'uuid', 'type', 'body', 'title'];
             foreach ($properties as $property) {
-                $value = $this->accessor->getValue($data, $property);
+                $value = $this->accessor->getValue($data, '[' . $property . ']');
                 $this->accessor->setValue($object, $property, $value);
             }
 

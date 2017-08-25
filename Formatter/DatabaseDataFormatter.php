@@ -34,6 +34,9 @@ class DatabaseDataFormatter extends BaseFormatter implements MessageFormatterInt
         // Build the dispatch data array.
         $dispatchData = [
             'id' => $notifiable->getIdentifier(),
+            'notifiable' => $notifiable,
+            'uuid' => $notification->getUuid(),
+            'type' => get_class($notification),
         ];
 
         $messageData = self::createMessagaData($notification->getDataArray());

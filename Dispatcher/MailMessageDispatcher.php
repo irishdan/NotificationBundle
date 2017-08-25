@@ -22,7 +22,7 @@ class MailMessageDispatcher implements MessageDispatcherInterface
         // @TODO: Need to allow for more advanced mail.
         // @TODO: Should be able to handle attachments
         $mail = \Swift_Message::newInstance()
-            ->setSubject($messageData['subject'])
+            ->setSubject($messageData['title'])
             ->setBody($messageData['body']);
 
         $mail->setFrom($dispatchData['from']);
