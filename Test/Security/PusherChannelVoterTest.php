@@ -16,11 +16,12 @@ class PusherChannelVoterTest extends NotificationTestCase
         $config = $this->getNotificationChannelConfiguration('pusher');
 
         $this->voter = new PusherChannelVoter(true, $config);
-        $this->pusherChannel = new PusherChannel('pusher_test_1', '1234567');
     }
 
     public function testVote()
     {
+        $this->pusherChannel = new PusherChannel('pusher_test_1', '1234567');
+
         $user = $this->getTestUser();
         $token = $this->getToken();
         $token->expects($this->any())
@@ -43,6 +44,21 @@ class PusherChannelVoterTest extends NotificationTestCase
 
         // Vote should not pass
         $user->setSubscribedChannels([]);
+        $vote = $this->voter->vote($token, $this->pusherChannel, ['subscribe']);
+        $this->assertEquals(-1, $vote);
+    }
+
+    public function testVoteOnNotUsersChannel()
+    {
+        $this->pusherChannel = new PusherChannel('pusher_test_2', '1234567');
+
+        $user = $this->getTestUser();
+        $token = $this->getToken();
+        $token->expects($this->once())
+            ->method('getUser')
+            ->will($this->returnValue($user));
+
+        // Vote should pass
         $vote = $this->voter->vote($token, $this->pusherChannel, ['subscribe']);
         $this->assertEquals(-1, $vote);
     }

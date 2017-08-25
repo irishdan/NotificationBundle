@@ -2,6 +2,7 @@
 
 namespace IrishDan\NotificationBundle\Event;
 
+use IrishDan\NotificationBundle\Notification\NotifiableInterface;
 use IrishDan\NotificationBundle\Notification\NotificationInterface;
 use Symfony\Component\EventDispatcher\Event;
 
@@ -13,23 +14,11 @@ use Symfony\Component\EventDispatcher\Event;
 class NotificationSentEvent extends Event
 {
     const NAME = 'notification.sent';
-    /**
-     * The notifiable entity who received the notification.
-     *
-     * @var mixed
-     */
+    /** @var NotifiableInterface */
     public $notifiable;
-    /**
-     * The notification instance.
-     *
-     * @var \NotificationBundle\Notification
-     */
+    /** @var NotificationInterface */
     public $notification;
-    /**
-     * The channel's response.
-     *
-     * @var mixed
-     */
+    /** @var boolean */
     public $response;
 
     /**
@@ -44,25 +33,16 @@ class NotificationSentEvent extends Event
         $this->notification = $notification;
     }
 
-    /**
-     * @return mixed
-     */
     public function getNotifiable()
     {
         return $this->notifiable;
     }
 
-    /**
-     * @return \NotificationBundle\Notification
-     */
     public function getNotification()
     {
         return $this->notification;
     }
 
-    /**
-     * @return mixed
-     */
     public function getResponse()
     {
         return $this->response;

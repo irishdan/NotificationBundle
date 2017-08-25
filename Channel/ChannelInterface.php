@@ -4,21 +4,36 @@ namespace IrishDan\NotificationBundle\Channel;
 
 use IrishDan\NotificationBundle\Message\MessageInterface;
 use IrishDan\NotificationBundle\Notification\NotificationInterface;
-use IrishDan\NotificationBundle\Formatter\MessageFormatterInterface;
-use IrishDan\NotificationBundle\Dispatcher\MessageDispatcherInterface;
 
+/**
+ * Interface ChannelInterface
+ *
+ * @package IrishDan\NotificationBundle\Channel
+ */
 interface ChannelInterface
 {
-    // @TODO: Used by default
+    /**
+     * Formats a Notification into a Message and then dispatches the Message.
+     * Used by the channel manager.
+     *
+     * @param NotificationInterface $notification
+     * @return boolean
+     */
     public function formatAndDispatch(NotificationInterface $notification);
 
-    // @TODO: Allows for manual formatting and sending
-    public function dispatch(MessageInterface $message);
-
-    // @TODO: Allows for manual formatting and sending
+    /**
+     * Formats a Notification into a Message
+     *
+     * @param NotificationInterface $notification
+     * @return MessageInterface
+     */
     public function format(NotificationInterface $notification);
 
-    // public function setFormatter(MessageFormatterInterface $formatter);
-
-    // public function setDispatcher(MessageDispatcherInterface $dispatcher);
+    /**
+     * Allows for manual formatting and sending
+     *
+     * @param MessageInterface $message
+     * @return boolean
+     */
+    public function dispatch(MessageInterface $message);
 }
