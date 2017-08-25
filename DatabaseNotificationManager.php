@@ -7,27 +7,61 @@ use IrishDan\NotificationBundle\Notification\NotifiableInterface;
 use Symfony\Bridge\Doctrine\ManagerRegistry;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
+/**
+ * Class DatabaseNotificationManager
+ *
+ * @package IrishDan\NotificationBundle
+ */
 class DatabaseNotificationManager
 {
+    /**
+     * @var array
+     */
     protected $databaseConfiguration;
+    /**
+     * @var ManagerRegistry
+     */
     protected $managerRegistry;
+    /**
+     * @var PropertyAccess
+     */
     protected $propertyAccessor;
 
+    /**
+     * DatabaseNotificationManager constructor.
+     *
+     * @param ManagerRegistry $managerRegistry
+     * @param array           $databaseConfiguration
+     */
     public function __construct(ManagerRegistry $managerRegistry, array $databaseConfiguration = [])
     {
         $this->managerRegistry = $managerRegistry;
         $this->databaseConfiguration = $databaseConfiguration;
     }
 
+    protected function getEntityManager()
+    {
+        $entity = $this->notificationEntityName();
+        if ($entity) {
+            return $this->managerRegistry->getManagerForClass($entity);
+        }
+
+        return false;
+    }
+
+    /**
+     * @param array $data
+     * @return bool
+     */
     public function createDatabaseNotification(array $data)
     {
         if ($this->propertyAccessor === null) {
             $this->propertyAccessor = PropertyAccess::createPropertyAccessor();
         }
 
-        $entity = $this->notificationEntityName();
-        if ($entity) {
-            $entityManager = $this->managerRegistry->getManagerForClass($entity);
+        $entityManager = $this->getEntityManager();
+        if ($entityManager) {
+            $entity = $this->notificationEntityName();
             $class = $entityManager->getRepository($entity)->getClassName();
             $databaseNotification = new $class();
 
@@ -48,6 +82,11 @@ class DatabaseNotificationManager
         return false;
     }
 
+    /**
+     * @param DatabaseNotificationInterface $notification
+     * @param null                          $now
+     * @param bool                          $flush
+     */
     public function setReadAtDate(DatabaseNotificationInterface $notification, $now = null, $flush = true)
     {
         if (empty($now)) {
@@ -56,13 +95,17 @@ class DatabaseNotificationManager
 
         $notification->setReadAt($now);
 
-        $entityManager = $this->managerRegistry->getManagerForClass(get_class($notification));
+        $entityManager = $this->getEntityManager();
         $entityManager->persist($notification);
         if ($flush) {
             $entityManager->flush();
         }
     }
 
+    /**
+     * @param NotifiableInterface $notifiable
+     * @param null                $now
+     */
     public function setUsersNotificationsAsRead(NotifiableInterface $notifiable, $now = null)
     {
         $entity = $this->notificationEntityName();
@@ -72,7 +115,7 @@ class DatabaseNotificationManager
                 'readAt' => null,
             ];
 
-            $entityManager = $this->managerRegistry->getManagerForClass($entity);
+            $entityManager = $this->getEntityManager();
             $usersNotifications = $entityManager->getRepository($entity)->findBy($options);
 
             if (!empty($usersNotifications)) {
@@ -84,12 +127,29 @@ class DatabaseNotificationManager
         }
     }
 
+    public function getUsersUnreadNotifications(DatabaseNotifiableInterface $user)
+    {
+        $entityManager = $this->getEntityManager();
+        if ($entityManager) {
+            $entity = $this->notificationEntityName();
+            $notifications = $entityManager->getRepository($entity)->getUnreadNotifications($user);
+
+            return $notifications;
+        }
+
+        return [];
+    }
+
+    /**
+     * @param NotifiableInterface $user
+     * @param string              $status
+     * @return int
+     */
     public function getUsersNotificationCount(NotifiableInterface $user, $status = '')
     {
-        $entity = $this->notificationEntityName();
-        if (!empty($entity)) {
-            $entityManager = $this->managerRegistry->getManagerForClass($entity);
-            // @TODO: Have a look at this.
+        $entityManager = $this->getEntityManager();
+        if ($entityManager) {
+            $entity = $this->notificationEntityName();
             $count = $entityManager->getRepository($entity)->getNotificationsCount($user, $status);
 
             return $count;
@@ -98,6 +158,9 @@ class DatabaseNotificationManager
         return 0;
     }
 
+    /**
+     * @return bool|mixed
+     */
     protected function notificationEntityName()
     {
         $config = $this->databaseConfiguration;

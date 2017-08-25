@@ -7,12 +7,17 @@ use IrishDan\NotificationBundle\Notification\NotifiableInterface;
 use IrishDan\NotificationBundle\PusherManager;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
 
+/**
+ * Class NotificationExtension
+ *
+ * @package IrishDan\NotificationBundle\Twig
+ */
 class NotificationExtension extends \Twig_Extension implements \Twig_Extension_GlobalsInterface
 {
-    private $pusherManager;
-    private $router;
-    private $databaseNotificationManager;
-    private $availableChannels = [];
+    protected $pusherManager;
+    protected $router;
+    protected $databaseNotificationManager;
+    protected $availableChannels = [];
 
     public function __construct(
         PusherManager $pusherManager,

@@ -3,11 +3,11 @@
 namespace IrishDan\NotificationBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
-use IrishDan\NotificationBundle\Notification\NotifiableInterface;
+use IrishDan\NotificationBundle\DatabaseNotifiableInterface;
 
 class NotificationRepository extends EntityRepository
 {
-    public function getNotificationsCount(NotifiableInterface $user, $status = '')
+    public function getNotificationsCount(DatabaseNotifiableInterface $user, $status = '')
     {
         $dq = $this->createQueryBuilder('n')
             ->select('count(n.id)')
@@ -25,5 +25,13 @@ class NotificationRepository extends EntityRepository
         $count = $dq->getQuery()->getSingleScalarResult();
 
         return $count;
+    }
+
+    public function getUnreadNotifications(DatabaseNotifiableInterface $user)
+    {
+        return $this->findBy([
+            'notifiable' => $user,
+            'readAt' => null,
+        ]);
     }
 }

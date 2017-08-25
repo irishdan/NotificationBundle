@@ -67,11 +67,6 @@ class ChannelManager
             // Then check each channel against what is configured in the system,
             // and which channels the notifiable is subscribed to.
             $viaChannels = $notification->getChannels();
-            if (empty($viaChannels)) {
-                // @TODO: Is that really what we to happen?
-                $viaChannels = $this->configuredChannels;
-            }
-
             foreach ($viaChannels as $channel) {
                 if (!$this->shouldSendNotification($notifiable, $notification, $channel)) {
                     continue;

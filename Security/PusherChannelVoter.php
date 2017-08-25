@@ -43,7 +43,6 @@ class PusherChannelVoter extends Voter
             return false;
         }
 
-        // Check if user is subscribed to pusher channel.
         if (!$user->isSubscribedToChannel('pusher')) {
             return false;
         }
@@ -52,7 +51,7 @@ class PusherChannelVoter extends Voter
             case self::SUBSCRIBE:
                 // Compare the channel names to determine if this is the current user's channel.
                 $channelPrefix = $this->pusherConfiguration['channel_name'];
-                $channelSuffix = $user->getId(); // @TODO: use the interface method instead
+                $channelSuffix = $user->getIdentifier();
 
                 if ($channelPrefix . $channelSuffix === $subject->getChannelName()) {
                     return true;
