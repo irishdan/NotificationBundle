@@ -14,6 +14,13 @@ class User implements NotifiableInterface, EmailableInterface, TextableInterface
     private $id = 1;
     private $username = 'jimBob';
     private $email = 'jim@jim.bob';
+    private $subscribedChannels = [
+        'database',
+        'mail',
+        'pusher',
+        'nexmo',
+        'slack',
+    ];
 
     public function getNumber()
     {
@@ -54,13 +61,7 @@ class User implements NotifiableInterface, EmailableInterface, TextableInterface
 
     public function getSubscribedChannels()
     {
-        return [
-            'database',
-            'mail',
-            'pusher',
-            'nexmo',
-            'slack',
-        ];
+        return $this->subscribedChannels;
     }
 
     public function getPusherChannelSuffix()
@@ -76,5 +77,10 @@ class User implements NotifiableInterface, EmailableInterface, TextableInterface
     public function getIdentifier()
     {
         return $this->getId();
+    }
+
+    public function setSubscribedChannels(array $channels)
+    {
+        return $this->subscribedChannels = $channels;
     }
 }

@@ -19,9 +19,31 @@ class PusherChannelVoterTest extends NotificationTestCase
         $this->pusherChannel = new PusherChannel('pusher_test_1', '1234567');
     }
 
-    public function testSupports()
+    public function testVote()
     {
-        // $supports = $this->voter->supports('subscribe', $this->pusherChannel);
+        $user = $this->getTestUser();
         $token = $this->getToken();
+        $token->expects($this->any())
+            ->method('getUser')
+            ->will($this->returnValue($user));
+
+        // Vote should pass
+        $vote = $this->voter->vote($token, $this->pusherChannel, ['subscribe']);
+        $this->assertEquals(1, $vote);
+
+        // Unsupported action
+        // Vote should not pass
+        $vote = $this->voter->vote($token, $this->pusherChannel, ['sizzle']);
+        $this->assertEquals(-1, $vote);
+
+        // Unsupported entity
+        // Vote should not vote
+        $vote = $this->voter->vote($token, $user, ['subscribe']);
+        $this->assertEquals(0, $vote);
+
+        // Vote should not pass
+        $user->setSubscribedChannels([]);
+        $vote = $this->voter->vote($token, $this->pusherChannel, ['subscribe']);
+        $this->assertEquals(-1, $vote);
     }
 }
