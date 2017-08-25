@@ -19,8 +19,7 @@ class NotificationExtension extends \Twig_Extension implements \Twig_Extension_G
         Router $router,
         DatabaseNotificationManager $databaseNotificationManager,
         array $availableChannels
-    )
-    {
+    ) {
         $this->pusherManager = $pusherManager;
         $this->router = $router;
         $this->databaseNotificationManager = $databaseNotificationManager;
@@ -36,10 +35,12 @@ class NotificationExtension extends \Twig_Extension implements \Twig_Extension_G
             new \Twig_SimpleFunction('notification_all_count', [$this, 'getUserAllCount']),
             // Pusher twig functions.
             // Mainly for generating the javascript for each user.
-            new \Twig_SimpleFunction('notification_pusher_channel_name', [$this, 'getUserChannelName']),
+            new \Twig_SimpleFunction('notification_pusher_channel_name',
+                [$this, 'getUserChannelName']),
             new \Twig_SimpleFunction('notification_new_pusher_js', [$this, 'createNewPusherJS'],
                 ['is_safe' => ['html']]),
-            new \Twig_SimpleFunction('notification_new_pusher_channel_js', [$this, 'createNewPusherChannelJS'],
+            new \Twig_SimpleFunction('notification_new_pusher_channel_js',
+                [$this, 'createNewPusherChannelJS'],
                 ['is_safe' => ['html']]),
         ];
     }
@@ -60,14 +61,14 @@ class NotificationExtension extends \Twig_Extension implements \Twig_Extension_G
         return [];
     }
 
-    protected function channelEnabled($channel = 'pusher_channel')
+    protected function channelEnabled($channel = 'pusher')
     {
         return in_array($channel, $this->availableChannels);
     }
 
     public function getUserAllCount(NotifiableInterface $user)
     {
-        if ($this->channelEnabled('database_channel')) {
+        if ($this->channelEnabled('database')) {
             return $this->databaseNotificationManager->getUsersNotificationCount($user, '');
         }
 
@@ -76,7 +77,7 @@ class NotificationExtension extends \Twig_Extension implements \Twig_Extension_G
 
     public function getUserUnreadCount(NotifiableInterface $user)
     {
-        if ($this->channelEnabled('database_channel')) {
+        if ($this->channelEnabled('database')) {
             return $this->databaseNotificationManager->getUsersNotificationCount($user, 'unread');
         }
 
@@ -85,7 +86,7 @@ class NotificationExtension extends \Twig_Extension implements \Twig_Extension_G
 
     public function getUserReadCount(NotifiableInterface $user)
     {
-        if ($this->channelEnabled('database_channel')) {
+        if ($this->channelEnabled('database')) {
             return $this->databaseNotificationManager->getUsersNotificationCount($user, 'read');
         }
 
@@ -122,9 +123,9 @@ class NotificationExtension extends \Twig_Extension implements \Twig_Extension_G
                 cluster: "' . $this->pusherManager->getCluster() . '",
                 encrypted: ' . $this->pusherManager->getEncrypted() . '
             });';
+        } else {
+            return 'console.log("Pusher channel is not enabled")';
         }
-
-        return '';
     }
 
     public function getAuthEndpoint()
@@ -132,7 +133,7 @@ class NotificationExtension extends \Twig_Extension implements \Twig_Extension_G
         if ($this->channelEnabled()) {
             $exists = $this->router->getRouteCollection()->get('notification_pusher_auth');
             if (null !== $exists) {
-                return $this->router->generate('notification_pusher_auth');
+                return $this->router->generate('notification.pusher_auth');
             }
         }
 

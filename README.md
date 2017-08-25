@@ -20,26 +20,28 @@ How it works?
 ## config
 ```
 notification:
-    mail_channel:
-        enabled: true
-        default_sender: 'dan@oioi.com'
-    database_channel:
-        enabled: true
-        entity: 'AppBundle:Notification'
-    pusher_channel:
-        enabled: true
-        auth_key: 3
-        secret: 2
-        app_id: 1
-        cluster: 'eu' # Set default value
-        encrypted: true # Set default value
-        channel_name: 'private-app_channel_' # will get suffux of user id for private channel. Must begin with 'private-'!
-        event: 'notification-event'
-    nexmo_channel:
-        enabled: true
-        api_key: abc
-        api_secret: 123
-        from: "Dan"
+    channels:
+        mail:
+            default_sender: 'dan@oioi.com'
+        database:
+            entity: 'AppBundle:Notification'
+        pusher:
+            auth_key: 3
+            secret: 2
+            app_id: 1
+            cluster: 'eu' # Set default value
+            encrypted: true # Set default value
+            channel_name: 'private-app_channel_' # will get suffux of user id for private channel. Must begin with 'private-'!
+            event: 'notification-event'
+        nexmo:
+            api_key: abc
+            api_secret: 123
+            from: "Dan"
+        slack:
+    broadcasts:
+        the_broadcast_name:
+            slack: # type
+                webhook: 'https://hooks.slack.com/services/xxx/yyy/jhjhsd
 ```
 
 ## Channels
