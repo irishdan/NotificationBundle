@@ -5,7 +5,7 @@ namespace IrishDan\NotificationBundle\Repository;
 use Doctrine\ORM\EntityRepository;
 use IrishDan\NotificationBundle\DatabaseNotifiableInterface;
 
-class NotificationRepository extends EntityRepository
+class NotificationRepository extends EntityRepository implements DatabaseNotificationRepositoryInterface
 {
     public function getNotificationsCount(DatabaseNotifiableInterface $user, $status = '')
     {

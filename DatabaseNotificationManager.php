@@ -40,6 +40,9 @@ class DatabaseNotificationManager
         $this->databaseConfiguration = $databaseConfiguration;
     }
 
+    /**
+     * @return bool|\Doctrine\Common\Persistence\ObjectManager|null|object
+     */
     protected function getEntityManager()
     {
         $entity = $this->notificationEntityName();
@@ -121,16 +124,34 @@ class DatabaseNotificationManager
 
             if (!empty($usersNotifications)) {
                 foreach ($usersNotifications as $notification) {
-                    $this->setReadAtDate($notification, null, false);
+                    $this->setNotificationsReadat($usersNotifications);
                 }
             }
             $entityManager->flush();
         }
     }
 
+    /**
+     * @param array $notifications
+     */
+    public function setNotificationsReadat(array $notifications)
+    {
+        $entityManager = $this->getEntityManager();
+        foreach ($notifications as $notification) {
+            $this->setReadAtDate($notification, null, false);
+        }
+
+        $entityManager->flush();
+    }
+
+    /**
+     * @param DatabaseNotifiableInterface $user
+     * @return array
+     */
     public function getUsersUnreadNotifications(DatabaseNotifiableInterface $user)
     {
         $entityManager = $this->getEntityManager();
+
         if ($entityManager) {
             $entity = $this->notificationEntityName();
             $notifications = $entityManager->getRepository($entity)->getUnreadNotifications($user);
@@ -157,6 +178,25 @@ class DatabaseNotificationManager
         }
 
         return 0;
+    }
+
+    /**
+     * @param array $options
+     * @throws \Exception
+     */
+    public function findAndSetAsRead(array $options)
+    {
+        $entityManager = $this->getEntityManager();
+        $entity = $this->notificationEntityName();
+        $notifications = $entityManager->getRepository($entity)->findBy($options);
+
+        try {
+            $this->setNotificationsReadat($notifications);
+        } catch (\Exception $e) {
+            throw new \Exception(
+                $e->getMessage()
+            );
+        }
     }
 
     /**
