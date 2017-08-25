@@ -6,6 +6,7 @@ use IrishDan\NotificationBundle\Notification\DatabaseNotificationInterface;
 use IrishDan\NotificationBundle\Notification\NotifiableInterface;
 use Symfony\Bridge\Doctrine\ManagerRegistry;
 use Symfony\Component\PropertyAccess\PropertyAccess;
+use Symfony\Component\PropertyAccess\PropertyAccessor;
 
 /**
  * Class DatabaseNotificationManager
@@ -23,7 +24,7 @@ class DatabaseNotificationManager
      */
     protected $managerRegistry;
     /**
-     * @var PropertyAccess
+     * @var PropertyAccessor
      */
     protected $propertyAccessor;
 
