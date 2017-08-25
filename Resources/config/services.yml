@@ -17,7 +17,7 @@ services:
 
     notification.database_notification_manager:
         class: IrishDan\NotificationBundle\DatabaseNotificationManager
-        arguments: [ '@doctrine.orm.entity_manager', '%notification.channel.database.configuration%' ]
+        arguments: [ '@doctrine', '%notification.channel.database.configuration%' ]
 
     notification.pusher_manager:
         class: IrishDan\NotificationBundle\PusherManager
@@ -89,7 +89,7 @@ services:
     # Dispatchers
     notification.database_message_dispatcher:
         class: IrishDan\NotificationBundle\Dispatcher\DatabaseMessageDispatcher
-        arguments: [ '@doctrine', '%notification.channel.database.configuration%' ]
+        arguments: [ '@notification.database_notification_manager' ]
 
     notification.mail_message_dispatcher:
         class: IrishDan\NotificationBundle\Dispatcher\MailMessageDispatcher
