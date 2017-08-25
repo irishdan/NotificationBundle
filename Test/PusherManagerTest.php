@@ -10,16 +10,8 @@ class PusherManagerTest extends NotificationTestCase
 
     public function setUp()
     {
-        $this->pusherManager = new PusherManager(
-            [
-                'cluster' => 'cluster',
-                'encyrpted' => true,
-                'auth_key' => 123456,
-                'secret' => 'abcdef',
-                'app_id' => 'oioi123',
-                'channel_name' => 'test_channel_',
-            ]
-        );
+        $config = $this->getNotificationChannelConfiguration('pusher');
+        $this->pusherManager = new PusherManager($config);
     }
 
     public function testGetPusherClient()
@@ -33,8 +25,8 @@ class PusherManagerTest extends NotificationTestCase
     {
         $user = $this->getTestUser();
 
-        $channelName = $this->pusherManager->getUserChancd nelName($user);
+        $channelName = $this->pusherManager->getUserChannelName($user);
 
-        $this->assertEquals('test_channel_1', $channelName);
+        $this->assertEquals('pusher_test_1', $channelName);
     }
 }

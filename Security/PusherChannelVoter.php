@@ -2,8 +2,7 @@
 
 namespace IrishDan\NotificationBundle\Security;
 
-
-use IrishDan\NotificationBundle\Notification\NotifiableInterface;
+use IrishDan\NotificationBundle\PusherableInterface;
 use IrishDan\NotificationBundle\PusherChannel;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
@@ -40,12 +39,14 @@ class PusherChannelVoter extends Voter
         }
 
         $user = $token->getUser();
-        if (!$user instanceof NotifiableInterface) {
+        if (!$user instanceof PusherableInterface) {
             return false;
         }
 
-        // @TODO: Check if user is subscribed to pusher channel.
-
+        // Check if user is subscribed to pusher channel.
+        if (!$user->isSubscribedToChannel('pusher')) {
+            return false;
+        }
 
         switch ($attribute) {
             case self::SUBSCRIBE:

@@ -14,6 +14,7 @@
         "sensio/generator-bundle": "^3.0",
         "symfony/asset": "^3.3",
         "symfony/framework-bundle": "^3.0",
+        "symfony/security": "^3.3",
         "symfony/swiftmailer-bundle": "^2.3",
         "symfony/templating": "^3.3",
         "symfony/twig-bundle": "^3.3"

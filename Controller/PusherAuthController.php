@@ -17,14 +17,14 @@ class PusherAuthController extends Controller
         $pusher = $this->get('notification.pusher_manager')->getPusherClient();
 
         $channelName = $request->get('channel_name');
-        $socketId    = $request->get('socket_id');
+        $socketId = $request->get('socket_id');
 
         $pusherChannel = new PusherChannel($channelName, $socketId);
 
-        // Check if user should have access.
+        // Check if user should has access to the pusher channel.
         $this->denyAccessUnlessGranted('subscribe', $pusherChannel);
 
-        // Creates a json encoded string.
+        // Creates a JSON encoded string.
         $responseBody = $pusher->socket_auth($channelName, $socketId);
 
         return new Response(

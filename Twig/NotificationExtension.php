@@ -131,7 +131,7 @@ class NotificationExtension extends \Twig_Extension implements \Twig_Extension_G
     public function getAuthEndpoint()
     {
         if ($this->channelEnabled()) {
-            $exists = $this->router->getRouteCollection()->get('notification_pusher_auth');
+            $exists = $this->router->getRouteCollection()->get('notification.pusher_auth');
             if (null !== $exists) {
                 return $this->router->generate('notification.pusher_auth');
             }

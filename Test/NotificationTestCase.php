@@ -38,7 +38,7 @@ class NotificationTestCase extends \PHPUnit_Framework_TestCase
 
     protected function getNotificationWithUser()
     {
-        $user         = $this->getTestUser();
+        $user = $this->getTestUser();
         $notification = $this->getTestNotification();
 
         $notification->setNotifiable($user);
@@ -58,13 +58,13 @@ class NotificationTestCase extends \PHPUnit_Framework_TestCase
     protected function getMockFormatter($withMessage = false)
     {
         $formatter = $this->getMockBuilder(MessageFormatterInterface::class)
-                          ->disableOriginalConstructor()
-                          ->getMock();
+            ->disableOriginalConstructor()
+            ->getMock();
 
         if ($withMessage) {
             $formatter->expects($this->once())
-                      ->method('format')
-                      ->will($this->returnValue($this->getTestMessage()));
+                ->method('format')
+                ->will($this->returnValue($this->getTestMessage()));
         }
 
         return $formatter;
@@ -73,13 +73,13 @@ class NotificationTestCase extends \PHPUnit_Framework_TestCase
     protected function getMockDispatcher($withDispatch = false, $returnValue = true)
     {
         $dispatcher = $this->getMockBuilder(MessageDispatcherInterface::class)
-                           ->disableOriginalConstructor()
-                           ->getMock();
+            ->disableOriginalConstructor()
+            ->getMock();
 
         if ($withDispatch) {
             $dispatcher->expects($this->once())
-                       ->method('dispatch')
-                       ->will($this->returnValue($returnValue));
+                ->method('dispatch')
+                ->will($this->returnValue($returnValue));
         }
 
         return $dispatcher;
@@ -92,7 +92,7 @@ class NotificationTestCase extends \PHPUnit_Framework_TestCase
         $message->setMessageData(
             [
                 'title' => 'Hi!',
-                'body'  => 'Hi Jim, this is a notification',
+                'body' => 'Hi Jim, this is a notification',
             ]
         );
 
@@ -116,7 +116,7 @@ class NotificationTestCase extends \PHPUnit_Framework_TestCase
     protected function getParameters($key = '')
     {
         if (empty($this->parameters)) {
-            $path             = __DIR__ . '/config_test.yml';
+            $path = __DIR__ . '/config_test.yml';
             $this->parameters = Yaml::parse(file_get_contents($path));
         }
 
@@ -125,5 +125,22 @@ class NotificationTestCase extends \PHPUnit_Framework_TestCase
         }
 
         return empty($this->parameters[$key]) ? [] : $this->parameters[$key];
+    }
+
+    protected function getNotificationChannelConfiguration($key = '')
+    {
+        $config = $this->getParameters('notification');
+        $config = $config['channels'];
+
+        if (!empty($key)) {
+            $config = empty($config[$key]) ? [] : $config[$key];
+        }
+
+        return $config;
+    }
+
+    protected function getToken()
+    {
+        return $this->getMock('Symfony\Component\Security\Core\Authentication\Token\TokenInterface');
     }
 }

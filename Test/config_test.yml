@@ -47,8 +47,13 @@ notification:
             default_sender: 'test@jim.bob'
         database:
         pusher:
-            channel_name: 'pusher_test_'
             event: 'pusher_event'
+            cluster: 'cluster'
+            encrypted: true
+            auth_key: '123456'
+            secret: 'abcdef'
+            app_id: 'oioi123'
+            channel_name: 'pusher_test_'
         slack:
         nexmo:
             api_key: 7777777
