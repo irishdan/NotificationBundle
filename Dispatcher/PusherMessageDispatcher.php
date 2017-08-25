@@ -18,17 +18,14 @@ class PusherMessageDispatcher implements MessageDispatcherInterface
     {
         // Get the dispatch and message data from the message.
         $dispatchData = $message->getDispatchData();
-        $messageData  = $message->getMessageData();
+        $messageData = $message->getMessageData();
 
-        // @TODO: Pusher channel
         $pusher = $this->pusherManager->getPusherClient();
 
-        $pusherData = $data->getData();
-        $channel    = [
-            $this->pusherManager->getChannelName($data->getChannelIdentifier()),
+        $channel = [
+            $dispatchData['channel'],
         ];
-        $event      = $this->pusherManager->getEvent();
 
-        return $pusher->trigger($channel, $event, $pusherData);
+        return $pusher->trigger($channel, $dispatchData['event'], $messageData);
     }
 }

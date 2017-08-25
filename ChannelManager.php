@@ -2,14 +2,13 @@
 
 namespace IrishDan\NotificationBundle;
 
-use InvalidArgumentException;
+
 use IrishDan\NotificationBundle\Channel\ChannelInterface;
 use IrishDan\NotificationBundle\Event\NotificationFailedEvent;
 use IrishDan\NotificationBundle\Event\NotificationSentEvent;
 use IrishDan\NotificationBundle\Notification\NotifiableInterface;
 use IrishDan\NotificationBundle\Notification\NotificationInterface;
 use IrishDan\NotificationBundle\Event\NotificationSendingEvent;
-use Symfony\Component\EventDispatcher\Debug\TraceableEventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
@@ -19,25 +18,18 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  */
 class ChannelManager
 {
-    /**
-     * @var array
-     */
     protected $channels = [];
     protected $eventDispatcher;
-    /**
-     * @var array
-     */
     protected $configuredChannels;
 
     public function __construct(EventDispatcherInterface $eventDispatcher, array $configuredChannels)
     {
-        $this->eventDispatcher    = $eventDispatcher;
+        $this->eventDispatcher = $eventDispatcher;
         $this->configuredChannels = $configuredChannels;
     }
 
     /**
      * @param array $recipients
-     *
      * @return array
      */
     protected function formatRecipients(array $recipients)
@@ -76,6 +68,7 @@ class ChannelManager
             // and which channels the notifiable is subscribed to.
             $viaChannels = $notification->getChannels();
             if (empty($viaChannels)) {
+                // @TODO: Is that really what we to happen?
                 $viaChannels = $this->configuredChannels;
             }
 
@@ -111,15 +104,12 @@ class ChannelManager
     }
 
     /**
-     * Based on the available channels (configured in system),
-     * the notifiable's subscribed channels,
-     * and the nofications
-     * determines if the notification can be sent.
+     * Based on the available channels (configured in system) the notifiable's subscribed channels,
+     * and the nofications determines if the notification can be sent.
      *
      * @param  mixed  $notifiable
      * @param  mixed  $notification
      * @param  string $channel
-     *
      * @return bool
      */
     protected function shouldSendNotification(NotifiableInterface $notifiable, NotificationInterface $notification, $channel)
@@ -130,7 +120,7 @@ class ChannelManager
         if (
             in_array($channel, $configuredChannels)
             && in_array($channel, $notifiableChannels)
-            && in_array($channel . '_channel', $this->configuredChannels)
+            && in_array($channel, $this->configuredChannels)
             && in_array($channel, array_keys($this->channels))
         ) {
             return true;
@@ -155,7 +145,6 @@ class ChannelManager
      * Get a channel service
      *
      * @param  string|null $name
-     *
      * @return mixed
      */
     public function getChannel($name = null)
