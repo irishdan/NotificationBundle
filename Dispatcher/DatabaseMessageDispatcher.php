@@ -5,17 +5,20 @@ namespace IrishDan\NotificationBundle\Dispatcher;
 use Doctrine\ORM\EntityManager;
 use IrishDan\NotificationBundle\Message\BaseMessage;
 use IrishDan\NotificationBundle\Message\MessageInterface;
+use Symfony\Bridge\Doctrine\ManagerRegistry;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
 class DatabaseMessageDispatcher implements MessageDispatcherInterface
 {
     protected $entityManager;
+    protected $managerRegistry;
     protected $configuration;
     protected $accessor;
 
-    public function __construct(EntityManager $entityManager, $configuration = [])
+    public function __construct(ManagerRegistry $managerRegistry, $configuration = [])
     {
-        $this->entityManager = $entityManager;
+        // $this->entityManager = $entityManager;
+        $this->managerRegistry = $managerRegistry;
         $this->configuration = $configuration;
     }
 
@@ -47,8 +50,8 @@ class DatabaseMessageDispatcher implements MessageDispatcherInterface
 
         $entity = $this->configuration['entity'];
         if (!empty($entity)) {
-            $em = $this->entityManager;
-            $class = $em->getRepository($entity)->getClassName();
+            $this->entityManager = $this->managerRegistry->getManagerForClass($entity);
+            $class = $this->entityManager->getRepository($entity)->getClassName();
             $object = new $class();
 
             // Transfer values from message to databaseNotification.
