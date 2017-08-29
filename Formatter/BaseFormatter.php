@@ -35,13 +35,26 @@ abstract class BaseFormatter
 
     public function format(NotificationInterface $notification)
     {
-        if (!empty($this->twig) && $notification->getTemplate()) {
+        $templateArray = $notification->getTemplateArray();
+        if (!empty($this->twig) && !empty($templateArray)) {
             $data = $notification->getDataArray();
-            $data['body'] = $this->renderTwigTemplate(
-                $data,
-                $notification->getNotifiable(),
-                $notification->getTemplate()
-            );
+
+            if ($notification->getUuid()) {
+                $data['uuid'] = $notification->getUuid();
+            }
+
+            foreach ($templateArray as $key => $template) {
+                // Find out if the template exists before trying to render it.
+                $exists = $this->twig->getLoader()->exists($template);
+                if (!empty($data[$key]) && $exists) {
+
+                    $data[$key] = $this->renderTwigTemplate(
+                        $data,
+                        $notification->getNotifiable(),
+                        $template
+                    );
+                }
+            }
 
             $notification->setDataArray($data);
         }
@@ -64,6 +77,7 @@ abstract class BaseFormatter
         $messageData = [];
         $messageData['body'] = empty($notificationData['body']) ? '' : $notificationData['body'];
         $messageData['title'] = empty($notificationData['title']) ? '' : $notificationData['title'];
+        $messageData['uuid'] = empty($notificationData['uuid']) ? '' : $notificationData['uuid'];
 
         return $messageData;
     }

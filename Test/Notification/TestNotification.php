@@ -48,7 +48,7 @@ class TestNotification implements NotificationInterface
 
     protected $dataArray = [
         'title' => 'New member',
-        'body'  => 'A new member has just joined',
+        'body' => 'A new member has just joined',
     ];
 
     public function getDataArray()
@@ -61,11 +61,14 @@ class TestNotification implements NotificationInterface
         $this->dataArray = $data;
     }
 
-    public function getTemplate()
+    public function getTemplateArray()
     {
         // The view template to use for this message. can switch depending on the channel.
         // @TODO: Not really representative of the real template directory structure.
         // return 'NotificationBundle:Test:' . $this->channel . '.message.html.twig';
-        return $this->channel . '.message.html.twig';
+        return [
+            'title' => 'title.message.html.twig',
+            'body' => $this->channel . '.message.html.twig',
+        ];
     }
 }

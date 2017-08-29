@@ -68,8 +68,8 @@ services:
     notification.mail_data_formatter:
         class: IrishDan\NotificationBundle\Formatter\MailDataFormatter
         arguments: [ '%notification.channel.mail.configuration%' ]
-        # calls:
-        #    - [setTemplating, ['@twig']]
+        calls:
+           - [setTemplating, ['@twig']]
 
     notification.pusher_data_formatter:
         class: IrishDan\NotificationBundle\Formatter\PusherDataFormatter

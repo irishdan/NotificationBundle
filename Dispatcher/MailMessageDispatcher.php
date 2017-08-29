@@ -19,14 +19,26 @@ class MailMessageDispatcher implements MessageDispatcherInterface
         $dispatchData = $message->getDispatchData();
         $messageData = $message->getMessageData();
 
-        // @TODO: Need to allow for more advanced mail.
-        // @TODO: Should be able to handle attachments
         $mail = \Swift_Message::newInstance()
             ->setSubject($messageData['title'])
             ->setBody($messageData['body']);
 
         $mail->setFrom($dispatchData['from']);
         $mail->setTo($dispatchData['to']);
+
+        // Check if its a html email
+        if (!empty($messageData['html_email'])) {
+            $mail->setContentType('text/html');
+        }
+
+        // Add any attachments
+        if (!empty($messageData['attachments'])) {
+            foreach ($messageData['attachments'] as $path => $filename) {
+                $mail->attach(
+                    \Swift_Attachment::fromPath($path)->setFilename($filename)
+                );
+            }
+        }
 
         $sent = $this->mailer->send($mail);
 

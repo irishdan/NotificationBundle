@@ -60,7 +60,7 @@ interface NotificationInterface
     public function getDataArray();
 
     // @TODO: Explain, doc block
-    public function getTemplate();
+    public function getTemplateArray();
 
     public function setDataArray(array $data);
 }

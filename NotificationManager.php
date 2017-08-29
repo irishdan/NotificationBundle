@@ -4,6 +4,7 @@ namespace IrishDan\NotificationBundle;
 
 use IrishDan\NotificationBundle\Notification\NotifiableInterface;
 use IrishDan\NotificationBundle\Notification\NotificationInterface;
+use Symfony\Component\PropertyAccess\PropertyAccess;
 
 /**
  * Class NotificationManager
@@ -23,20 +24,40 @@ class NotificationManager
      * @var DatabaseNotificationManager
      */
     private $databaseNotificationManager;
+    protected $propertyAccessor;
 
     public function __construct(ChannelManager $channelManager)
     {
         $this->channelManager = $channelManager;
     }
 
-    public function broadcast(NotificationInterface $notificatin, array $broadcasters  = null) {
+    public function setDatabaseNotificationManager(DatabaseNotificationManager $databaseNotificationManager)
+    {
+        $this->databaseNotificationManager = $databaseNotificationManager;
+    }
+
+    public function broadcast(NotificationInterface $notification, array $broadcasters = null)
+    {
 
     }
 
-    public function send(NotificationInterface $notification, $recipients)
+    public function send(NotificationInterface $notification, $recipients, array $data = [])
     {
         if (!is_array($recipients)) {
             $recipients = [$recipients];
+        }
+
+        if (!empty($data)) {
+            if (empty($this->propertyAccessor)) {
+                $this->propertyAccessor = PropertyAccess::createPropertyAccessor();
+            }
+
+            $dataArray = $notification->getDataArray();
+            foreach ($data as $key => $value) {
+                $this->propertyAccessor->setValue($dataArray, '[' . $key . ']', $value);
+            }
+
+            $notification->setDataArray($dataArray);
         }
 
         $this->channelManager->send($recipients, $notification);
@@ -89,10 +110,5 @@ class NotificationManager
         // } catch (\Exception $exception) {
         //     // @TODO:
         // }
-    }
-
-    public function setDatabaseNotificationManager(DatabaseNotificationManager $databaseNotificationManager)
-    {
-        $this->databaseNotificationManager = $databaseNotificationManager;
     }
 }

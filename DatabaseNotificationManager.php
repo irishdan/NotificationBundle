@@ -134,7 +134,7 @@ class DatabaseNotificationManager
     /**
      * @param array $notifications
      */
-    public function setNotificationsReadat(array $notifications)
+    public function setNotificationsReadAt(array $notifications)
     {
         $entityManager = $this->getEntityManager();
         foreach ($notifications as $notification) {
@@ -191,7 +191,7 @@ class DatabaseNotificationManager
         $notifications = $entityManager->getRepository($entity)->findBy($options);
 
         try {
-            $this->setNotificationsReadat($notifications);
+            $this->setNotificationsReadAt($notifications);
         } catch (\Exception $e) {
             throw new \Exception(
                 $e->getMessage()

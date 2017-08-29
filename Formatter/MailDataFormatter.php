@@ -40,11 +40,35 @@ class MailDataFormatter extends BaseFormatter implements MessageFormatterInterfa
         // Build the dispatch data array.
         $dispatchData = [
             'to' => $notifiable->getEmail(),
-            'from' => empty($this->mailConfiguration['default_sender']) ? '' : $this->mailConfiguration['default_sender'],
+            'from' => $this->getSender($notification),
+            'cc' => '',
+            'bcc' => '',
         ];
 
         $messageData = self::createMessagaData($notification->getDataArray());
+        $data = $notification->getDataArray();
+
+        if (!empty($data['html_email'])) {
+            $messageData['html_email'] = true;
+        }
+        // Add any email attachments.
+        $messageData['attachments'] = empty($data['attachments']) ? [] : $data['attachments'];
 
         return self::createMessage($dispatchData, $messageData, self::CHANNEL);
+    }
+
+    protected function getSender(NotificationInterface $notification)
+    {
+        $data = $notification->getDataArray();
+
+        if (!empty($data['from'])) {
+            return $data['from'];
+        }
+
+        if (!empty($this->mailConfiguration['default_sender'])) {
+            return $this->mailConfiguration['default_sender'];
+        }
+
+        return '';
     }
 }
