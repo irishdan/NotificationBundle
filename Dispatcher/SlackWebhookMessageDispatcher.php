@@ -3,7 +3,6 @@
 namespace IrishDan\NotificationBundle\Dispatcher;
 
 use IrishDan\NotificationBundle\Message\MessageInterface;
-use Nexmo\Client;
 
 class SlackWebhookMessageDispatcher implements MessageDispatcherInterface
 {
@@ -11,20 +10,28 @@ class SlackWebhookMessageDispatcher implements MessageDispatcherInterface
     {
         // Get the dispatch and message data from the message.
         $dispatchData = $message->getDispatchData();
-        $messageData  = $message->getMessageData();
+        $messageData = $message->getMessageData();
 
-        $msg = $messageData['body'];
-        $url = $dispatchData['webhook'];
+        // Build payload from the message data.
+        $messageData['text'] = $messageData['body'];
+        unset($messageData['body']);
 
-        // @TODO: Build from message data.
-        $payload = 'payload={"text": "' . $msg . '", "icon_emoji": ":ghost:"}';
+        $data = 'payload=' . json_encode($messageData);
 
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_POST, true); //set how many paramaters to post
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+        curl_setopt($ch, CURLOPT_URL, $dispatchData['webhook']);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        $result = curl_exec($ch);
 
-        curl_exec($ch); //execute and get the results
+        if ($result !== 'ok') {
+            return false;
+        }
+
         curl_close($ch);
+
+        return true;
     }
 }

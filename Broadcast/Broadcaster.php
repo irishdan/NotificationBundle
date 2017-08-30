@@ -3,7 +3,6 @@
 namespace IrishDan\NotificationBundle\Broadcast;
 
 use IrishDan\NotificationBundle\Channel\ChannelInterface;
-use IrishDan\NotificationBundle\Notification\NotifiableInterface;
 use IrishDan\NotificationBundle\Notification\NotificationInterface;
 
 class Broadcaster
@@ -15,17 +14,19 @@ class Broadcaster
     public function __construct(BroadcastNotifiableInterface $notifiable, ChannelInterface $channel, array $config)
     {
         $this->notifiable = $notifiable;
-        $this->channel    = $channel;
+        $this->channel = $channel;
 
         // Set the data for Slack Broadcasts
         if (!empty($config['webhook'])) {
             $notifiable->setSlackWebhook($config['webhook']);
         }
 
-        // @TODO: Set data for pusher broadcasts
+        // Set data for pusher broadcasts
+        if (!empty($config['channel_name'])) {
+            $notifiable->setPusherChannel($config['channel_name']);
+        }
 
         // @TODO: Set data for mailchimp Broadcasts
-
         // @TODO: Set data for drip Broadcasts
     }
 
