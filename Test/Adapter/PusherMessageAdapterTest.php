@@ -1,21 +1,24 @@
 <?php
 
-namespace IrishDan\NotificationBundle\Formatter;
+namespace IrishDan\NotificationBundle\Test\Adapter;
 
+use IrishDan\NotificationBundle\Adapter\PusherMessageAdapter;
 use IrishDan\NotificationBundle\Message\MessageInterface;
-use IrishDan\NotificationBundle\Test\Formatter\FormatterTestCase;
 
-class SlackWebhookFormatterTest extends FormatterTestCase
+
+class PusherMessageAdapterTest extends AdapterTestCase
 {
     public function setUp()
     {
         parent::setUp();
-        $this->formatter = new SlackWebhookFormatter();
+
+        $pusherManager = $this->getService('notification.pusher_manager');
+        $this->adapter = new PusherMessageAdapter($pusherManager);
     }
 
     public function testFormat()
     {
-        $message = $this->formatter->format($this->notification);
+        $message = $this->adapter->format($this->notification);
 
         $this->assertValidDispatchData($message);
         $this->assertMessageDataStructure($message);
@@ -26,7 +29,7 @@ class SlackWebhookFormatterTest extends FormatterTestCase
     public function testFormatWithTwig()
     {
         $this->setTwig();
-        $message = $this->formatter->format($this->notification);
+        $message = $this->adapter->format($this->notification);
 
         $this->assertValidDispatchData($message);
         $this->assertMessageDataStructure($message);
@@ -37,17 +40,19 @@ class SlackWebhookFormatterTest extends FormatterTestCase
 Notification message for jimBob
 Sincerely yours,
 NotificationBundle
-Sent via slack channel.';
+Sent via pusher channel.';
 
         $this->assertEquals($message, $messageData['body']);
     }
 
     public function assertValidDispatchData(MessageInterface $message)
     {
-        $this->assertEquals('slack', $message->getChannel());
+        $this->assertEquals('pusher', $message->getChannel());
 
         $dispatchData = $message->getDispatchData();
-        $this->assertEquals('https://hooks.slack.com/services/salty/salt/1234567890',
-            $dispatchData['webhook']);
+        $this->assertArrayHasKey('channel', $dispatchData);
+
+        $this->assertEquals('pusher_test_1', $dispatchData['channel']);
+        $this->assertEquals('pusher_event', $dispatchData['event']);
     }
 }

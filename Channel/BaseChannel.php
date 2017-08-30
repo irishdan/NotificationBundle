@@ -2,31 +2,24 @@
 
 namespace IrishDan\NotificationBundle\Channel;
 
-use IrishDan\NotificationBundle\Formatter\MessageFormatterInterface;
-use IrishDan\NotificationBundle\Dispatcher\MessageDispatcherInterface;
+use IrishDan\NotificationBundle\Adapter\MessageAdapterInterface;
 
 abstract class BaseChannel implements ChannelInterface
 {
     protected $channelEnabled;
     protected $channelConfiguration;
     protected $channel;
-    protected $formatter;
-    protected $dispatcher;
+    protected $adapter;
 
     public function __construct($channelEnabled = true, array $channelConfiguration = [], $channel = '')
     {
-        $this->channelEnabled       = $channelEnabled;
+        $this->channelEnabled = $channelEnabled;
         $this->channelConfiguration = $channelConfiguration;
-        $this->channel              = $channel;
+        $this->channel = $channel;
     }
 
-    public function setDispatcher(MessageDispatcherInterface $dispatcher)
+    public function setAdapter(MessageAdapterInterface $adapter)
     {
-        $this->dispatcher = $dispatcher;
-    }
-
-    public function setDataFormatter(MessageFormatterInterface $formatter)
-    {
-        $this->formatter = $formatter;
+        $this->adapter = $adapter;
     }
 }

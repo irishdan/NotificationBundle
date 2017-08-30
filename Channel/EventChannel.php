@@ -2,6 +2,7 @@
 
 namespace IrishDan\NotificationBundle\Channel;
 
+use IrishDan\NotificationBundle\Adapter\MessageAdapterInterface;
 use IrishDan\NotificationBundle\Dispatcher\MessageDispatcherInterface;
 use IrishDan\NotificationBundle\Event\MessageCreatedEvent;
 use IrishDan\NotificationBundle\Event\MessageDispatchedEvent;
@@ -11,13 +12,13 @@ use IrishDan\NotificationBundle\Notification\NotificationInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
- * Class DefaultChannel
+ * Class DirectChannel
  *
  * @package NotificationBundle\Channel
  */
 class EventChannel extends BaseChannel implements ChannelInterface
 {
-    private $dispatchers = [];
+    private $adapters = [];
     private $eventDispatcher;
 
     public function formatAndDispatch(NotificationInterface $notification)
@@ -25,9 +26,9 @@ class EventChannel extends BaseChannel implements ChannelInterface
         return false;
     }
 
-    public function setDispatchers($key, MessageDispatcherInterface $dispatcher)
+    public function setAdapters($key, MessageAdapterInterface $adapter)
     {
-        $this->dispatchers[$key] = $dispatcher;
+        $this->adapters[$key] = $adapter;
     }
 
     public function __construct(EventDispatcherInterface $eventDispatcher)
@@ -48,15 +49,15 @@ class EventChannel extends BaseChannel implements ChannelInterface
 
         // Dispatch the message
         try {
-            if (!empty($this->dispatchers[$dispatcherKey])) {
-                $this->dispatchers[$dispatcherKey]->dispatch($message);
+            if (!empty($this->adapters[$dispatcherKey])) {
+                $this->adapters[$dispatcherKey]->dispatch($message);
 
                 // Dispatch the message event
                 $messageEvent = new MessageDispatchedEvent($message);
                 $this->eventDispatcher->dispatch(MessageDispatchedEvent::NAME, $messageEvent);
             } else {
                 throw new MessageDispatchException(
-                    sprintf('No dispatcher available with key "%s"', $dispatcherKey)
+                    sprintf('No adapter available with key "%s"', $dispatcherKey)
                 );
             }
         } catch (\Exception $exception) {

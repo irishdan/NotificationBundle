@@ -1,17 +1,12 @@
 <?php
 
-namespace IrishDan\NotificationBundle\Formatter;
+namespace IrishDan\NotificationBundle\Adapter;
+
 
 use IrishDan\NotificationBundle\Message\MessageInterface;
 use IrishDan\NotificationBundle\Notification\NotificationInterface;
 
-
-/**
- * Interface MessageFormatterInterface
- *
- * @package NotificationBundle\Formatter
- */
-interface MessageFormatterInterface
+interface MessageAdapterInterface
 {
     /**
      * Takes a Notification, formats the content and delivery data
@@ -21,4 +16,11 @@ interface MessageFormatterInterface
      * @return MessageInterface
      */
     public function format(NotificationInterface $notification);
+
+    /**
+     * @param MessageInterface $message
+     *
+     * @return boolean
+     */
+    public function dispatch(MessageInterface $message);
 }

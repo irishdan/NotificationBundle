@@ -2,6 +2,7 @@
 
 namespace IrishDan\NotificationBundle\Test;
 
+use IrishDan\NotificationBundle\Adapter\MessageAdapterInterface;
 use IrishDan\NotificationBundle\Test\Notification\TestNotification;
 use IrishDan\NotificationBundle\Dispatcher\MessageDispatcherInterface;
 use IrishDan\NotificationBundle\Formatter\MessageFormatterInterface;
@@ -55,34 +56,55 @@ class NotificationTestCase extends \PHPUnit_Framework_TestCase
         return $this->testKernel->getContainer();
     }
 
-    protected function getMockFormatter($withMessage = false)
+    // protected function getMockFormatter($withMessage = false)
+    // {
+    //     $formatter = $this->getMockBuilder(MessageFormatterInterface::class)
+    //         ->disableOriginalConstructor()
+    //         ->getMock();
+//
+    //     if ($withMessage) {
+    //         $formatter->expects($this->once())
+    //             ->method('format')
+    //             ->will($this->returnValue($this->getTestMessage()));
+    //     }
+//
+    //     return $formatter;
+    // }
+//
+    // protected function getMockDispatcher($withDispatch = false, $returnValue = true)
+    // {
+    //     $dispatcher = $this->getMockBuilder(MessageDispatcherInterface::class)
+    //         ->disableOriginalConstructor()
+    //         ->getMock();
+//
+    //     if ($withDispatch) {
+    //         $dispatcher->expects($this->once())
+    //             ->method('dispatch')
+    //             ->will($this->returnValue($returnValue));
+    //     }
+//
+    //     return $dispatcher;
+    // }
+
+    protected function getMockAdapter($withFormat = false, $withDispatch = false)
     {
-        $formatter = $this->getMockBuilder(MessageFormatterInterface::class)
+        $adapter = $this->getMockBuilder(MessageAdapterInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        if ($withMessage) {
-            $formatter->expects($this->once())
+        if ($withFormat) {
+            $adapter->expects($this->once())
                 ->method('format')
                 ->will($this->returnValue($this->getTestMessage()));
         }
 
-        return $formatter;
-    }
-
-    protected function getMockDispatcher($withDispatch = false, $returnValue = true)
-    {
-        $dispatcher = $this->getMockBuilder(MessageDispatcherInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
         if ($withDispatch) {
-            $dispatcher->expects($this->once())
+            $adapter->expects($this->once())
                 ->method('dispatch')
-                ->will($this->returnValue($returnValue));
+                ->will($this->returnValue(true));
         }
 
-        return $dispatcher;
+        return $adapter;
     }
 
     protected function getTestMessage()

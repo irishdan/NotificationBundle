@@ -1,18 +1,23 @@
 <?php
 
-namespace IrishDan\NotificationBundle\Formatter;
+namespace IrishDan\NotificationBundle\Adapter;
+
 
 use IrishDan\NotificationBundle\DatabaseNotifiableInterface;
+use IrishDan\NotificationBundle\DatabaseNotificationManager;
+use IrishDan\NotificationBundle\Message\MessageInterface;
 use IrishDan\NotificationBundle\Notification\NotificationInterface;
 
-/**
- * Class DatabaseDataFormatter
- *
- * @package IrishDan\NotificationBundle\Formatter
- */
-class DatabaseDataFormatter extends BaseFormatter implements MessageFormatterInterface
+class DatabaseMessageAdapter extends BaseMessageAdapter implements MessageAdapterInterface
 {
     const CHANNEL = 'database';
+
+    protected $databaseNotificationManager;
+
+    public function __construct(DatabaseNotificationManager $databaseNotificationManager)
+    {
+        $this->databaseNotificationManager = $databaseNotificationManager;
+    }
 
     /**
      * Generates a message object
@@ -42,5 +47,19 @@ class DatabaseDataFormatter extends BaseFormatter implements MessageFormatterInt
         $messageData = self::createMessagaData($notification->getDataArray());
 
         return self::createMessage($dispatchData, $messageData, self::CHANNEL);
+    }
+
+    public function dispatch(MessageInterface $message)
+    {
+        $dispatchData = $message->getDispatchData();
+        $messageData = $message->getMessageData();
+        $data = $dispatchData + $messageData;
+
+        $databaseNotification = $this->databaseNotificationManager->createDatabaseNotification($data);
+        if ($databaseNotification) {
+            return true;
+        }
+
+        return false;
     }
 }

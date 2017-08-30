@@ -1,20 +1,15 @@
 <?php
 
-namespace IrishDan\NotificationBundle\Formatter;
+namespace IrishDan\NotificationBundle\Adapter;
 
+use IrishDan\NotificationBundle\Message\MessageInterface;
 use IrishDan\NotificationBundle\Notification\NotificationInterface;
 use IrishDan\NotificationBundle\PusherableInterface;
 use IrishDan\NotificationBundle\PusherManager;
 
-/**
- * Class PusherDataFormatter
- *
- * @package IrishDan\NotificationBundle\Formatter
- */
-class PusherDataFormatter extends BaseFormatter implements MessageFormatterInterface
+class PusherMessageAdapter extends BaseMessageAdapter implements MessageAdapterInterface
 {
     const CHANNEL = 'pusher';
-    protected $pusherConfiguration;
     protected $pusherManager;
 
     public function __construct(PusherManager $pusherManager)
@@ -48,5 +43,20 @@ class PusherDataFormatter extends BaseFormatter implements MessageFormatterInter
         $messageData = self::createMessagaData($notification->getDataArray());
 
         return self::createMessage($dispatchData, $messageData, self::CHANNEL);
+    }
+
+    public function dispatch(MessageInterface $message)
+    {
+        // Get the dispatch and message data from the message.
+        $dispatchData = $message->getDispatchData();
+        $messageData = $message->getMessageData();
+
+        $pusher = $this->pusherManager->getPusherClient();
+
+        $channel = [
+            $dispatchData['channel'],
+        ];
+
+        return !empty($pusher->trigger($channel, $dispatchData['event'], $messageData));
     }
 }

@@ -1,13 +1,13 @@
 <?php
 
-namespace IrishDan\NotificationBundle\Formatter;
+namespace IrishDan\NotificationBundle\Adapter;
 
 use IrishDan\NotificationBundle\Exception\MessageFormatException;
 use IrishDan\NotificationBundle\Message\Message;
 use IrishDan\NotificationBundle\Notification\NotificationInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
-abstract class BaseFormatter
+abstract class BaseMessageAdapter
 {
     protected $twig;
     protected $eventDispatcher;
@@ -84,8 +84,7 @@ abstract class BaseFormatter
 
     protected static function createFormatterException($shouldImplement, $type)
     {
-        $message = sprintf('Notifiable must implement %s interface in order to format as a %s message',
-            $shouldImplement, $type);
+        $message = sprintf('Notifiable must implement %s interface in order to format as a %s message', $shouldImplement, $type);
         throw new MessageFormatException(
             $message
         );

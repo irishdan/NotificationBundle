@@ -1,14 +1,14 @@
 <?php
 
-namespace IrishDan\NotificationBundle\Test\Formatter;
+namespace IrishDan\NotificationBundle\Test\Adapter;
 
 use IrishDan\NotificationBundle\Message\MessageInterface;
 use IrishDan\NotificationBundle\Test\NotificationTestCase;
 
-abstract class FormatterTestCase extends NotificationTestCase
+abstract class AdapterTestCase extends NotificationTestCase
 {
     protected $notification;
-    protected $formatter;
+    protected $adapter;
 
     public function setUp()
     {
@@ -22,7 +22,7 @@ abstract class FormatterTestCase extends NotificationTestCase
     protected function setTwig()
     {
         $twig = $this->getService('twig');
-        $this->formatter->setTemplating($twig);
+        $this->adapter->setTemplating($twig);
     }
 
     protected function setTwigTemplatesDirectory()

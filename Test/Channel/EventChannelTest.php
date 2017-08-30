@@ -30,8 +30,8 @@ class EventChannelTest extends NotificationTestCase
     {
         $this->eventDispatcher->expects($this->once())->method('dispatch');
 
-        $dispatcher = $this->getMockDispatcher();
-        $this->eventChannel->setDispatchers('default', $dispatcher);
+        $adapter = $this->getMockAdapter(false, true);
+        $this->eventChannel->setAdapters('default', $adapter);
 
         $message = $this->getTestMessage();
         $message->setChannel('default');
@@ -41,8 +41,8 @@ class EventChannelTest extends NotificationTestCase
 
     public function testDispatchWithWrongChannelKey()
     {
-        $dispatcher = $this->getMockDispatcher();
-        $this->eventChannel->setDispatchers('default', $dispatcher);
+        $dispatcher = $this->getMockAdapter();
+        $this->eventChannel->setAdapters('default', $dispatcher);
 
         $message = $this->getTestMessage();
         $message->setChannel('not-default');

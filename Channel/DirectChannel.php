@@ -12,11 +12,11 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 
 /**
- * Class DefaultChannel
+ * Class DirectChannel
  *
  * @package NotificationBundle\Channel
  */
-class DefaultChannel extends BaseChannel implements ChannelInterface
+class DirectChannel extends BaseChannel implements ChannelInterface
 {
     protected $eventDispatcher;
     protected $dispatchToEvent = true;
@@ -49,7 +49,7 @@ class DefaultChannel extends BaseChannel implements ChannelInterface
     {
         try {
             // Do the formatting.
-            $message = $this->formatter->format($notification);
+            $message = $this->adapter->format($notification);
 
             return $message;
         } catch (\Exception $e) {
@@ -63,7 +63,7 @@ class DefaultChannel extends BaseChannel implements ChannelInterface
     {
         // Dispatch the message
         try {
-            $sent = $this->dispatcher->dispatch($message);
+            $sent = $this->adapter->dispatch($message);
 
             if ($sent && !empty($this->eventDispatcher)) {
                 $event = new MessageDispatchedEvent($message);

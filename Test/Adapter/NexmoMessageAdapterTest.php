@@ -1,24 +1,22 @@
 <?php
 
-namespace IrishDan\NotificationBundle\Test\Formatter;
+namespace IrishDan\NotificationBundle\Test\Adapter;
 
-
-use IrishDan\NotificationBundle\Formatter\MailDataFormatter;
+use IrishDan\NotificationBundle\Adapter\NexmoMessageAdapter;
 use IrishDan\NotificationBundle\Message\MessageInterface;
 
-class MailDataFormatterTest extends FormatterTestCase
+class NexmoMessageAdapterTest extends AdapterTestCase
 {
     public function setUp()
     {
         parent::setUp();
-
-        $parameters = $this->getParametersFromContainer('notification.channel.mail.configuration');
-        $this->formatter = new MailDataFormatter($parameters);
+        $parameters = $this->getParametersFromContainer('notification.channel.nexmo.configuration');
+        $this->adapter = new NexmoMessageAdapter($parameters);
     }
 
     public function testFormat()
     {
-        $message = $this->formatter->format($this->notification);
+        $message = $this->adapter->format($this->notification);
 
         $this->assertValidDispatchData($message);
         $this->assertMessageDataStructure($message);
@@ -29,32 +27,32 @@ class MailDataFormatterTest extends FormatterTestCase
     public function testFormatWithTwig()
     {
         $this->setTwig();
-        $message = $this->formatter->format($this->notification);
+        $message = $this->adapter->format($this->notification);
 
         $this->assertValidDispatchData($message);
         $this->assertMessageDataStructure($message);
 
         $messageData = $message->getMessageData();
-
         $this->assertEquals('New member', $messageData['title']);
+
         $message = 'Hello jimBob
 Notification message for jimBob
 Sincerely yours,
 NotificationBundle
-Sent via mail channel.';
+Sent via nexmo channel.';
 
         $this->assertEquals($message, $messageData['body']);
     }
 
     private function assertValidDispatchData(MessageInterface $message)
     {
-        $this->assertEquals('mail', $message->getChannel());
+        $this->assertEquals('nexmo', $message->getChannel());
 
         $dispatchData = $message->getDispatchData();
         $this->assertArrayHasKey('to', $dispatchData);
         $this->assertArrayHasKey('from', $dispatchData);
 
-        $this->assertEquals('jim@jim.bob', $dispatchData['to']);
-        $this->assertEquals('test@jim.bob', $dispatchData['from']);
+        $this->assertEquals('+44755667788', $dispatchData['to']);
+        $this->assertEquals('JimBob', $dispatchData['from']);
     }
 }

@@ -2,7 +2,6 @@
 
 namespace IrishDan\NotificationBundle\DependencyInjection;
 
-use IrishDan\NotificationBundle\DependencyInjection\Factory\Broadcaster\SlackBroadcasterFactory;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
@@ -46,21 +45,20 @@ class NotificationExtension extends Extension
     private function createChannelService($channel, ContainerBuilder $container)
     {
         $definition = new Definition();
-        $definition->setClass('IrishDan\NotificationBundle\Channel\DefaultChannel');
+        $definition->setClass('IrishDan\NotificationBundle\Channel\DirectChannel');
         $definition->setArguments(
             [
                 '%notification.channel.' . $channel . '.enabled%',
                 '%notification.channel.' . $channel . '.configuration%',
             ]
         );
-        $formatter = new Reference('notification.' . $channel . '_data_formatter');
-        $dispatcher = new Reference('notification.' . $channel . '_message_dispatcher');
+
+        $adapter = new Reference('notification.adapter.' . $channel);
         $eventDispatcher = new Reference('event_dispatcher');
 
         $definition->setMethodCalls(
             [
-                ['setDataFormatter', [$formatter]],
-                ['setDispatcher', [$dispatcher]],
+                ['setAdapter', [$adapter]],
                 ['setEventDispatcher', [$eventDispatcher]],
             ]
         );

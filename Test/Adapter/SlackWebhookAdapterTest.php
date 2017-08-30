@@ -1,22 +1,21 @@
 <?php
 
-namespace IrishDan\NotificationBundle\Test\Formatter;
+namespace IrishDan\NotificationBundle\Test\Adapter;
 
-
-use IrishDan\NotificationBundle\Formatter\DatabaseDataFormatter;
+use IrishDan\NotificationBundle\Adapter\SlackWebhookMessageAdapter;
 use IrishDan\NotificationBundle\Message\MessageInterface;
 
-class DatabaseDataFormatterTest extends FormatterTestCase
+class SlackWebhookAdapterTest extends AdapterTestCase
 {
     public function setUp()
     {
         parent::setUp();
-        $this->formatter = new DatabaseDataFormatter();
+        $this->adapter = new SlackWebhookMessageAdapter();
     }
 
     public function testFormat()
     {
-        $message = $this->formatter->format($this->notification);
+        $message = $this->adapter->format($this->notification);
 
         $this->assertValidDispatchData($message);
         $this->assertMessageDataStructure($message);
@@ -27,7 +26,7 @@ class DatabaseDataFormatterTest extends FormatterTestCase
     public function testFormatWithTwig()
     {
         $this->setTwig();
-        $message = $this->formatter->format($this->notification);
+        $message = $this->adapter->format($this->notification);
 
         $this->assertValidDispatchData($message);
         $this->assertMessageDataStructure($message);
@@ -38,16 +37,17 @@ class DatabaseDataFormatterTest extends FormatterTestCase
 Notification message for jimBob
 Sincerely yours,
 NotificationBundle
-Sent via database channel.';
+Sent via slack channel.';
 
         $this->assertEquals($message, $messageData['body']);
     }
 
     public function assertValidDispatchData(MessageInterface $message)
     {
-        $this->assertEquals('database', $message->getChannel());
+        $this->assertEquals('slack', $message->getChannel());
 
         $dispatchData = $message->getDispatchData();
-        $this->assertEquals(1, $dispatchData['id']);
+        $this->assertEquals('https://hooks.slack.com/services/salty/salt/1234567890',
+            $dispatchData['webhook']);
     }
 }

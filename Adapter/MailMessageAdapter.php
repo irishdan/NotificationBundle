@@ -1,23 +1,21 @@
 <?php
 
-namespace IrishDan\NotificationBundle\Formatter;
+namespace IrishDan\NotificationBundle\Adapter;
 
 use IrishDan\NotificationBundle\EmailableInterface;
+use IrishDan\NotificationBundle\Message\MessageInterface;
 use IrishDan\NotificationBundle\Notification\NotificationInterface;
 
-/**
- * Class MailDataFormatter
- *
- * @package IrishDan\NotificationBundle\Formatter
- */
-class MailDataFormatter extends BaseFormatter implements MessageFormatterInterface
+class MailMessageAdapter extends BaseMessageAdapter implements MessageAdapterInterface
 {
     const CHANNEL = 'mail';
-    private $mailConfiguration;
+    protected $mailConfiguration;
+    protected $mailer;
 
-    public function __construct(array $mailConfiguration)
+    public function __construct(\Swift_Mailer $mailer, array $mailConfiguration = [])
     {
         $this->mailConfiguration = $mailConfiguration;
+        $this->mailer = $mailer;
     }
 
     /**
@@ -69,6 +67,40 @@ class MailDataFormatter extends BaseFormatter implements MessageFormatterInterfa
             return $this->mailConfiguration['default_sender'];
         }
 
-        return '';
+        throw new \LogicException(
+            'There is no "from" email address or "default_sender" configured'
+        );
+    }
+
+    public function dispatch(MessageInterface $message)
+    {
+        // Get the dispatch and message data from the message.
+        $dispatchData = $message->getDispatchData();
+        $messageData = $message->getMessageData();
+
+        $mail = \Swift_Message::newInstance()
+            ->setSubject($messageData['title'])
+            ->setBody($messageData['body']);
+
+        $mail->setFrom($dispatchData['from']);
+        $mail->setTo($dispatchData['to']);
+
+        // Check if its a html email
+        if (!empty($messageData['html_email'])) {
+            $mail->setContentType('text/html');
+        }
+
+        // Add any attachments
+        if (!empty($messageData['attachments'])) {
+            foreach ($messageData['attachments'] as $path => $filename) {
+                $mail->attach(
+                    \Swift_Attachment::fromPath($path)->setFilename($filename)
+                );
+            }
+        }
+
+        $sent = $this->mailer->send($mail);
+
+        return !empty($sent);
     }
 }
