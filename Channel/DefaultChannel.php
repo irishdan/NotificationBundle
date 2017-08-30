@@ -3,6 +3,7 @@
 namespace IrishDan\NotificationBundle\Channel;
 
 use IrishDan\NotificationBundle\Event\MessageCreatedEvent;
+use IrishDan\NotificationBundle\Event\MessageDispatchedEvent;
 use IrishDan\NotificationBundle\Exception\MessageDispatchException;
 use IrishDan\NotificationBundle\Exception\MessageFormatException;
 use IrishDan\NotificationBundle\Message\MessageInterface;
@@ -62,7 +63,14 @@ class DefaultChannel extends BaseChannel implements ChannelInterface
     {
         // Dispatch the message
         try {
-            return $this->dispatcher->dispatch($message);
+            $sent = $this->dispatcher->dispatch($message);
+
+            if ($sent && !empty($this->eventDispatcher)) {
+                $event = new MessageDispatchedEvent($message);
+                $this->eventDispatcher->dispatch(MessageDispatchedEvent::NAME, $event);
+            }
+
+            return $sent;
         } catch (\Exception $e) {
             throw new MessageDispatchException(
                 $e->getMessage() . ' ' . $e->getCode() . ' ' . $e->getFile() . ' ' . $e->getLine()

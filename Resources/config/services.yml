@@ -147,7 +147,7 @@ services:
     # Event subscribers
     notification.message_crud_subscriber:
         class: IrishDan\NotificationBundle\EventListener\MessageCRUDSubscriber
-        arguments: [ '@notification.channel.event_channel']
+        arguments: [ '@notification.channel.event_channel', '@logger']
         tags:
             - { name: kernel.event_subscriber }
 

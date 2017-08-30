@@ -37,4 +37,31 @@ abstract class BaseMessage implements MessageInterface
     {
         $this->channel = $channel;
     }
+
+    public function getTitle()
+    {
+        if (array_key_exists('title', $this->messageData)) {
+            return $this->messageData['title'];
+        }
+
+        return 'NA';
+    }
+
+    public function getRecipient()
+    {
+        $recipientKeys = [
+            'to',
+            'id',
+            'channel',
+            'webhook',
+        ];
+
+        foreach ($recipientKeys as $key) {
+            if (array_key_exists($key, $this->dispatchData)) {
+                return $this->dispatchData[$key];
+            }
+        }
+
+        return 'NA';
+    }
 }

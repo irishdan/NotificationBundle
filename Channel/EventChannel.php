@@ -32,6 +32,7 @@ class EventChannel extends BaseChannel implements ChannelInterface
 
     public function __construct(EventDispatcherInterface $eventDispatcher)
     {
+        parent::__construct();
         $this->eventDispatcher = $eventDispatcher;
     }
 
@@ -49,6 +50,10 @@ class EventChannel extends BaseChannel implements ChannelInterface
         try {
             if (!empty($this->dispatchers[$dispatcherKey])) {
                 $this->dispatchers[$dispatcherKey]->dispatch($message);
+
+                // Dispatch the message event
+                $messageEvent = new MessageDispatchedEvent($message);
+                $this->eventDispatcher->dispatch(MessageDispatchedEvent::NAME, $messageEvent);
             } else {
                 throw new MessageDispatchException(
                     sprintf('No dispatcher available with key "%s"', $dispatcherKey)
@@ -57,9 +62,5 @@ class EventChannel extends BaseChannel implements ChannelInterface
         } catch (\Exception $exception) {
             throw new MessageDispatchException($exception->getMessage());
         }
-
-        // Dispatch the message event
-        $messageEvent = new MessageDispatchedEvent($message);
-        $this->eventDispatcher->dispatch(MessageDispatchedEvent::NAME, $messageEvent);
     }
 }
