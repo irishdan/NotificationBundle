@@ -2,12 +2,12 @@
 
 namespace IrishDan\NotificationBundle\Channel;
 
-use IrishDan\NotificationBundle\Dispatcher\MessageDispatcherInterface;
+use IrishDan\NotificationBundle\Event\MessageCreatedEvent;
 use IrishDan\NotificationBundle\Exception\MessageDispatchException;
 use IrishDan\NotificationBundle\Exception\MessageFormatException;
-use IrishDan\NotificationBundle\Formatter\MessageFormatterInterface;
 use IrishDan\NotificationBundle\Message\MessageInterface;
 use IrishDan\NotificationBundle\Notification\NotificationInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 
 /**
@@ -17,11 +17,31 @@ use IrishDan\NotificationBundle\Notification\NotificationInterface;
  */
 class DefaultChannel extends BaseChannel implements ChannelInterface
 {
+    protected $eventDispatcher;
+    protected $dispatchToEvent = true;
+
+    public function setDispatchToEvent($dispatchToEvent)
+    {
+        $this->dispatchToEvent = $dispatchToEvent;
+    }
+
+    public function setEventDispatcher(EventDispatcherInterface $eventDispatcher)
+    {
+        $this->eventDispatcher = $eventDispatcher;
+    }
+
     public function formatAndDispatch(NotificationInterface $notification)
     {
         $message = $this->format($notification);
 
-        return $this->dispatch($message);
+        if (!empty($this->eventDispatcher) && $this->dispatchToEvent) {
+            $messageEvent = new MessageCreatedEvent($message);
+            $this->eventDispatcher->dispatch(MessageCreatedEvent::NAME, $messageEvent);
+
+            return $message;
+        } else {
+            return $this->dispatch($message);
+        }
     }
 
     public function format(NotificationInterface $notification)

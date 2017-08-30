@@ -20,20 +20,4 @@ interface ChannelInterface
      * @return boolean
      */
     public function formatAndDispatch(NotificationInterface $notification);
-
-    /**
-     * Formats a Notification into a Message
-     *
-     * @param NotificationInterface $notification
-     * @return MessageInterface
-     */
-    public function format(NotificationInterface $notification);
-
-    /**
-     * Allows for manual formatting and sending
-     *
-     * @param MessageInterface $message
-     * @return boolean
-     */
-    public function dispatch(MessageInterface $message);
 }

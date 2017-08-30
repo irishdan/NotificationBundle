@@ -13,7 +13,7 @@ class NotificationExtension extends Extension
     public function load(array $configs, ContainerBuilder $container)
     {
         $configuration = new Configuration();
-        $config        = $this->processConfiguration($configuration, $configs);
+        $config = $this->processConfiguration($configuration, $configs);
 
         foreach ($configs as $subConfig) {
             $config = array_merge($config, $subConfig);
@@ -32,7 +32,6 @@ class NotificationExtension extends Extension
             // Create a service for this channel.
             $this->createChannelService($channel, $container);
         }
-
 
         // Create the channel service
         $this->createChannelManagerService($enabledChannels, $container);
@@ -54,12 +53,15 @@ class NotificationExtension extends Extension
                 '%notification.channel.' . $channel . '.configuration%',
             ]
         );
-        $formatter  = new Reference('notification.' . $channel . '_data_formatter');
+        $formatter = new Reference('notification.' . $channel . '_data_formatter');
         $dispatcher = new Reference('notification.' . $channel . '_message_dispatcher');
+        $eventDispatcher = new Reference('event_dispatcher');
+
         $definition->setMethodCalls(
             [
                 ['setDataFormatter', [$formatter]],
                 ['setDispatcher', [$dispatcher]],
+                ['setEventDispatcher', [$eventDispatcher]],
             ]
         );
         $container->setDefinition('notification.channel.' . $channel, $definition);
@@ -81,7 +83,7 @@ class NotificationExtension extends Extension
         foreach ($enabledChannels as $channel) {
             // Add the channel to the channel manager service
             $channelManager = $container->getDefinition('notification.channel_manager');
-            $channelId      = 'notification.channel.' . $channel;
+            $channelId = 'notification.channel.' . $channel;
             $channelManager->addMethodCall('setChannel', [$channel, new Reference($channelId)]);
         }
     }

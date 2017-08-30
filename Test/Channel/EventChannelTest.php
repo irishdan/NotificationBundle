@@ -2,7 +2,6 @@
 
 namespace IrishDan\NotificationBundle\Test\Channel;
 
-use IrishDan\NotificationBundle\Channel\DefaultChannel;
 use IrishDan\NotificationBundle\Channel\EventChannel;
 use IrishDan\NotificationBundle\Exception\MessageDispatchException;
 use IrishDan\NotificationBundle\Test\NotificationTestCase;
@@ -21,22 +20,10 @@ class EventChannelTest extends NotificationTestCase
         $this->notification = $this->getNotificationWithUser();
 
         $this->eventDispatcher = $this->getMockBuilder(EventDispatcherInterface::class)
-                                      ->disableOriginalConstructor()
-                                      ->getMock();
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $this->eventChannel = new EventChannel($this->eventDispatcher);
-    }
-
-    public function testFormat()
-    {
-        $this->eventDispatcher->expects($this->once())->method('dispatch');
-
-        $formatter = $this->getMockFormatter(true);
-        $this->eventChannel->setDataFormatter($formatter);
-
-        $message = $this->eventChannel->format($this->notification);
-
-        $this->assertInstanceOf('IrishDan\NotificationBundle\Message\MessageInterface', $message);
     }
 
     public function testDispatch()
