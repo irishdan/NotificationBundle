@@ -22,7 +22,7 @@ class EventChannel extends BaseChannel implements ChannelInterface
 
     public function formatAndDispatch(NotificationInterface $notification)
     {
-        $this->format($notification);
+        return false;
     }
 
     public function setDispatchers($key, MessageDispatcherInterface $dispatcher)

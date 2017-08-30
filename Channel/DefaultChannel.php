@@ -38,7 +38,7 @@ class DefaultChannel extends BaseChannel implements ChannelInterface
             $messageEvent = new MessageCreatedEvent($message);
             $this->eventDispatcher->dispatch(MessageCreatedEvent::NAME, $messageEvent);
 
-            return $message;
+            return true;
         } else {
             return $this->dispatch($message);
         }
