@@ -8,8 +8,10 @@ use IrishDan\NotificationBundle\SlackableInterface;
 class Broadcast implements BroadcastNotifiableInterface, NotifiableInterface, SlackableInterface
 {
     protected $slackWebhook;
+    protected $pusherChannel;
     protected $subscribedChannels = [
         'slack',
+        'pusher',
     ];
 
     public function setSlackWebhook($webhook)
@@ -22,14 +24,14 @@ class Broadcast implements BroadcastNotifiableInterface, NotifiableInterface, Sl
         return $this->slackWebhook;
     }
 
-    public function setPusherChannel($channelName)
+    public function setPusherChannel($pusherChannel)
     {
-        // TODO: Implement setPusherChannel() method.
+        $this->pusherChannel = $pusherChannel;
     }
 
     public function getPusherChannel()
     {
-        // TODO: Implement getPusherChannel() method.
+        return $this->pusherChannel;
     }
 
     public function getSubscribedChannels()

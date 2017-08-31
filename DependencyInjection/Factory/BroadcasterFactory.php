@@ -23,8 +23,8 @@ class BroadcasterFactory
         $definition->setClass('IrishDan\NotificationBundle\Broadcast\Broadcaster');
         $definition->setArguments(
             [
-                '@notification.broadcast.notifiable',
-                '@' . $channelServiceName,
+                new Reference('notification.broadcast.notifiable'),
+                new Reference($channelServiceName),
                 '%' . $parameterName . '%',
             ]
         );
@@ -32,7 +32,6 @@ class BroadcasterFactory
         $container->setDefinition($serviceName, $definition);
 
         // Add the broadcast to the notification manager.
-        $notificationManager = $container->getDefinition('notification.manager');
-        $notificationManager->addMethodCall('setBroadcaster', [$name, new Reference($serviceName)]);
+        $container->findDefinition('notification.manager')->addMethodCall('setBroadcaster', [$name, new Reference($serviceName)]);
     }
 }

@@ -8,7 +8,7 @@ use Symfony\Component\DependencyInjection\Reference;
 
 class ChannelFactory
 {
-    public function create(ContainerBuilder $container, $channel, array $config = [])
+    public function create(ContainerBuilder $container, $channel)
     {
         $definition = new Definition();
         $definition->setClass('IrishDan\NotificationBundle\Channel\DirectChannel');
@@ -16,6 +16,7 @@ class ChannelFactory
             [
                 '%notification.channel.' . $channel . '.enabled%',
                 '%notification.channel.' . $channel . '.configuration%',
+                $channel,
             ]
         );
 

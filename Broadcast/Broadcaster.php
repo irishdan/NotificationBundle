@@ -37,7 +37,7 @@ class Broadcaster
         }
     }
 
-    public function send(NotificationInterface $notification)
+    public function broadcast(NotificationInterface $notification)
     {
         $notification->setNotifiable($this->notifiable);
         $notification->setChannel($this->channelName);

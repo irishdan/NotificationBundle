@@ -16,11 +16,12 @@ class NotificationExtension extends Extension
     public function load(array $configs, ContainerBuilder $container)
     {
         $configuration = new Configuration();
-        $config = $this->processConfiguration($configuration, $configs);
 
-        //Load our YAML resources
+        // Load our YAML resources
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.yml');
+
+        $config = $this->processConfiguration($configuration, $configs);
 
         foreach ($configs as $subConfig) {
             $config = array_merge($config, $subConfig);
@@ -45,7 +46,10 @@ class NotificationExtension extends Extension
         // Create the channel service
         $this->createChannelManagerService($enabledChannels, $container);
 
-        // Create services needd for broadcasting
+        // Create the notification manager service
+        $this->createNotificationManagerService($container);
+
+        // Create services need for broadcasting
         if (!empty($config['broadcasters'])) {
             foreach ($config['broadcasters'] as $name => $config) {
                 $this->createBroadcaster($name, $config, $container);
@@ -63,6 +67,19 @@ class NotificationExtension extends Extension
     {
         $broadcastFactory = new BroadcasterFactory();
         $broadcastFactory->create($container, $name, $config);
+    }
+
+    private function createNotificationManagerService(ContainerBuilder $container)
+    {
+        $definition = new Definition();
+        $definition->setClass('IrishDan\NotificationBundle\NotificationManager');
+        $definition->setArguments(
+            [
+                new Reference('notification.channel_manager'),
+                new Reference('notification.database_notification_manager'),
+            ]
+        );
+        $container->setDefinition('notification.manager', $definition);
     }
 
     private function createChannelManagerService(array $enabledChannels, ContainerBuilder $container)

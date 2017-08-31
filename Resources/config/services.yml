@@ -1,8 +1,7 @@
 services:
-    notification.manager:
-        class: IrishDan\NotificationBundle\NotificationManager
-        arguments: [ '@notification.channel_manager', '@notification.database_notification_manager' ]
-        public: true
+    #notification.manager:
+    #    class: IrishDan\NotificationBundle\NotificationManager
+    #    arguments: [ '@notification.channel_manager', '@notification.database_notification_manager' ]
 
     notification.database_notification_manager:
         class: IrishDan\NotificationBundle\DatabaseNotificationManager
@@ -74,6 +73,7 @@ services:
             - { name: console.command }
 
     # Event channel
+    # @TODO: Set them dynamically, only enabled channels
     notification.channel.event_channel:
         class: IrishDan\NotificationBundle\Channel\EventChannel
         arguments: [ '@event_dispatcher']

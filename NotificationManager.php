@@ -3,6 +3,7 @@
 namespace IrishDan\NotificationBundle;
 
 use IrishDan\NotificationBundle\Broadcast\Broadcaster;
+use IrishDan\NotificationBundle\Exception\BroadcastException;
 use IrishDan\NotificationBundle\Notification\DatabaseNotificationInterface;
 use IrishDan\NotificationBundle\Notification\NotifiableInterface;
 use IrishDan\NotificationBundle\Notification\NotificationInterface;
@@ -26,40 +27,67 @@ class NotificationManager
      * @var DatabaseNotificationManager
      */
     protected $databaseNotificationManager;
+    /**
+     * @var
+     */
     protected $propertyAccessor;
+    /**
+     * @var array
+     */
     protected $broadcasters = [];
 
+    /**
+     * NotificationManager constructor.
+     *
+     * @param ChannelManager                   $channelManager
+     * @param DatabaseNotificationManager|null $databaseNotificationManager
+     */
     public function __construct(ChannelManager $channelManager, DatabaseNotificationManager $databaseNotificationManager = null)
     {
         $this->channelManager = $channelManager;
         $this->databaseNotificationManager = $databaseNotificationManager;
     }
 
+    /**
+     * @param             $key
+     * @param Broadcaster $broadcaster
+     */
     public function setBroadcaster($key, Broadcaster $broadcaster)
     {
         $this->broadcasters[$key] = $broadcaster;
     }
 
+    /**
+     * @param DatabaseNotificationManager $databaseNotificationManager
+     */
     public function setDatabaseNotificationManager(DatabaseNotificationManager $databaseNotificationManager)
     {
         $this->databaseNotificationManager = $databaseNotificationManager;
     }
 
+    /**
+     * @param NotificationInterface $notification
+     * @param array                 $broadcasters
+     * @throws BroadcastException
+     */
     public function broadcast(NotificationInterface $notification, array $broadcasters)
     {
         foreach ($broadcasters as $broadcaster) {
             if (empty($this->broadcasters[$broadcaster])) {
-                return false;
+                throw new BroadcastException(
+                    sprintf('Broadcast channel with key "%s" does not exists', $broadcaster)
+                );
             }
 
-            try {
-                $this->broadcasters[$broadcaster]->broadcast($notification);
-            } catch (\Exception $exception) {
-                // @TODO:
-            }
+            $this->broadcasters[$broadcaster]->broadcast($notification);
         }
     }
 
+    /**
+     * @param NotificationInterface $notification
+     * @param                       $recipients
+     * @param array                 $data
+     */
     public function send(NotificationInterface $notification, $recipients, array $data = [])
     {
         if (!is_array($recipients)) {
@@ -82,6 +110,10 @@ class NotificationManager
         $this->channelManager->send($recipients, $notification);
     }
 
+    /**
+     * @param DatabaseNotificationInterface $notification
+     * @return bool
+     */
     public function markAsRead(DatabaseNotificationInterface $notification)
     {
         $now = new \DateTime();
@@ -94,6 +126,10 @@ class NotificationManager
         }
     }
 
+    /**
+     * @param NotifiableInterface $user
+     * @return bool
+     */
     public function markAllAsRead(NotifiableInterface $user)
     {
         $now = new \DateTime();
@@ -106,21 +142,38 @@ class NotificationManager
         }
     }
 
+    /**
+     * @param NotifiableInterface $user
+     * @return int
+     */
     public function allNotificationCount(NotifiableInterface $user)
     {
         return $this->notificationCount($user);
     }
 
+    /**
+     * @param NotifiableInterface $user
+     * @return int
+     */
     public function unreadNotificationCount(NotifiableInterface $user)
     {
         return $this->notificationCount($user, 'unread');
     }
 
+    /**
+     * @param NotifiableInterface $user
+     * @return int
+     */
     public function readNotificationCount(NotifiableInterface $user)
     {
         return $this->notificationCount($user, 'read');
     }
 
+    /**
+     * @param NotifiableInterface $user
+     * @param string              $status
+     * @return int
+     */
     public function notificationCount(NotifiableInterface $user, $status = '')
     {
         return $this->databaseNotificationManager->getUsersNotificationCount($user, $status);
