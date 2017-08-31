@@ -17,6 +17,13 @@ class {{ class_name }} implements NotificationInterface
 {% endblock class_definition %}
 {
 {% block class_body %}
+
+    protected $data = [
+        'title' => 'New member',
+        'body' => 'New member, %s, just joined',
+        'html_email' => true,
+    ];
+
     /**
      * The recipient of this notification
      *
@@ -33,7 +40,7 @@ class {{ class_name }} implements NotificationInterface
 
     /**
      * A unique identifier for this notification.
-     * Will be commen acroos different channels.
+     * Will be common across different channels.
      *
      * @var
      */
@@ -58,7 +65,7 @@ class {{ class_name }} implements NotificationInterface
     }
 
     /**
-     * @param mixed $uuid
+     * @param string $uuid
      */
     public function setUuid($uuid)
     {
@@ -99,7 +106,7 @@ class {{ class_name }} implements NotificationInterface
      */
     public function getChannels()
     {
-        return ['mail', 'database', 'pusher', 'nexmo'];
+        return ['{{ channels |join("', '") }}'];
     }
 
     /**
@@ -110,33 +117,21 @@ class {{ class_name }} implements NotificationInterface
      */
     public function getDataArray()
     {
-        // @TODO: Customise with your content.
-        $messageData = [
-            'title' => 'New member',
-            'body' => 'New member, %s, just joined',
-            'action' => [
-                'url' => 'http://danbyrne.me',
-                'text' => 'click here',
-            ],
-        ];
-
-        // @TODO: You can alter the data depending on the current channel eg:
-        // switch ($this->channel) {
-        //     case 'database':
-        //         $messageData['database specific data']
-        //         break;
-        // case 'pusher':
-        //         $messageData['icon'] = 'pusher-icon-class'
-        //         break;
-        // }
-
-        return $messageData;
+        return $this->data;
     }
 
-    public function getTemplate()
+    public function getTemplateArray()
     {
         // The view template to use for this message. can switch depending on the channel.
-        return 'NotificationBundle:{{ name }}:' . $this->channel . '.message.html.twig';
+        return [
+            'title' => 'NotificationBundle:{{ name }}:title.html.twig',
+            'body' => 'NotificationBundle:{{ name }}:' . $this->channel . '.message.html.twig',
+        ];
+    }
+
+    public function setDataArray(array $data)
+    {
+        $this->data = $data;
     }
 
 {% endblock class_body %}

@@ -45,6 +45,7 @@ class NotificationGenerator extends Generator
             'namespace' => $bundle->getNamespace(),
             'class_name' => $notificationClassName,
             'name' => $name,
+            'channels' => $this->channels,
         ];
 
         // Build an array of files to be created
@@ -56,11 +57,14 @@ class NotificationGenerator extends Generator
         ];
 
         // Generate the templates for each channel.
+        // A general message.twig and a title.twig should also be generated
         $templateDir = $this->rootDirectory . '/Resources/NotificationBundle/views/' . $name . '/';
-        foreach ($this->channels as $channel) {
-            $channel = explode('_', $channel)[0];
-            $destination = $templateDir . $channel . '.message.html.twig';
 
+        $filesArray[] = ['message/body.html.twig', $templateDir . 'body.html.twig', []];
+        $filesArray[] = ['message/title.html.twig', $templateDir . 'title.html.twig', []];
+
+        foreach ($this->channels as $channel) {
+            $destination = $templateDir . $channel . '.message.html.twig';
             $filesArray[] = [
                 'message/' . $channel . '.message.html.twig',
                 $destination,

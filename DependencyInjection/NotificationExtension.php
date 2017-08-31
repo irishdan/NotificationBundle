@@ -38,7 +38,7 @@ class NotificationExtension extends Extension
             $container->setParameter($parameterName, $parameters);
 
             // Create a service for this channel.
-            $this->createChannelService($channel, $container);
+            $this->createChannelService($channel, $container, $parameters);
         }
 
         $container->setParameter('notification.available_channels', $enabledChannels);
@@ -57,10 +57,10 @@ class NotificationExtension extends Extension
         }
     }
 
-    private function createChannelService($channel, ContainerBuilder $container)
+    private function createChannelService($channel, ContainerBuilder $container, array $config)
     {
         $factory = new ChannelFactory();
-        $factory->create($container, $channel);
+        $factory->create($container, $channel, $config);
     }
 
     private function createBroadcaster($name, $config, ContainerBuilder $container)

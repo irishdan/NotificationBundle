@@ -3,9 +3,10 @@
 namespace IrishDan\NotificationBundle\Broadcast;
 
 use IrishDan\NotificationBundle\Notification\NotifiableInterface;
+use IrishDan\NotificationBundle\PusherableInterface;
 use IrishDan\NotificationBundle\SlackableInterface;
 
-class Broadcast implements BroadcastNotifiableInterface, NotifiableInterface, SlackableInterface
+class Broadcast implements BroadcastNotifiableInterface, NotifiableInterface, SlackableInterface, PusherableInterface
 {
     protected $slackWebhook;
     protected $pusherChannel;
@@ -42,5 +43,10 @@ class Broadcast implements BroadcastNotifiableInterface, NotifiableInterface, Sl
     public function isSubscribedToChannel($channel)
     {
         return in_array($this->subscribedChannels, $channel);
+    }
+
+    public function getPusherChannelSuffix()
+    {
+        return 'broadcast';
     }
 }

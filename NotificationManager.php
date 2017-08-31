@@ -67,11 +67,15 @@ class NotificationManager
 
     /**
      * @param NotificationInterface $notification
-     * @param array                 $broadcasters
+     * @param array  | string       $broadcasters
      * @throws BroadcastException
      */
-    public function broadcast(NotificationInterface $notification, array $broadcasters)
+    public function broadcast(NotificationInterface $notification, $broadcasters)
     {
+        if (is_string($broadcasters)) {
+            $broadcasters = [$broadcasters];
+        }
+
         foreach ($broadcasters as $broadcaster) {
             if (empty($this->broadcasters[$broadcaster])) {
                 throw new BroadcastException(

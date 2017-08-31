@@ -7,6 +7,11 @@ use IrishDan\NotificationBundle\Notification\NotificationInterface;
 use IrishDan\NotificationBundle\PusherableInterface;
 use IrishDan\NotificationBundle\PusherManager;
 
+/**
+ * Class PusherMessageAdapter
+ *
+ * @package IrishDan\NotificationBundle\Adapter
+ */
 class PusherMessageAdapter extends BaseMessageAdapter implements MessageAdapterInterface
 {
     const CHANNEL = 'pusher';

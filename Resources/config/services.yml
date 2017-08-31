@@ -1,8 +1,4 @@
 services:
-    #notification.manager:
-    #    class: IrishDan\NotificationBundle\NotificationManager
-    #    arguments: [ '@notification.channel_manager', '@notification.database_notification_manager' ]
-
     notification.database_notification_manager:
         class: IrishDan\NotificationBundle\DatabaseNotificationManager
         arguments: [ '@doctrine', '%notification.channel.database.configuration%' ]
@@ -15,29 +11,34 @@ services:
     notification.adapter.database:
         class: IrishDan\NotificationBundle\Adapter\DatabaseMessageAdapter
         arguments: [ '@notification.database_notification_manager']
+        public: false
         calls:
             - [setTemplating, ['@twig']]
 
     notification.adapter.mail:
         class: IrishDan\NotificationBundle\Adapter\MailMessageAdapter
         arguments: ['@mailer' , '%notification.channel.mail.configuration%']
+        public: false
         calls:
             - [setTemplating, ['@twig']]
 
     notification.adapter.pusher:
         class: IrishDan\NotificationBundle\Adapter\PusherMessageAdapter
         arguments: [ '@notification.pusher_manager']
+        public: false
         calls:
             - [setTemplating, ['@twig']]
 
     notification.adapter.nexmo:
         class: IrishDan\NotificationBundle\Adapter\NexmoMessageAdapter
         arguments: [ '%notification.channel.nexmo.configuration%']
+        public: false
         calls:
             - [setTemplating, ['@twig']]
 
     notification.adapter.slack:
         class: IrishDan\NotificationBundle\Adapter\SlackWebhookMessageAdapter
+        public: false
         calls:
             - [setTemplating, ['@twig']]
 
@@ -93,4 +94,5 @@ services:
 
     # broadcasting
     notification.broadcast.notifiable:
+        public: false
         class: IrishDan\NotificationBundle\Broadcast\Broadcast
