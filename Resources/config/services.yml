@@ -1,8 +1,8 @@
 services:
-    notification:
+    notification.manager:
         class: IrishDan\NotificationBundle\NotificationManager
         arguments: [ '@notification.channel_manager', '@notification.database_notification_manager' ]
-        calls:
+        public: true
 
     notification.database_notification_manager:
         class: IrishDan\NotificationBundle\DatabaseNotificationManager

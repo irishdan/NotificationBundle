@@ -3,6 +3,7 @@
 namespace IrishDan\NotificationBundle\Broadcast;
 
 use IrishDan\NotificationBundle\Channel\ChannelInterface;
+use IrishDan\NotificationBundle\Notification\NotifiableInterface;
 use IrishDan\NotificationBundle\Notification\NotificationInterface;
 
 class Broadcaster
@@ -12,7 +13,7 @@ class Broadcaster
     protected $config;
     protected $channelName;
 
-    public function __construct(BroadcastNotifiableInterface $notifiable, ChannelInterface $channel, array $config)
+    public function __construct(NotifiableInterface $notifiable, ChannelInterface $channel, array $config)
     {
         $this->notifiable = $notifiable;
         $this->channel = $channel;
@@ -42,7 +43,6 @@ class Broadcaster
         $notification->setChannel($this->channelName);
 
         // Format and send the broadcast
-        $message = $this->channel->format($notification);
-        $this->channel->dispatch($message);
+        $this->channel->formatAndDispatch($notification);
     }
 }

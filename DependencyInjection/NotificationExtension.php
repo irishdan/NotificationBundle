@@ -4,7 +4,9 @@ namespace IrishDan\NotificationBundle\DependencyInjection;
 
 use IrishDan\NotificationBundle\DependencyInjection\Factory\BroadcasterFactory;
 use IrishDan\NotificationBundle\DependencyInjection\Factory\ChannelFactory;
+use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -16,6 +18,10 @@ class NotificationExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
+        //Load our YAML resources
+        $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
+        $loader->load('services.yml');
+
         foreach ($configs as $subConfig) {
             $config = array_merge($config, $subConfig);
         }
@@ -26,9 +32,9 @@ class NotificationExtension extends Extension
             $container->setParameter('notification.channel.' . $channel . '.enabled', true);
 
             // Set a configuration parameter for each channel also.
-            $configuration = empty($channelConfig) ? [] : $channelConfig;
+            $parameters = empty($channelConfig) ? [] : $channelConfig;
             $parameterName = 'notification.channel.' . $channel . '.configuration';
-            $container->setParameter($parameterName, $configuration);
+            $container->setParameter($parameterName, $parameters);
 
             // Create a service for this channel.
             $this->createChannelService($channel, $container);
@@ -70,7 +76,6 @@ class NotificationExtension extends Extension
             ]
         );
         $container->setDefinition('notification.channel_manager', $definition);
-
 
         foreach ($enabledChannels as $channel) {
             // Add the channel to the channel manager service

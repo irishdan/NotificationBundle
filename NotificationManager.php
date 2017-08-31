@@ -2,6 +2,8 @@
 
 namespace IrishDan\NotificationBundle;
 
+use IrishDan\NotificationBundle\Broadcast\Broadcaster;
+use IrishDan\NotificationBundle\Notification\DatabaseNotificationInterface;
 use IrishDan\NotificationBundle\Notification\NotifiableInterface;
 use IrishDan\NotificationBundle\Notification\NotificationInterface;
 use Symfony\Component\PropertyAccess\PropertyAccess;
@@ -19,18 +21,23 @@ class NotificationManager
     /**
      * @var ChannelManager
      */
-    private $channelManager;
+    protected $channelManager;
     /**
      * @var DatabaseNotificationManager
      */
-    private $databaseNotificationManager;
+    protected $databaseNotificationManager;
     protected $propertyAccessor;
+    protected $broadcasters = [];
 
-    public function __construct(ChannelManager $channelManager, DatabaseNotificationManager $databaseNotificationManager = null, $broadcaster = null)
+    public function __construct(ChannelManager $channelManager, DatabaseNotificationManager $databaseNotificationManager = null)
     {
         $this->channelManager = $channelManager;
         $this->databaseNotificationManager = $databaseNotificationManager;
-        $this->broadcaster = $broadcaster;
+    }
+
+    public function setBroadcaster($key, Broadcaster $broadcaster)
+    {
+        $this->broadcasters[$key] = $broadcaster;
     }
 
     public function setDatabaseNotificationManager(DatabaseNotificationManager $databaseNotificationManager)
@@ -38,12 +45,18 @@ class NotificationManager
         $this->databaseNotificationManager = $databaseNotificationManager;
     }
 
-    public function broadcast(NotificationInterface $notification, array $broadcasters = null)
+    public function broadcast(NotificationInterface $notification, array $broadcasters)
     {
-        try {
-            $this->broadcaster->broadcast($notification);
-        } catch (\Exception $exception) {
-            // @TODO:
+        foreach ($broadcasters as $broadcaster) {
+            if (empty($this->broadcasters[$broadcaster])) {
+                return false;
+            }
+
+            try {
+                $this->broadcasters[$broadcaster]->broadcast($notification);
+            } catch (\Exception $exception) {
+                // @TODO:
+            }
         }
     }
 
@@ -69,7 +82,7 @@ class NotificationManager
         $this->channelManager->send($recipients, $notification);
     }
 
-    public function markAsRead(NotificationInterface $notification)
+    public function markAsRead(DatabaseNotificationInterface $notification)
     {
         $now = new \DateTime();
         try {
@@ -110,11 +123,6 @@ class NotificationManager
 
     public function notificationCount(NotifiableInterface $user, $status = '')
     {
-        // try {
-
         return $this->databaseNotificationManager->getUsersNotificationCount($user, $status);
-        // } catch (\Exception $exception) {
-        //     // @TODO:
-        // }
     }
 }
