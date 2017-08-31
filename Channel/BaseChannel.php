@@ -22,4 +22,9 @@ abstract class BaseChannel implements ChannelInterface
     {
         $this->adapter = $adapter;
     }
+
+    public function channelName()
+    {
+        return $this->channel;
+    }
 }

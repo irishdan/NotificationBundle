@@ -2,6 +2,8 @@
 
 namespace IrishDan\NotificationBundle\DependencyInjection;
 
+use IrishDan\NotificationBundle\DependencyInjection\Factory\BroadcasterFactory;
+use IrishDan\NotificationBundle\DependencyInjection\Factory\ChannelFactory;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
@@ -32,37 +34,29 @@ class NotificationExtension extends Extension
             $this->createChannelService($channel, $container);
         }
 
+        $container->setParameter('notification.available_channels', $enabledChannels);
+
         // Create the channel service
         $this->createChannelManagerService($enabledChannels, $container);
 
-        $container->setParameter('notification.available_channels', $enabledChannels);
-
-        foreach ($config['broadcasters'] as $name => $config) {
-            $adapters[$name] = $this->createBroadcaster($name, $config, $container);
+        // Create services needd for broadcasting
+        if (!empty($config['broadcasters'])) {
+            foreach ($config['broadcasters'] as $name => $config) {
+                $this->createBroadcaster($name, $config, $container);
+            }
         }
     }
 
     private function createChannelService($channel, ContainerBuilder $container)
     {
-        $definition = new Definition();
-        $definition->setClass('IrishDan\NotificationBundle\Channel\DirectChannel');
-        $definition->setArguments(
-            [
-                '%notification.channel.' . $channel . '.enabled%',
-                '%notification.channel.' . $channel . '.configuration%',
-            ]
-        );
+        $factory = new ChannelFactory();
+        $factory->create($container, $channel);
+    }
 
-        $adapter = new Reference('notification.adapter.' . $channel);
-        $eventDispatcher = new Reference('event_dispatcher');
-
-        $definition->setMethodCalls(
-            [
-                ['setAdapter', [$adapter]],
-                ['setEventDispatcher', [$eventDispatcher]],
-            ]
-        );
-        $container->setDefinition('notification.channel.' . $channel, $definition);
+    private function createBroadcaster($name, $config, ContainerBuilder $container)
+    {
+        $broadcastFactory = new BroadcasterFactory();
+        $broadcastFactory->create($container, $name, $config);
     }
 
     private function createChannelManagerService(array $enabledChannels, ContainerBuilder $container)
@@ -72,7 +66,7 @@ class NotificationExtension extends Extension
         $definition->setArguments(
             [
                 new Reference('event_dispatcher'),
-                $enabledChannels, // @TODO: can we reference a parameter
+                $container->getParameter('notification.available_channels'),
             ]
         );
         $container->setDefinition('notification.channel_manager', $definition);
@@ -84,10 +78,5 @@ class NotificationExtension extends Extension
             $channelId = 'notification.channel.' . $channel;
             $channelManager->addMethodCall('setChannel', [$channel, new Reference($channelId)]);
         }
-    }
-
-    private function createBroadcaster($name, $broadcaster, $container)
-    {
-        // @TODO:
     }
 }

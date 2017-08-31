@@ -26,9 +26,11 @@ class NotificationManager
     private $databaseNotificationManager;
     protected $propertyAccessor;
 
-    public function __construct(ChannelManager $channelManager)
+    public function __construct(ChannelManager $channelManager, DatabaseNotificationManager $databaseNotificationManager = null, $broadcaster = null)
     {
         $this->channelManager = $channelManager;
+        $this->databaseNotificationManager = $databaseNotificationManager;
+        $this->broadcaster = $broadcaster;
     }
 
     public function setDatabaseNotificationManager(DatabaseNotificationManager $databaseNotificationManager)
@@ -38,7 +40,11 @@ class NotificationManager
 
     public function broadcast(NotificationInterface $notification, array $broadcasters = null)
     {
-
+        try {
+            $this->broadcaster->broadcast($notification);
+        } catch (\Exception $exception) {
+            // @TODO:
+        }
     }
 
     public function send(NotificationInterface $notification, $recipients, array $data = [])

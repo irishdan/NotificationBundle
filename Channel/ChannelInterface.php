@@ -20,4 +20,6 @@ interface ChannelInterface
      * @return boolean
      */
     public function formatAndDispatch(NotificationInterface $notification);
+
+    public function channelName();
 }
