@@ -14,12 +14,7 @@ class PusherManager
      */
     private $config;
 
-    /**
-     * PusherManager constructor.
-     *
-     * @param array $config
-     */
-    public function __construct(array $config)
+    public function setConfig(array $config)
     {
         $this->config = $config;
     }
@@ -41,11 +36,6 @@ class PusherManager
         );
 
         return $pusher;
-    }
-
-    public function setConfig(array $config)
-    {
-        $this->config = $config;
     }
 
     /**

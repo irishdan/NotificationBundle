@@ -45,4 +45,9 @@ abstract class BaseChannel implements ChannelInterface
     {
         return $this->channelName;
     }
+
+    public function getConfiguration()
+    {
+        return $this->channelConfiguration;
+    }
 }

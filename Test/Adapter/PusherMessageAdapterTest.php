@@ -14,7 +14,10 @@ class PusherMessageAdapterTest extends AdapterTestCase
 
         $pusherManager = $this->getService('notification.pusher_manager');
         $this->adapter = new PusherMessageAdapter($pusherManager);
-        $this->adapter->setConfiguration([]);
+        $this->adapter->setConfiguration([
+            'channel_name' => 'pusher_test_',
+            'event' => 'pusher_event',
+        ]);
         $this->adapter->setChannelName('pusher');
     }
 

@@ -29,7 +29,8 @@ class PusherMessageAdapter extends BaseMessageAdapter implements MessageAdapterI
      */
     public function format(NotificationInterface $notification)
     {
-        $notification->setChannel($this->channelName);
+        $this->pusherManager->setConfig($this->configuration);
+
         parent::format($notification);
 
         /** @var PusherableInterface $notifiable */
@@ -51,8 +52,6 @@ class PusherMessageAdapter extends BaseMessageAdapter implements MessageAdapterI
 
     public function dispatch(MessageInterface $message)
     {
-        // @TODO: Alter configuration if message has configuration data
-
         // Get the dispatch and message data from the message.
         $dispatchData = $message->getDispatchData();
         $messageData = $message->getMessageData();

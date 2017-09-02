@@ -11,7 +11,8 @@ class PusherManagerTest extends NotificationTestCase
     public function setUp()
     {
         $config = $this->getNotificationChannelConfiguration('pusher');
-        $this->pusherManager = new PusherManager($config);
+        $this->pusherManager = new PusherManager();
+        $this->pusherManager->setConfig($config);
     }
 
     public function testGetPusherClient()

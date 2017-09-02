@@ -5,7 +5,6 @@ services:
 
     notification.pusher_manager:
         class: IrishDan\NotificationBundle\PusherManager
-        arguments: [ '%notification.channel.pusher.configuration%']
         shared: false
 
     # Message adapters

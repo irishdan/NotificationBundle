@@ -14,7 +14,8 @@ class BroadcasterFactory
         $parameterName = 'notification.broadcast.config.' . $name;
         $serviceName = 'notification.broadcast.' . $name;
 
-        $channelServiceName = 'notification.channel.' . $type;
+        $channelFactory = new ChannelFactory();
+        $channelServiceName = $channelFactory->create($container, $name, $config[$type], $type);
 
         // Create the configuration as a parameter.
         $container->setParameter($parameterName, $config[$type]);

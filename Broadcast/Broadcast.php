@@ -49,4 +49,12 @@ class Broadcast implements BroadcastNotifiableInterface, NotifiableInterface, Sl
     {
         return 'broadcast';
     }
+
+    public function getData()
+    {
+        return [
+            'pusher_channel' => $this->pusherChannel,
+            'slack_webhook' => $this->slackWebhook,
+        ];
+    }
 }

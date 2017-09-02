@@ -8,21 +8,35 @@ use Symfony\Component\DependencyInjection\Reference;
 
 class ChannelFactory
 {
-    public function create(ContainerBuilder $container, $channel, array $config)
+    public function create(ContainerBuilder $container, $channel, array $config, $type = '')
     {
-        $adapter = new Reference('notification.adapter.' . $channel);
+        if (empty($type)) {
+            $type = $channel;
+        }
+
+        // Merge config with type config
+        if ($container->hasParameter('notification.channel.' . $type . '.configuration')) {
+            $defaultConfig = $container->getParameter('notification.channel.' . $type . '.configuration');
+            $config = array_merge($defaultConfig, $config);
+        }
+
+        $adapter = new Reference('notification.adapter.' . $type);
+        $eventDispatcher = new Reference('event_dispatcher');
+
+        $parameterName = 'notification.channel.' . $channel . '.configuration';
+        if (!$container->hasParameter($parameterName)) {
+            $container->setParameter($parameterName, $config);
+        }
 
         $definition = new Definition();
         $definition->setClass('IrishDan\NotificationBundle\Channel\DirectChannel');
         $definition->setArguments(
             [
-                '%notification.channel.' . $channel . '.configuration%',
+                '%' . $parameterName . '%',
                 $channel,
                 $adapter,
             ]
         );
-
-        $eventDispatcher = new Reference('event_dispatcher');
 
         $definition->setMethodCalls(
             [
@@ -30,10 +44,11 @@ class ChannelFactory
             ]
         );
 
-        if (!empty($config['direct_dispatch'])) {
-            $definition->addMethodCall('setDispatchToEvent', [false]);
-        }
+        $definition->addMethodCall('setDispatchToEvent', [empty($config['direct_dispatch'])]);
 
-        $container->setDefinition('notification.channel.' . $channel, $definition);
+        $serviceName = 'notification.channel.' . $channel;
+        $container->setDefinition($serviceName, $definition);
+
+        return $serviceName;
     }
 }

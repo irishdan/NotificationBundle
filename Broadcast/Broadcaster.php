@@ -27,26 +27,20 @@ class Broadcaster
      */
     public function __construct(NotifiableInterface $notifiable, ChannelInterface $channel, array $config)
     {
+        // Set the data for Slack Broadcasts
+        if (!empty($config['webhook'])) {
+            $notifiable->setSlackWebhook($config['webhook']);
+        }
+
+        // Set data for pusher broadcasts
+        if (!empty($config['channel_name'])) {
+            $notifiable->setPusherChannel($config['channel_name']);
+        }
+
         $this->notifiable = $notifiable;
         $this->channel = $channel;
         $this->config = $config;
         $this->channelName = $channel->channelName();
-
-        switch ($this->channelName) {
-            case 'slack':
-                // Set the data for Slack Broadcasts
-                if (!empty($config['webhook'])) {
-                    $notifiable->setSlackWebhook($config['webhook']);
-                }
-                break;
-
-            case 'pusher':
-                // Set data for pusher broadcasts
-                if (!empty($config['channel_name'])) {
-                    $notifiable->setPusherChannel($config['channel_name']);
-                }
-                break;
-        }
     }
 
     /**
@@ -57,9 +51,8 @@ class Broadcaster
         $notification->setNotifiable($this->notifiable);
         $notification->setChannel($this->channelName);
 
-        // Format and send the broadcast
-        $message = $this->channel->format($notification);
-        // @TODO: Alter the channel configuration
-        $this->channel->dispatcher($message);
+        // Format and send the broadcast.
+        $this->channel->setDispatchToEvent(false);
+        $this->channel->formatAndDispatch($notification);
     }
 }
