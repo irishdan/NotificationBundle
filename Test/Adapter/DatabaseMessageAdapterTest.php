@@ -20,6 +20,7 @@ class DatabaseMessageAdapterTest extends AdapterTestCase
             ->getMock();
 
         $this->adapter = new DatabaseMessageAdapter($this->databaseManager);
+        $this->adapter->setChannelName('database');
     }
 
     public function testFormat()

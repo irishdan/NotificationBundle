@@ -30,10 +30,10 @@ class PusherManager
     public function getPusherClient()
     {
         $options = [
-            'cluster'   => $this->config['cluster'],
+            'cluster' => $this->config['cluster'],
             'encrypted' => $this->config['encrypted'],
         ];
-        $pusher  = new \Pusher(
+        $pusher = new \Pusher(
             $this->config['auth_key'],
             $this->config['secret'],
             $this->config['app_id'],
@@ -41,6 +41,11 @@ class PusherManager
         );
 
         return $pusher;
+    }
+
+    public function setConfig(array $config)
+    {
+        $this->config = $config;
     }
 
     /**
@@ -54,7 +59,6 @@ class PusherManager
 
     /**
      * @param $suffix
-     *
      * @return string
      */
     public function getChannelName($suffix)

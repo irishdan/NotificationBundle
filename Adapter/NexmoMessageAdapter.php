@@ -9,14 +9,7 @@ use Nexmo\Client;
 
 class NexmoMessageAdapter extends BaseMessageAdapter implements MessageAdapterInterface
 {
-    const CHANNEL = 'nexmo';
-    protected $nexmoConfiguration;
     protected $client;
-
-    public function __construct(array $nexmoConfiguration = [])
-    {
-        $this->nexmoConfiguration = $nexmoConfiguration;
-    }
 
     /**
      * Generates a message object
@@ -26,24 +19,23 @@ class NexmoMessageAdapter extends BaseMessageAdapter implements MessageAdapterIn
      */
     public function format(NotificationInterface $notification)
     {
-        $notification->setChannel(self::CHANNEL);
         parent::format($notification);
 
         /** @var TextableInterface $notifiable */
         $notifiable = $notification->getNotifiable();
         if (!$notifiable instanceof TextableInterface) {
-            $this->createFormatterException(TextableInterface::class, self::CHANNEL);
+            $this->createFormatterException(TextableInterface::class, $this->channelName);
         }
 
         // Build the dispatch data array.
         $dispatchData = [
             'to' => $notifiable->getNumber(),
-            'from' => empty($this->nexmoConfiguration['from']) ? '' : $this->nexmoConfiguration['from'],
+            'from' => empty($this->configuration['from']) ? '' : $this->configuration['from'],
         ];
 
         $messageData = self::createMessagaData($notification->getDataArray());
 
-        return self::createMessage($dispatchData, $messageData, self::CHANNEL);
+        return self::createMessage($dispatchData, $messageData, $this->channelName);
     }
 
     public function dispatch(MessageInterface $message)
@@ -54,8 +46,8 @@ class NexmoMessageAdapter extends BaseMessageAdapter implements MessageAdapterIn
 
         if (empty($this->client)) {
             $credentials = new Client\Credentials\Basic(
-                $this->nexmoConfiguration['api_key'],
-                $this->nexmoConfiguration['api_secret']
+                $this->configuration['api_key'],
+                $this->configuration['api_secret']
             );
             $this->client = new Client($credentials);
         }

@@ -10,21 +10,22 @@ class ChannelFactory
 {
     public function create(ContainerBuilder $container, $channel, array $config)
     {
+        $adapter = new Reference('notification.adapter.' . $channel);
+
         $definition = new Definition();
         $definition->setClass('IrishDan\NotificationBundle\Channel\DirectChannel');
         $definition->setArguments(
             [
                 '%notification.channel.' . $channel . '.configuration%',
                 $channel,
+                $adapter,
             ]
         );
 
-        $adapter = new Reference('notification.adapter.' . $channel);
         $eventDispatcher = new Reference('event_dispatcher');
 
         $definition->setMethodCalls(
             [
-                ['setAdapter', [$adapter]],
                 ['setEventDispatcher', [$eventDispatcher]],
             ]
         );

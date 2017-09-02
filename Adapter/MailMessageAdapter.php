@@ -8,13 +8,10 @@ use IrishDan\NotificationBundle\Notification\NotificationInterface;
 
 class MailMessageAdapter extends BaseMessageAdapter implements MessageAdapterInterface
 {
-    const CHANNEL = 'mail';
-    protected $mailConfiguration;
     protected $mailer;
 
-    public function __construct(\Swift_Mailer $mailer, array $mailConfiguration = [])
+    public function __construct(\Swift_Mailer $mailer)
     {
-        $this->mailConfiguration = $mailConfiguration;
         $this->mailer = $mailer;
     }
 
@@ -26,13 +23,13 @@ class MailMessageAdapter extends BaseMessageAdapter implements MessageAdapterInt
      */
     public function format(NotificationInterface $notification)
     {
-        $notification->setChannel(self::CHANNEL);
+        $notification->setChannel($this->channelName);
         parent::format($notification);
 
         /** @var EmailableInterface $notifiable */
         $notifiable = $notification->getNotifiable();
         if (!$notifiable instanceof EmailableInterface) {
-            $this->createFormatterException(EmailableInterface::class, self::CHANNEL);
+            $this->createFormatterException(EmailableInterface::class, $this->channelName);
         }
 
         // Build the dispatch data array.
@@ -52,7 +49,7 @@ class MailMessageAdapter extends BaseMessageAdapter implements MessageAdapterInt
         // Add any email attachments.
         $messageData['attachments'] = empty($data['attachments']) ? [] : $data['attachments'];
 
-        return self::createMessage($dispatchData, $messageData, self::CHANNEL);
+        return self::createMessage($dispatchData, $messageData, $this->channelName);
     }
 
     protected function getSender(NotificationInterface $notification)
@@ -63,8 +60,8 @@ class MailMessageAdapter extends BaseMessageAdapter implements MessageAdapterInt
             return $data['from'];
         }
 
-        if (!empty($this->mailConfiguration['default_sender'])) {
-            return $this->mailConfiguration['default_sender'];
+        if (!empty($this->configuration['default_sender'])) {
+            return $this->configuration['default_sender'];
         }
 
         throw new \LogicException(

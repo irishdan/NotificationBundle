@@ -6,6 +6,11 @@ use IrishDan\NotificationBundle\Channel\ChannelInterface;
 use IrishDan\NotificationBundle\Notification\NotifiableInterface;
 use IrishDan\NotificationBundle\Notification\NotificationInterface;
 
+/**
+ * Class Broadcaster
+ *
+ * @package IrishDan\NotificationBundle\Broadcast
+ */
 class Broadcaster
 {
     protected $notifiable;
@@ -13,6 +18,13 @@ class Broadcaster
     protected $config;
     protected $channelName;
 
+    /**
+     * Broadcaster constructor.
+     *
+     * @param NotifiableInterface $notifiable
+     * @param ChannelInterface    $channel
+     * @param array               $config
+     */
     public function __construct(NotifiableInterface $notifiable, ChannelInterface $channel, array $config)
     {
         $this->notifiable = $notifiable;
@@ -37,12 +49,17 @@ class Broadcaster
         }
     }
 
+    /**
+     * @param NotificationInterface $notification
+     */
     public function broadcast(NotificationInterface $notification)
     {
         $notification->setNotifiable($this->notifiable);
         $notification->setChannel($this->channelName);
 
         // Format and send the broadcast
-        $this->channel->formatAndDispatch($notification);
+        $message = $this->channel->format($notification);
+        // @TODO: Alter the channel configuration
+        $this->channel->dispatcher($message);
     }
 }

@@ -56,41 +56,19 @@ class NotificationTestCase extends \PHPUnit_Framework_TestCase
         return $this->testKernel->getContainer();
     }
 
-    // protected function getMockFormatter($withMessage = false)
-    // {
-    //     $formatter = $this->getMockBuilder(MessageFormatterInterface::class)
-    //         ->disableOriginalConstructor()
-    //         ->getMock();
-//
-    //     if ($withMessage) {
-    //         $formatter->expects($this->once())
-    //             ->method('format')
-    //             ->will($this->returnValue($this->getTestMessage()));
-    //     }
-//
-    //     return $formatter;
-    // }
-//
-    // protected function getMockDispatcher($withDispatch = false, $returnValue = true)
-    // {
-    //     $dispatcher = $this->getMockBuilder(MessageDispatcherInterface::class)
-    //         ->disableOriginalConstructor()
-    //         ->getMock();
-//
-    //     if ($withDispatch) {
-    //         $dispatcher->expects($this->once())
-    //             ->method('dispatch')
-    //             ->will($this->returnValue($returnValue));
-    //     }
-//
-    //     return $dispatcher;
-    // }
-
     protected function getMockAdapter($withFormat = false, $withDispatch = false)
     {
         $adapter = $this->getMockBuilder(MessageAdapterInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
+
+        // Adapter needs to have the configuration set
+        // $adapter->expects($this->once())
+        //     ->method('setConfiguration');
+
+        // Adapter needs to have the channelName set
+        // $adapter->expects($this->once())
+        //    ->method('setChannelName');
 
         if ($withFormat) {
             $adapter->expects($this->once())

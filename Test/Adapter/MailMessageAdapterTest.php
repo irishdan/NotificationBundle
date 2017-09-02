@@ -16,7 +16,9 @@ class MailMessageAdapterTest extends AdapterTestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->adapter = new MailMessageAdapter($mailer, $parameters);
+        $this->adapter = new MailMessageAdapter($mailer);
+        $this->adapter->setConfiguration($parameters);
+        $this->adapter->setChannelName('mail');
     }
 
     public function testFormat()

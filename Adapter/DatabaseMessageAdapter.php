@@ -10,8 +10,6 @@ use IrishDan\NotificationBundle\Notification\NotificationInterface;
 
 class DatabaseMessageAdapter extends BaseMessageAdapter implements MessageAdapterInterface
 {
-    const CHANNEL = 'database';
-
     protected $databaseNotificationManager;
 
     public function __construct(DatabaseNotificationManager $databaseNotificationManager)
@@ -27,13 +25,12 @@ class DatabaseMessageAdapter extends BaseMessageAdapter implements MessageAdapte
      */
     public function format(NotificationInterface $notification)
     {
-        $notification->setChannel(self::CHANNEL);
         parent::format($notification);
 
         /** @var DatabaseNotifiableInterface $notifiable */
         $notifiable = $notification->getNotifiable();
         if (!$notifiable instanceof DatabaseNotifiableInterface) {
-            $this->createFormatterException(DatabaseNotifiableInterface::class, self::CHANNEL);
+            $this->createFormatterException(DatabaseNotifiableInterface::class, $this->channelName);
         }
 
         // Build the dispatch data array.
@@ -46,7 +43,7 @@ class DatabaseMessageAdapter extends BaseMessageAdapter implements MessageAdapte
 
         $messageData = self::createMessagaData($notification->getDataArray());
 
-        return self::createMessage($dispatchData, $messageData, self::CHANNEL);
+        return self::createMessage($dispatchData, $messageData, $this->channelName);
     }
 
     public function dispatch(MessageInterface $message)

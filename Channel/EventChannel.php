@@ -26,8 +26,11 @@ class EventChannel extends BaseChannel implements ChannelInterface
         return false;
     }
 
-    public function setAdapters($key, MessageAdapterInterface $adapter)
+    public function setAdapters($key, MessageAdapterInterface $adapter, array $config)
     {
+        $adapter->setChannelName($key);
+        $adapter->setConfiguration($config);
+
         $this->adapters[$key] = $adapter;
     }
 

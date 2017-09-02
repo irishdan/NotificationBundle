@@ -8,8 +8,6 @@ use IrishDan\NotificationBundle\SlackableInterface;
 
 class SlackWebhookMessageAdapter extends BaseMessageAdapter implements MessageAdapterInterface
 {
-    const CHANNEL = 'slack';
-
     /**
      * Generates a message object
      *
@@ -18,13 +16,13 @@ class SlackWebhookMessageAdapter extends BaseMessageAdapter implements MessageAd
      */
     public function format(NotificationInterface $notification)
     {
-        $notification->setChannel(self::CHANNEL);
+        $notification->setChannel($this->channelName);
         parent::format($notification);
 
         /** @var SlackableInterface $notifiable */
         $notifiable = $notification->getNotifiable();
         if (!$notifiable instanceof SlackableInterface) {
-            $this->createFormatterException(SlackableInterface::class, self::CHANNEL);
+            $this->createFormatterException(SlackableInterface::class, $this->channelName);
         }
 
         // Build the dispatch data array.
@@ -34,7 +32,7 @@ class SlackWebhookMessageAdapter extends BaseMessageAdapter implements MessageAd
 
         $messageData = self::createMessagaData($notification->getDataArray());
 
-        return self::createMessage($dispatchData, $messageData, self::CHANNEL);
+        return self::createMessage($dispatchData, $messageData, $this->channelName);
     }
 
     public function dispatch(MessageInterface $message)

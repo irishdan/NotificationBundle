@@ -7,21 +7,40 @@ use IrishDan\NotificationBundle\Message\Message;
 use IrishDan\NotificationBundle\Notification\NotificationInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
+/**
+ * Class BaseMessageAdapter
+ *
+ * @package IrishDan\NotificationBundle\Adapter
+ */
 abstract class BaseMessageAdapter
 {
     protected $twig;
     protected $eventDispatcher;
+    protected $configuration = [];
+    protected $channelName;
 
+    /**
+     * @param \Twig_Environment $twig
+     */
     public function setTemplating(\Twig_Environment $twig)
     {
         $this->twig = $twig;
     }
 
+    /**
+     * @param EventDispatcherInterface $eventDispatcher
+     */
     public function setDispatcher(EventDispatcherInterface $eventDispatcher)
     {
         $this->eventDispatcher = $eventDispatcher;
     }
 
+    /**
+     * @param $data
+     * @param $user
+     * @param $template
+     * @return mixed
+     */
     protected function renderTwigTemplate($data, $user, $template)
     {
         return $this->twig->render(
@@ -33,8 +52,13 @@ abstract class BaseMessageAdapter
         );
     }
 
+    /**
+     * @param NotificationInterface $notification
+     */
     public function format(NotificationInterface $notification)
     {
+        $notification->setChannel($this->channelName);
+
         $templateArray = $notification->getTemplateArray();
         if (!empty($this->twig) && !empty($templateArray)) {
             $data = $notification->getDataArray();
@@ -60,6 +84,12 @@ abstract class BaseMessageAdapter
         }
     }
 
+    /**
+     * @param        $dispatchData
+     * @param        $messageData
+     * @param string $channel
+     * @return Message
+     */
     protected static function createMessage($dispatchData, $messageData, $channel = 'default')
     {
         $message = new Message();
@@ -71,6 +101,10 @@ abstract class BaseMessageAdapter
         return $message;
     }
 
+    /**
+     * @param array $notificationData
+     * @return array
+     */
     protected static function createMessagaData(array $notificationData)
     {
         // Build the message data array.
@@ -82,11 +116,32 @@ abstract class BaseMessageAdapter
         return $messageData;
     }
 
+    /**
+     * @param $shouldImplement
+     * @param $type
+     * @throws MessageFormatException
+     */
     protected static function createFormatterException($shouldImplement, $type)
     {
         $message = sprintf('Notifiable must implement %s interface in order to format as a %s message', $shouldImplement, $type);
         throw new MessageFormatException(
             $message
         );
+    }
+
+    /**
+     * @param array $configuration
+     */
+    public function setConfiguration(array $configuration)
+    {
+        $this->configuration = $configuration;
+    }
+
+    /**
+     * @param mixed $channeName
+     */
+    public function setChannelName($channelName)
+    {
+        $this->channelName = $channelName;
     }
 }

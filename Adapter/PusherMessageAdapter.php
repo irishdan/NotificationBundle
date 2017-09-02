@@ -14,7 +14,6 @@ use IrishDan\NotificationBundle\PusherManager;
  */
 class PusherMessageAdapter extends BaseMessageAdapter implements MessageAdapterInterface
 {
-    const CHANNEL = 'pusher';
     protected $pusherManager;
 
     public function __construct(PusherManager $pusherManager)
@@ -30,13 +29,13 @@ class PusherMessageAdapter extends BaseMessageAdapter implements MessageAdapterI
      */
     public function format(NotificationInterface $notification)
     {
-        $notification->setChannel(self::CHANNEL);
+        $notification->setChannel($this->channelName);
         parent::format($notification);
 
         /** @var PusherableInterface $notifiable */
         $notifiable = $notification->getNotifiable();
         if (!$notifiable instanceof PusherableInterface) {
-            $this->createFormatterException(PusherableInterface::class, self::CHANNEL);
+            $this->createFormatterException(PusherableInterface::class, $this->channelName);
         }
 
         // Build the dispatch data array.
@@ -47,11 +46,13 @@ class PusherMessageAdapter extends BaseMessageAdapter implements MessageAdapterI
 
         $messageData = self::createMessagaData($notification->getDataArray());
 
-        return self::createMessage($dispatchData, $messageData, self::CHANNEL);
+        return self::createMessage($dispatchData, $messageData, $this->channelName);
     }
 
     public function dispatch(MessageInterface $message)
     {
+        // @TODO: Alter configuration if message has configuration data
+
         // Get the dispatch and message data from the message.
         $dispatchData = $message->getDispatchData();
         $messageData = $message->getMessageData();

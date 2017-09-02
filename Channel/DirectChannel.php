@@ -18,6 +18,9 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  */
 class DirectChannel extends BaseChannel implements ChannelInterface
 {
+    /**
+     * @var
+     */
     protected $eventDispatcher;
     protected $dispatchToEvent = true;
 

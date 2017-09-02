@@ -11,6 +11,8 @@ class SlackWebhookAdapterTest extends AdapterTestCase
     {
         parent::setUp();
         $this->adapter = new SlackWebhookMessageAdapter();
+        $this->adapter->setConfiguration([]);
+        $this->adapter->setChannelName('slack');
     }
 
     public function testFormat()

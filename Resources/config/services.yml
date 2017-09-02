@@ -6,6 +6,7 @@ services:
     notification.pusher_manager:
         class: IrishDan\NotificationBundle\PusherManager
         arguments: [ '%notification.channel.pusher.configuration%']
+        shared: false
 
     # Message adapters
     notification.adapter.database:
@@ -59,7 +60,7 @@ services:
           - { name: twig.extension }
 
     # Commands
-    notification.generation_command:
+    notification.command.generate_notification:
         class: IrishDan\NotificationBundle\Command\CreateNotificationCommand
         calls:
             - [setEnabledChannels, ['%notification.available_channels%']]
@@ -79,11 +80,11 @@ services:
         class: IrishDan\NotificationBundle\Channel\EventChannel
         arguments: [ '@event_dispatcher']
         calls:
-            - [ setAdapters, [ 'database', '@notification.adapter.database']]
-            - [ setAdapters, [ 'mail', '@notification.adapter.mail']]
-            - [ setAdapters, [ 'nexmo', '@notification.adapter.nexmo']]
-            - [ setAdapters, [ 'slack', '@notification.adapter.slack']]
-            - [ setAdapters, [ 'pusher', '@notification.adapter.pusher']]
+            - [ setAdapters, [ 'database', '@notification.adapter.database', '%notification.channel.database.configuration%']]
+            - [ setAdapters, [ 'mail', '@notification.adapter.mail', '%notification.channel.mail.configuration%']]
+            - [ setAdapters, [ 'nexmo', '@notification.adapter.nexmo', '%notification.channel.nexmo.configuration%']]
+            - [ setAdapters, [ 'slack', '@notification.adapter.slack', '%notification.channel.slack.configuration%']]
+            - [ setAdapters, [ 'pusher', '@notification.adapter.pusher', '%notification.channel.pusher.configuration%']]
 
     # Event subscribers
     notification.message_crud_subscriber:

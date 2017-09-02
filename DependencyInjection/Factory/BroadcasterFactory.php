@@ -13,12 +13,13 @@ class BroadcasterFactory
         $type = array_keys($config)[0];
         $parameterName = 'notification.broadcast.config.' . $name;
         $serviceName = 'notification.broadcast.' . $name;
+
         $channelServiceName = 'notification.channel.' . $type;
 
         // Create the configuration as a parameter.
         $container->setParameter($parameterName, $config[$type]);
 
-        // Createe the broadcast service
+        // Create the broadcast service
         $definition = new Definition();
         $definition->setClass('IrishDan\NotificationBundle\Broadcast\Broadcaster');
         $definition->setArguments(

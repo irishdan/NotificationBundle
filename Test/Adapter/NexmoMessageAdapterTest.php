@@ -11,7 +11,9 @@ class NexmoMessageAdapterTest extends AdapterTestCase
     {
         parent::setUp();
         $parameters = $this->getParametersFromContainer('notification.channel.nexmo.configuration');
-        $this->adapter = new NexmoMessageAdapter($parameters);
+        $this->adapter = new NexmoMessageAdapter();
+        $this->adapter->setConfiguration($parameters);
+        $this->adapter->setChannelName('nexmo');
     }
 
     public function testFormat()
