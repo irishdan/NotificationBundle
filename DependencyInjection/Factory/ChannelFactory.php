@@ -2,7 +2,7 @@
 
 namespace IrishDan\NotificationBundle\DependencyInjection\Factory;
 
-use Symfony\Component\Config\Definition\Builder\NodeDefinition;
+use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
@@ -71,7 +71,7 @@ class ChannelFactory
         return $serviceName;
     }
 
-    public function addConfiguration(NodeDefinition $node, $type)
+    public function addConfiguration(ArrayNodeDefinition $node, $type)
     {
         switch ($type) {
             case 'mail':
