@@ -121,13 +121,7 @@ class NotificationManager
     public function markAsRead(DatabaseNotificationInterface $notification)
     {
         $now = new \DateTime();
-        try {
-            $this->databaseNotificationManager->setReadAtDate($notification, $now);
-
-            return true;
-        } catch (\Exception $exception) {
-            // @TODO:
-        }
+        $this->databaseNotificationManager->setReadAtDate($notification, $now);
     }
 
     /**
@@ -137,13 +131,7 @@ class NotificationManager
     public function markAllAsRead(NotifiableInterface $user)
     {
         $now = new \DateTime();
-        try {
-            $this->databaseNotificationManager->setUsersNotificationsAsRead($user, $now);
-
-            return true;
-        } catch (\Exception $exception) {
-            // @TODO:
-        }
+        $this->databaseNotificationManager->setUsersNotificationsAsRead($user, $now);
     }
 
     /**

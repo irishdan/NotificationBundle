@@ -67,29 +67,4 @@ class NotificationManagerTest extends NotificationTestCase
         $this->assertArrayHasKey('extra_data', $data);
         $this->assertEquals('test_data', $data['extra_data']);
     }
-
-    public function testMarkAsRead()
-    {
-    }
-
-    public function testMarkAllAsRead()
-    {
-
-    }
-
-    public function testAllNotificationCount()
-    {
-    }
-
-    public function testUnreadNotificationCount()
-    {
-    }
-
-    public function testReadNotificationCount(NotifiableInterface $user)
-    {
-    }
-
-    public function testNotificationCount()
-    {
-    }
 }

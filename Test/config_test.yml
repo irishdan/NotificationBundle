@@ -60,4 +60,4 @@ notification:
             api_secret: 8888888
             from: "JimBob"
         logger:
-            type: 'info'
+            severity: 'info'

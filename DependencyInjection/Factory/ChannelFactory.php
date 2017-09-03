@@ -118,7 +118,7 @@ class ChannelFactory
             case 'logger':
                 $node
                     ->children()
-                    ->scalarNode('type')->defaultValue('info')->end()
+                    ->scalarNode('severity')->defaultValue('info')->end()
                     ->end();
                 break;
             default:
