@@ -2,6 +2,9 @@
 
 namespace IrishDan\NotificationBundle\DependencyInjection;
 
+use IrishDan\NotificationBundle\DependencyInjection\Factory\BroadcasterFactory;
+use IrishDan\NotificationBundle\DependencyInjection\Factory\ChannelFactory;
+use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -12,6 +15,48 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
  */
 class Configuration implements ConfigurationInterface
 {
+    private $defaultAdapterTypes;
+    private $broadcasters;
+
+    public function __construct(array $defaultAdapterTypes = [], $broadcasters = [])
+    {
+        $this->defaultAdapterTypes = $defaultAdapterTypes;
+        $this->broadcasters = $broadcasters;
+    }
+
+    private function addChannelsSection(ArrayNodeDefinition $node)
+    {
+        $channelNodeBuilder = $node
+            ->children()
+                ->arrayNode('channels')
+                ->performNoDeepMerging()
+                ->children();
+
+        $factory = new ChannelFactory();
+        foreach ($this->defaultAdapterTypes as $type) {
+            $factoryNode = $channelNodeBuilder->arrayNode($type)->canBeUnset();
+            $factory->addConfiguration($factoryNode, $type);
+        }
+    }
+
+    private function addBroadcastChannelsSection(ArrayNodeDefinition $node)
+    {
+        $broadcastNodeBuilder = $node
+            ->children()
+                ->arrayNode('broadcasters')
+                    // ->useAttributeAsKey('name')
+                    ->prototype('array')
+                    ->performNoDeepMerging()
+                    ->children()
+        ;
+
+        foreach ($this->broadcasters as $name) {
+            $broadcastNodeBuilder->arrayNode($name)
+                ->prototype('scalar')->end()
+                ->end();
+        }
+    }
+
     /**
      * The root configuration for responsive image bundle.
      *
@@ -22,90 +67,13 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('notification');
 
-        // Add basic configurations.
+
+        $this->addChannelsSection($rootNode);
+        $this->addBroadcastChannelsSection($rootNode);
+
         $rootNode
             ->children()
-                // Broadcasters
-                ->arrayNode('broadcasters')
-                    ->useAttributeAsKey('name')
-                    ->prototype('array')
-                        ->children()
-                            ->arrayNode('slack')
-                                ->prototype('scalar')->end()
-                            ->end()
-                            ->arrayNode('pusher')
-                                ->prototype('scalar')->end()
-                            ->end()
-                        ->end()
-                    ->end()
-                ->end()
-                // Broadcasters
-                ->arrayNode('channels')
-                    ->children()
-                        ->arrayNode('pusher')
-                        ->children()
-                        ->booleanNode('enabled')->defaultFalse()->end()
-                        ->scalarNode('auth_key')->defaultValue('')->end()
-                        ->scalarNode('secret')->defaultValue('')->end()
-                        ->scalarNode('app_id')->defaultValue('')->end()
-                        ->scalarNode('cluster')->defaultValue('')->end()
-                        ->booleanNode('encrypted')->defaultTrue()->end()
-                        ->scalarNode('channel_name')->defaultValue('')->end()
-                        ->scalarNode('event')->defaultValue('')->end()
-                        ->end()
-                        ->end()
-            //
-            ->arrayNode('mail')
-            ->children()
-            ->booleanNode('enabled')->defaultFalse()->end()
-            ->scalarNode('default_sender')->defaultValue('')->end()
-            ->end()
-            ->end()
-            // Database channel.
-            ->arrayNode('database')
-            ->children()
-            ->booleanNode('enabled')->defaultFalse()->end()
-            ->scalarNode('entity')
-            ->defaultValue('AppBundle:Notification')
-            ->end()
-            ->end()
-            ->end()
-//
-            ->arrayNode('nexmo')
-            ->children()
-            ->booleanNode('enabled')->defaultFalse()->end()
-            ->scalarNode('api_key')->defaultValue('')->end()
-            ->scalarNode('api_secret')->defaultValue('')->end()
-            ->scalarNode('from')->defaultValue('')->end()
-            ->end()
-            ->end()
-            //
-            // Pusher notification channel
-            ->arrayNode('pusher')
-            ->children()
-            ->booleanNode('enabled')->defaultFalse()->end()
-            ->scalarNode('auth_key')->defaultValue('')->end()
-            ->scalarNode('secret')->defaultValue('')->end()
-            ->scalarNode('app_id')->defaultValue('')->end()
-            ->scalarNode('cluster')->defaultValue('')->end()
-            ->booleanNode('encrypted')->defaultTrue()->end()
-            ->scalarNode('channel_name')->defaultValue('')->end()
-            ->scalarNode('event')->defaultValue('')->end()
-            ->end()
-            ->end()
-            //
-            // Database channel.
-            ->arrayNode('slack')
-            ->children()
-            ->booleanNode('enabled')->defaultFalse()->end()
-            ->end()
-            ->end()
-            //
-                    ->end()
-                ->end()
-                // Email channel settings.
-                    ->end()
-                ->end();
+            ->end();
 
         return $treeBuilder;
     }

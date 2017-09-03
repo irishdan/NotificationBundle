@@ -4,8 +4,6 @@ namespace IrishDan\NotificationBundle\Test;
 
 use IrishDan\NotificationBundle\Adapter\MessageAdapterInterface;
 use IrishDan\NotificationBundle\Test\Notification\TestNotification;
-use IrishDan\NotificationBundle\Dispatcher\MessageDispatcherInterface;
-use IrishDan\NotificationBundle\Formatter\MessageFormatterInterface;
 use IrishDan\NotificationBundle\Message\Message;
 use IrishDan\NotificationBundle\Test\Entity\User;
 use Symfony\Component\Yaml\Yaml;
@@ -63,12 +61,12 @@ class NotificationTestCase extends \PHPUnit_Framework_TestCase
             ->getMock();
 
         // Adapter needs to have the configuration set
-        // $adapter->expects($this->once())
-        //     ->method('setConfiguration');
+        $adapter->expects($this->once())
+            ->method('setConfiguration');
 
         // Adapter needs to have the channelName set
-        // $adapter->expects($this->once())
-        //    ->method('setChannelName');
+        $adapter->expects($this->once())
+            ->method('setChannelName');
 
         if ($withFormat) {
             $adapter->expects($this->once())

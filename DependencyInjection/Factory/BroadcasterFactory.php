@@ -2,6 +2,7 @@
 
 namespace IrishDan\NotificationBundle\DependencyInjection\Factory;
 
+use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
@@ -35,5 +36,10 @@ class BroadcasterFactory
 
         // Add the broadcast to the notification manager.
         $container->findDefinition('notification.manager')->addMethodCall('setBroadcaster', [$name, new Reference($serviceName)]);
+    }
+
+    public function addConfiguration(NodeDefinition $node, $type)
+    {
+        // var_dump($node->getNode());
     }
 }

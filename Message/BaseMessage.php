@@ -21,10 +21,6 @@ abstract class BaseMessage implements MessageInterface
      * @var
      */
     private $channel;
-    /**
-     * @var array
-     */
-    private $adapterConfiguration = [];
 
     /**
      * @return mixed
@@ -105,21 +101,5 @@ abstract class BaseMessage implements MessageInterface
         }
 
         return 'NA';
-    }
-
-    /**
-     * @return array
-     */
-    public function adapterConfigurationArray()
-    {
-        return $this->adapterConfiguration;
-    }
-
-    /**
-     * @param array $data
-     */
-    public function setAdapterConfigurationArray(array $data)
-    {
-        $this->adapterConfiguration = $data;
     }
 }

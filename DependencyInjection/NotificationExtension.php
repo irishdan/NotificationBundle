@@ -13,19 +13,38 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class NotificationExtension extends Extension
 {
+    protected $channelKeyAdapterMappings = [];
+    protected $defaultAdapters = [
+        'mail',
+        'logger',
+        'database',
+        'nexmo',
+        'pusher',
+        'slack',
+    ];
+
+    protected function setChannelAdapterMapping(array $maps)
+    {
+        $this->channelKeyAdapterMappings[$maps['channel']] = [
+            'adapter' => $maps['adapter'],
+            'config' => $maps['config'],
+        ];
+    }
+
     public function load(array $configs, ContainerBuilder $container)
     {
-        $configuration = new Configuration();
-
         // Load our YAML resources
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.yml');
 
+        // @TODO: Broadcasters array should dynamic
+        $configuration = new Configuration($this->defaultAdapters, ['slack', 'pusher']);
         $config = $this->processConfiguration($configuration, $configs);
 
         foreach ($configs as $subConfig) {
             $config = array_merge($config, $subConfig);
         }
+
 
         $enabledChannels = [];
         foreach ($config['channels'] as $channel => $channelConfig) {
@@ -49,18 +68,35 @@ class NotificationExtension extends Extension
         // Create the notification manager service
         $this->createNotificationManagerService($container);
 
-        // Create services need for broadcasting
+        // Create broadcasters and broadcast channels
         if (!empty($config['broadcasters'])) {
             foreach ($config['broadcasters'] as $name => $config) {
                 $this->createBroadcaster($name, $config, $container);
             }
         }
+
+        // Create the Event driven channel service
+        $this->createEventDrivenChannel($container);
+    }
+
+    private function createEventDrivenChannel(ContainerBuilder $container)
+    {
+        $definition = new Definition();
+        $definition->setClass('IrishDan\NotificationBundle\Channel\EventChannel');
+        $definition->setArguments([new Reference('event_dispatcher')]);
+
+        foreach ($this->channelKeyAdapterMappings as $key => $channel) {
+            $definition->addMethodCall('setAdapters', [$key, new Reference($channel['adapter']), $container->getParameter($channel['config'])]);
+        }
+
+        $container->setDefinition('notification.channel.event_channel', $definition);
     }
 
     private function createChannelService($channel, ContainerBuilder $container, array $config)
     {
         $factory = new ChannelFactory();
         $factory->create($container, $channel, $config);
+        $this->setChannelAdapterMapping($factory->getChannelKeyAdapterMap());
     }
 
     private function createBroadcaster($name, $config, ContainerBuilder $container)

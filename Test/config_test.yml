@@ -59,3 +59,5 @@ notification:
             api_key: 7777777
             api_secret: 8888888
             from: "JimBob"
+        logger:
+            type: 'info'
