@@ -17,7 +17,13 @@
 
     <filter>
         <whitelist>
-            <directory>./</directory>
+            <directory suffix=".php">./</directory>
+            <exclude>
+                <directory>./Test</directory>
+                <directory>./Resources</directory>
+                <directory>./vendor</directory>
+                <directory>./logs</directory>
+            </exclude>
         </whitelist>
     </filter>
 </phpunit>

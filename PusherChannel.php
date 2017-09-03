@@ -2,11 +2,28 @@
 
 namespace IrishDan\NotificationBundle;
 
+/**
+ * Class PusherChannel
+ *
+ * @package IrishDan\NotificationBundle
+ */
 class PusherChannel
 {
+    /**
+     * @var
+     */
     private $channelName;
+    /**
+     * @var
+     */
     private $socketId;
 
+    /**
+     * PusherChannel constructor.
+     *
+     * @param $channelName
+     * @param $socketId
+     */
     public function __construct($channelName, $socketId)
     {
         $this->channelName = $channelName;

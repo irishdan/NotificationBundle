@@ -7,6 +7,11 @@ use IrishDan\NotificationBundle\PusherChannel;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
+/**
+ * Class PusherChannelVoter
+ *
+ * @package IrishDan\NotificationBundle\Security
+ */
 class PusherChannelVoter extends Voter
 {
     const SUBSCRIBE = 'subscribe';
