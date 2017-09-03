@@ -123,9 +123,7 @@ class DatabaseNotificationManager
             $usersNotifications = $entityManager->getRepository($entity)->findBy($options);
 
             if (!empty($usersNotifications)) {
-                foreach ($usersNotifications as $notification) {
-                    $this->setNotificationsReadat($usersNotifications);
-                }
+                $this->setNotificationsReadat($usersNotifications);
             }
             $entityManager->flush();
         }

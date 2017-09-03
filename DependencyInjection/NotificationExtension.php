@@ -45,19 +45,20 @@ class NotificationExtension extends Extension
             $config = array_merge($config, $subConfig);
         }
 
-
         $enabledChannels = [];
-        foreach ($config['channels'] as $channel => $channelConfig) {
-            $enabledChannels[] = $channel;
-            $container->setParameter('notification.channel.' . $channel . '.enabled', true);
+        if (!empty($config['channels'])) {
+            foreach ($config['channels'] as $channel => $channelConfig) {
+                $enabledChannels[] = $channel;
+                $container->setParameter('notification.channel.' . $channel . '.enabled', true);
 
-            // Set a configuration parameter for each channel also.
-            $parameters = empty($channelConfig) ? [] : $channelConfig;
-            $parameterName = 'notification.channel.' . $channel . '.configuration';
-            $container->setParameter($parameterName, $parameters);
+                // Set a configuration parameter for each channel also.
+                $parameters = empty($channelConfig) ? [] : $channelConfig;
+                $parameterName = 'notification.channel.' . $channel . '.configuration';
+                $container->setParameter($parameterName, $parameters);
 
-            // Create a service for this channel.
-            $this->createChannelService($channel, $container, $parameters);
+                // Create a service for this channel.
+                $this->createChannelService($channel, $container, $parameters);
+            }
         }
 
         $container->setParameter('notification.available_channels', $enabledChannels);
@@ -77,6 +78,14 @@ class NotificationExtension extends Extension
 
         // Create the Event driven channel service
         $this->createEventDrivenChannel($container);
+
+        // @TODO: Check that required parameters are set.
+        foreach ($this->defaultAdapters as $type) {
+            if (!$container->hasParameter('notification.channel.' . $type . '.configuration')) {
+                $container->setParameter('notification.channel.' . $type . '.configuration', []);
+                $container->setParameter('notification.channel.' . $type . '.enabled', false);
+            }
+        }
     }
 
     private function createEventDrivenChannel(ContainerBuilder $container)

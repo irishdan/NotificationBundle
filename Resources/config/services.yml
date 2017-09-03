@@ -78,19 +78,6 @@ services:
         tags:
             - { name: console.command }
 
-    # Event channel
-    # @TODO: Set them dynamically, only enabled channels
-    # notification.channel.event_channel:
-    #     class: IrishDan\NotificationBundle\Channel\EventChannel
-    #     arguments: [ '@event_dispatcher']
-    #     calls:
-    #         - [ setAdapters, [ 'database', '@notification.adapter.database', '%notification.channel.database.configuration%']]
-    #         - [ setAdapters, [ 'mail', '@notification.adapter.mail', '%notification.channel.mail.configuration%']]
-    #         - [ setAdapters, [ 'nexmo', '@notification.adapter.nexmo', '%notification.channel.nexmo.configuration%']]
-    #         - [ setAdapters, [ 'slack', '@notification.adapter.slack', '%notification.channel.slack.configuration%']]
-    #         - [ setAdapters, [ 'pusher', '@notification.adapter.pusher', '%notification.channel.pusher.configuration%']]
-    #         - [ setAdapters, [ 'logger', '@notification.adapter.logger', '%notification.channel.logger.configuration%']]
-
     # Event subscribers
     notification.message_crud_subscriber:
         class: IrishDan\NotificationBundle\EventListener\MessageCRUDSubscriber
