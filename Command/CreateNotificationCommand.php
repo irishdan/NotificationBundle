@@ -136,7 +136,7 @@ class CreateNotificationCommand extends GeneratorCommand
         $style = new SymfonyStyle($input, $output);
 
         $bundle = $input->getOption('bundle');
-        $name   = $input->getOption('notification_name');
+        $name = $input->getOption('notification_name');
 
         $style->text('Generating New notification class ' . $name . ' generated in ' . $bundle);
 
@@ -159,7 +159,7 @@ class CreateNotificationCommand extends GeneratorCommand
     {
         $question = new Question(
             $questionHelper->getQuestion(
-                'Generate a message template for the ' . $channel . ' <comment>[yes]</comment>',
+                'Generate a message template for the "' . $channel . '" adapter <comment>[yes]</comment>',
                 'channel_templates'
             ), 'yes'
         );
@@ -176,7 +176,7 @@ class CreateNotificationCommand extends GeneratorCommand
                     'y',
                     'n',
                 ];
-                $valid   = in_array($answer, $allowed);
+                $valid = in_array($answer, $allowed);
                 if (!$valid) {
                     throw new \RuntimeException(
                         'Only allowed value are ' . implode(', ', $allowed)

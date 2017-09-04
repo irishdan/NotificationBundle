@@ -2,6 +2,11 @@
 
 namespace IrishDan\NotificationBundle\Notification;
 
+/**
+ * Interface DatabaseNotificationInterface
+ *
+ * @package IrishDan\NotificationBundle\Notification
+ */
 interface DatabaseNotificationInterface
 {
     /**
@@ -16,6 +21,10 @@ interface DatabaseNotificationInterface
      */
     public function markAsRead();
 
+    /**
+     * @param \DateTime $date
+     * @return mixed
+     */
     public function setReadAt(\DateTime $date);
 
     /**
@@ -24,11 +33,4 @@ interface DatabaseNotificationInterface
      * @return bool
      */
     public function isRead();
-
-    /**
-     * Determine if a notification has not been read.
-     *
-     * @return bool
-     */
-    public function isUnread();
 }

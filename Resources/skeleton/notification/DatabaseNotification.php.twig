@@ -34,6 +34,15 @@ class Notification implements DatabaseNotificationInterface
      */
     private $type;
     /**
+     * @ORM\Column(type="string", unique=false)
+     */
+    private $title;
+    /**
+     * @var string
+     * @ORM\Column(name="body", type="text", nullable=true)
+     */
+    private $body;
+    /**
      * @var string
      * @ORM\Column(name="body", type="json_array", nullable=true)
      */
@@ -64,105 +73,137 @@ class Notification implements DatabaseNotificationInterface
     }
 
     /**
-    * @return mixed
-    */
+     * @return mixed
+     */
     public function getUuid()
     {
         return $this->uuid;
     }
 
     /**
-    * @param mixed $uuid
-    */
+     * @param mixed $uuid
+     */
     public function setUuid($uuid)
     {
         $this->uuid = $uuid;
     }
 
     /**
-    * @return mixed
-    */
+     * @return mixed
+     */
     public function getNotifiable()
     {
         return $this->notifiable;
     }
 
     /**
-    * @param mixed $notifiable
-    */
+     * @param mixed $notifiable
+     */
     public function setNotifiable(NotifiableInterface $notifiable)
     {
         $this->notifiable = $notifiable;
     }
 
     /**
-    * @return mixed
-    */
+     * @return mixed
+     */
     public function getType()
     {
         return $this->type;
     }
 
     /**
-    * @param mixed $type
-    */
+     * @param mixed $type
+     */
     public function setType($type)
     {
         $this->type = $type;
     }
 
     /**
-    * @return string
-    */
+     * @return mixed
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * @param mixed $title
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBody()
+    {
+        return $this->body;
+    }
+
+    /**
+     * @param string $body
+     */
+    public function setBody($body)
+    {
+        $this->body = $body;
+    }
+
+    /**
+     * @return string
+     */
     public function getData()
     {
         return $this->data;
     }
 
     /**
-    * @param string $data
-    */
+     * @param string $data
+     */
     public function setData($data)
     {
         $this->data = $data;
     }
 
     /**
-    * @return \DateTime
-    */
+     * @return \DateTime
+     */
     public function getReadAt()
     {
         return $this->readAt;
     }
 
     /**
-    * @param \DateTime $readAt
-    */
+     * @param \DateTime $readAt
+     */
     public function setReadAt($readAt)
     {
         $this->readAt = $readAt;
     }
 
     /**
-    * @return mixed
-    */
+     * @return mixed
+     */
     public function getCreated()
     {
         return $this->created;
     }
 
     /**
-    * @return \DateTime
-    */
+     * @return \DateTime
+     */
     public function getUpdated()
     {
         return $this->updated;
     }
 
     /**
-    * @param \DateTime $updated
-    * @ORM\PreUpdate
-    */
+     * @param \DateTime $updated
+     * @ORM\PreUpdate
+     */
     public function updated()
     {
         $updated = new \DateTime();
@@ -170,8 +211,8 @@ class Notification implements DatabaseNotificationInterface
     }
 
     /**
-    * @ORM\PrePersist
-    */
+     * @ORM\PrePersist
+     */
     public function prePersist()
     {
         $date = new \DateTime();
@@ -181,16 +222,11 @@ class Notification implements DatabaseNotificationInterface
 
     public function markAsRead()
     {
-        // TODO: Implement markAsRead() method.
+        $this->readAt = new \DateTime();
     }
 
     public function isRead()
     {
-        // TODO: Implement isRead() method.
-    }
-
-    public function isUnread()
-    {
-        // TODO: Implement isUnread() method.
+        return !empty($this->readAt);
     }
 }
