@@ -12,7 +12,7 @@ Out of the box with minimal configuration notifications can be sent to single or
 via, email, SMS, slack and websockets (pusher).
 
 Combine this bundle with FoundationInk Bundle to send beautiful html emails for any event
-Combine a pusher channel with taostr for instant and attractive notifications
+Combine a pusher channel with [taostr](https://codeseven.github.io/toastr/) for instant and attractive notifications
 Combine a pusher channel and a database channel for simple direct messaging.
 
 ## Basic setup
@@ -40,12 +40,12 @@ public function registerBundles()
 ### Step 2: Configure some Notification Channels
 
 Out of the box the bundle supports several channels, including:
-- [mail]() (Email)
-- [database]()
-- [slack]()
-- [nexmo]() (SMS)
-- [pusher]() (Websockets)
-- [logger]()
+- [mail](Resources/doc/channels.md#mail) (Email)
+- [database](Resources/doc/channels.md#database)
+- [slack](Resources/doc/channels.md#slack)
+- [nexmo](Resources/doc/channels.md#nexmo) (SMS)
+- [pusher](Resources/doc/channels.md#pusher) (Websockets)
+- [logger](Resources/doc/channels.md#logger)
 
 To enable a channel simple add its configuration to your config.yml
 
@@ -73,7 +73,7 @@ notification:
         severity: 'info'
 ```
 
-It's also possible to create [custom channels]() or [alter an existing channel's behavior]()
+It's also possible to create [custom channels](Resources/doc/channels.md) or [alter an existing channel's behavior](Resources/doc/channels.md)
 
 ### Step 4: Database, Pusher, Nexmo, and Slack channels have additional steps.
 
@@ -88,7 +88,7 @@ A generator is provided to create the entity.
 php bin/console notification:create-database-notification 
 ```
 #### Pusher channel
-[Pusher]() is a a third party service with a decent free package. You need valid pusher credendials to use the channel.
+[Pusher](https://pusher.com/) is a a third party service with a decent free package. You need valid pusher credendials to use the channel.
 
 The pusher PHP library is required also. Install with composer
 ```bash
@@ -132,16 +132,15 @@ Twig functions are provided which generate the required javascript
 
 #### Nexmo channel
 
-[Nexmo]() Is a third party SMS service. You need valid credentials to use this channel.
+[Nexmo](https://www.nexmo.com) Is a third party SMS service. You need valid credentials to use this channel.
 
 #### Slack shannel
 
-[Slack]() 
+[Slack](https://slack.com) 
 
-### Step 5: Subscribe Users to these channels
+### Step 5: Subscribe Users to one or more channels
 
-In order for users to be sent notifications through the channels you have configured they must be subscribed to each channel
-and have certain data available.
+In order for users to be sent notifications through the channels you have configured they must be subscribed to each channel.
 
 Assuming your User class is AppBundle\Entity\User, implement the required interfaces:
 @TODO: Improve this
@@ -202,3 +201,22 @@ $data = [
 ];
 $this->get('notification.manager')->send($notification, $user, $data);
 ```
+
+## Documentation
+
+For more advanced setup read the Documentation
+
+- [Installation and Setup](Resources/doc/installation.md)
+- [Channels](Resources/doc/channels.md)
+- [Adapters](Resources/doc/adapters.md)
+- [Broadcast](Resources/doc/broadcast.md)
+- [Events & Qeueing](Resources/doc/events_queueing.md)
+- [Commands](Resources/doc/commands.md)
+- [Tests](Resources/doc/tests.md)
+
+
+    
+    
+## Attribution
+
+- This bundle was inspired by the [Laravel](https://laravel.com/) notification system
