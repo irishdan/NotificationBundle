@@ -18,8 +18,11 @@ class CreateDatabaseNotificationCommand extends GeneratorCommand
 
     public function setEntityName(array $databaseChannelConfig)
     {
+        // @TODO: If its not set then we need to ask for it, throw an error
         if (!empty($databaseChannelConfig['entity'])) {
             $this->entityName = explode(':', $databaseChannelConfig['entity'])[1];
+        } else {
+            $this->entityName = 'Notification';
         }
     }
 

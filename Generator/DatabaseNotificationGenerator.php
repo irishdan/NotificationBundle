@@ -21,7 +21,7 @@ class DatabaseNotificationGenerator extends Generator
 
     /**
      * @param BundleInterface $bundle
-     * @param                 $name
+     * @param                 $entityName
      */
     public function generate(BundleInterface $bundle, $entityName)
     {
