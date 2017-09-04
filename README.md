@@ -75,7 +75,7 @@ notification:
 
 It's also possible to create [custom channels]() or [alter an existing channel's behavior]()
 
-### Step 4: Database, Pusher, Nexmo, and Slack channels have addition steps.
+### Step 4: Database, Pusher, Nexmo, and Slack channels have additional steps.
 
 Some channels require additional steps
 
@@ -136,117 +136,69 @@ Twig functions are provided which generate the required javascript
 
 #### Slack shannel
 
-[Slack]()
+[Slack]() 
 
+### Step 5: Subscribe Users to these channels
 
-the ability to easily created styled responsive images (scaled, cropped, greyscale) in Symfony3.
-This bundle allows for the management and presentation of images in various styles (scaled, cropped, grey scale etc etc)
-and sizes.
-Art directed responsive images, with picture or sizes/srcset, can also be generated.
-Define break points, map them to images styles to create responsive images and css.
+In order for users to be sent notifications through the channels you have configured they must be subscribed to each channel
+and have certain data available.
 
-The bundle uses flysystem filesystem abstraction layer giving you control over where images are stored.
-Eventas are used to dirvie the system, giving more flexibiltiy and extensibility, can control when images are generated, eg perhaps this should be queued
-Images can be created from predefined styles or on the fly
-supports retina 2x 1.5x images
-
-ResponsiveImageBundle adds the ability to easily created styled responsive images (scaled, cropped, greyscale) in Symfony3.
-
-How it works?
-- Users that implement NotifiableInterface interface can be subscribed to different notification 'channels'
-    NotifiableInterface::getSubscribedChannels()
-- Channels include, database, email, pusher, nexio (sms), custom channels can be defined easily
-- Notifications are classes, which can be generated with:
-    php bin/console notification:create  
-    php bin/console notification:create-database-notification 
-- Each notification can be sent via one or more channels
-- Each channel has a formatter (twig, templates etc) and a dispatcher
-- It's all event driven
-- Broadcast is a notification sent to an external service eg a slack channel, mail chimp list, drip, hipchat
-- notifiableFactory for creating recipients on the fly
-
-## config
-```
-notification:
-    channels:
-        mail:
-            default_sender: 'dan@oioi.com'
-        database:
-            entity: 'AppBundle:Notification'
-        pusher:
-            auth_key: 3
-            secret: 2
-            app_id: 1
-            cluster: 'eu' # Set default value
-            encrypted: true # Set default value
-            channel_name: 'private-app_channel_' # will get suffux of user id for private channel. Must begin with 'private-'!
-            event: 'notification-event'
-        nexmo:
-            api_key: abc
-            api_secret: 123
-            from: "Dan"
-        slack:
-    broadcasts:
-        the_broadcast_name:
-            slack: # type
-                webhook: 'https://hooks.slack.com/services/xxx/yyy/jhjhsd
-```
-
-## Channels
-
-## Notifications
-
-## Commands
-
-Can use a command to generate a notification object, eg NewMemberNotification. 
-This command will also generate twig templates for each enabled channel
+Assuming your User class is AppBundle\Entity\User, implement the required interfaces:
+@TODO: Improve this
 
 ```
-  notification:create
-  notification:create-database-notification  
+<?php
+
+namespace AppBundle\Entity;
+
+use IrishDan\NotificationBundle\Notification\NotifiableInterface;
+use IrishDan\NotificationBundle\PusherableInterface;
+use IrishDan\NotificationBundle\SlackableInterface;
+use IrishDan\NotificationBundle\TextableInterface;
+use IrishDan\NotificationBundle\EmailableInterface;
+
+class User implements UserInterface, NotifiableInterface, EmailableInterface, TextableInterface, PusherableInterface, SlackableInterface, DatabaseNotifiableInterface
+
+    // For convenience use the
+    use FullyNofifiabletrait();
+
 ```
 
+### Step 6: Generate Notification objects
 
+Each Notification is a separate Object. 
+So for example you might have a NewMemberNotification() object and a NewPaymentReceivedNotification() object.
 
-## sending notifications
+To create a new Notification object use the provided generator.
+
+```bash
+php bin/console notification:create
 ```
+### Step 7: Edit the Notification content
+
+Uses twig...
+
+### Step 8: Send Notifications
+
+```php
+<?php
+/** $user NotifiableInterface */
+$user = $this->getUser();
+
+/** $notification NotificationInterface */
 $notification = new NewMemberNotification();
-$this->get('notification')->send($notification, [$user]);
-        
-```
 
-## twig 
+// The notification.manager service is used to send notifications
+$this->get('notification.manager')->send($notification, $user);
 
-```
-<script>
-        // Enable pusher logging - don't include this in production
-        Pusher.logToConsole = true;
+// You can send to multiple users also.
+$this->get('notification.manager')->send($notification, [$user1, $user2]);
 
-        {#
-        // available twig functions
-
-        http://symfony.com/doc/current/templating/global_variables.html
-        Add them all as global twig variables
-
-        {{ notification_new_pusher_js() }}
-        {{ notification_new_pusher_channel_js(app.user) }}
-        {{ notification_pusher_channel_name() }}
-
-        {{ notification_pusher_auth_endpoint }}
-        {{ notification_pusher_auth_key }}
-        {{ notification_pusher_app_id }}
-        {{ notification_pusher_event }}
-        {{ notification_pusher_cluster }}
-        {{ notification_pusher_encrypted }}
-
-        #}
-        
-        // var channel = pusher.subscribe('{{ notification_pusher_channel_name(app.user) }}');
-        {{ notification_new_pusher_js() }}
-        
-        {{ notification_new_pusher_channel_js(app.user) }}
-        channel.bind('{{ notification_pusher_event }}', function (data) {
-            alert(data.message);
-        });
-    </script>
+// You can pass extra data into the notification also
+// This will be available in the data array
+// and also in twig templates as {{ data.date }}
+$data = [
+    'date' => new \DateTime(),
+];
+$this->get('notification.manager')->send($notification, $user, $data);
 ```
