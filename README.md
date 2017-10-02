@@ -53,7 +53,7 @@ To enable a channel simple add its configuration to your config.yml
 # app/config/config.yml
 notification:
     mail:
-        default_sender: 'hi@nomadapi.io'
+        default_sender: 'hi@jim.bob'
     database:
         entity: 'AppBundle:Notification'
     pusher:
@@ -159,7 +159,7 @@ use IrishDan\NotificationBundle\EmailableInterface;
 class User implements UserInterface, NotifiableInterface, EmailableInterface, TextableInterface, PusherableInterface, SlackableInterface, DatabaseNotifiableInterface
 
     // For convenience use the
-    use FullyNofifiabletrait();
+    use FullyNofifiableTrait();
 
 ```
 
@@ -179,8 +179,16 @@ Uses twig...
 
 ### Step 8: Send Notifications
 
+To sent a notification, you need a Recipient.
+
+Recipients are objects that implements NotifiableInterface, created in [step 5]()
+Notifications are objects that implement Notification interface, generated in [step 6]()
+
+Notifications are sent using the 'notification.manager' service like so:
+
 ```php
 <?php
+
 /** $user NotifiableInterface */
 $user = $this->getUser();
 
@@ -213,9 +221,7 @@ For more advanced setup read the Documentation
 - [Events & Qeueing](Resources/doc/events_queueing.md)
 - [Commands](Resources/doc/commands.md)
 - [Tests](Resources/doc/tests.md)
-
-
-    
+   
     
 ## Attribution
 
