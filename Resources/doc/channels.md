@@ -2,20 +2,20 @@
 
 Information about the various channels
 
-## mail
+## Mail
 
 
-## database
+## Database
 
 
-## slack
+## Slack
 
 
-## nexmo
+## Nexmo
 
 
-## pusher
+## Pusher
 
 
-## logger
+## Logger
 
