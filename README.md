@@ -33,7 +33,7 @@ public function registerBundles()
 {
     $bundles = array(
         // ...
-        new IrishDan\ResponsiveImageBundle\ResponsiveImageBundle(),
+        new IrishDan\NotificationBundle\NotificationBundle(),
     );
 }
 ```
