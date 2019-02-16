@@ -9,18 +9,10 @@ namespace IrishDan\NotificationBundle\Message;
  */
 abstract class BaseMessage implements MessageInterface
 {
-    /**
-     * @var
-     */
     private $dispatchData;
-    /**
-     * @var
-     */
     private $messageData;
-    /**
-     * @var
-     */
     private $channel;
+    private $status;
 
     /**
      * @return mixed
@@ -101,5 +93,21 @@ abstract class BaseMessage implements MessageInterface
         }
 
         return 'NA';
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param mixed $status
+     */
+    public function setStatus($status): void
+    {
+        $this->status = $status;
     }
 }

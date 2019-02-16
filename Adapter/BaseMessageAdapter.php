@@ -57,7 +57,8 @@ abstract class BaseMessageAdapter
      */
     public function format(NotificationInterface $notification)
     {
-        $notification->setChannel($this->channelName);
+        // @TODO: $this->channelName
+        // $notification->setChannel($this->channelName);
 
         $templateArray = $notification->getTemplateArray();
         if (!empty($this->twig) && !empty($templateArray)) {

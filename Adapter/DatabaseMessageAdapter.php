@@ -18,10 +18,13 @@ class DatabaseMessageAdapter extends BaseMessageAdapter implements MessageAdapte
     }
 
     /**
-     * Generates a message object
+     * Generates a Message object
      *
      * @param NotificationInterface $notification
-     * @return \IrishDan\NotificationBundle\Message\Message
+     *
+     * @return \IrishDan\NotificationBundle\Message\Message|MessageInterface|void
+     *
+     * @throws \IrishDan\NotificationBundle\Exception\MessageFormatException
      */
     public function format(NotificationInterface $notification)
     {
@@ -56,6 +59,8 @@ class DatabaseMessageAdapter extends BaseMessageAdapter implements MessageAdapte
         if ($databaseNotification) {
             return true;
         }
+
+        // @todo: return something use full or throw exception is better
 
         return false;
     }

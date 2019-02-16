@@ -52,7 +52,7 @@ class Broadcaster
         $notification->setChannel($this->channelName);
 
         // Format and send the broadcast.
-        $this->channel->setDispatchToEvent(false);
+        $this->channel->setDispatchAsEvent(false);
         $this->channel->formatAndDispatch($notification);
     }
 }

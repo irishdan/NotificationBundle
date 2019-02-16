@@ -12,59 +12,43 @@ use IrishDan\NotificationBundle\Notification\NotificationInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
- * Class DirectChannel
+ * Class EventChannel
+ *
+ * This type of channel dispatched events when each Message
+ * is created..
+ * and when each Message is dispatched
  *
  * @package NotificationBundle\Channel
  */
 class EventChannel extends BaseChannel implements ChannelInterface
 {
+    /**
+     * An array of all available adapters.
+     *
+     * @var array
+     */
     private $adapters = [];
     private $eventDispatcher;
 
-    public function formatAndDispatch(NotificationInterface $notification)
-    {
-        return false;
-    }
-
+    /**
+     * @param                         $key
+     * @param MessageAdapterInterface $adapter
+     * @param array                   $config
+     */
     public function setAdapters($key, MessageAdapterInterface $adapter, array $config)
     {
-        $adapter->setChannelName($key);
+        // $adapter->setChannelName($key);
         $adapter->setConfiguration($config);
 
         $this->adapters[$key] = $adapter;
     }
 
-    public function __construct(EventDispatcherInterface $eventDispatcher)
+    /**
+     * @param NotificationInterface $notification
+     * @return bool
+     */
+    public function formatAndDispatch(NotificationInterface $notification)
     {
-        parent::__construct();
-        $this->eventDispatcher = $eventDispatcher;
-    }
-
-    public function dispatchFromEvent(MessageCreatedEvent $event)
-    {
-        $message = $event->getMessage();
-        $this->dispatch($message);
-    }
-
-    public function dispatch(MessageInterface $message)
-    {
-        $dispatcherKey = $message->getChannel();
-
-        // Dispatch the message
-        try {
-            if (!empty($this->adapters[$dispatcherKey])) {
-                $this->adapters[$dispatcherKey]->dispatch($message);
-
-                // Dispatch the message event
-                $messageEvent = new MessageDispatchedEvent($message);
-                $this->eventDispatcher->dispatch(MessageDispatchedEvent::NAME, $messageEvent);
-            } else {
-                throw new MessageDispatchException(
-                    sprintf('No adapter available with key "%s"', $dispatcherKey)
-                );
-            }
-        } catch (\Exception $exception) {
-            throw new MessageDispatchException($exception->getMessage());
-        }
+        return false;
     }
 }

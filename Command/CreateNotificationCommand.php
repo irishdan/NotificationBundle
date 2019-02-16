@@ -3,7 +3,8 @@
 namespace IrishDan\NotificationBundle\Command;
 
 use IrishDan\NotificationBundle\Generator\NotificationGenerator;
-use Sensio\Bundle\GeneratorBundle\Command\GeneratorCommand;
+// use Sensio\Bundle\GeneratorBundle\Command\GeneratorCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -12,7 +13,8 @@ use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 
-class CreateNotificationCommand extends GeneratorCommand
+// class CreateNotificationCommand extends GeneratorCommand
+class CreateNotificationCommand extends Command
 {
     private $channels;
     private $channelTemplates = [];

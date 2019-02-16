@@ -12,12 +12,14 @@ class ChannelFactory
     protected $channelKey;
     protected $adapterName;
     protected $adapterConfiguration;
+    protected $adapterConfigurationId;
 
     public function getChannelKeyAdapterMap()
     {
         return [
             'channel' => $this->channelKey,
             'adapter' => $this->adapterName,
+            'config_id' => $this->adapterConfigurationId,
             'config' => $this->adapterConfiguration,
         ];
     }
@@ -39,12 +41,17 @@ class ChannelFactory
         $eventDispatcher = new Reference('event_dispatcher');
 
         $parameterName = 'notification.channel.' . $channel . '.configuration';
+
+
         if (!$container->hasParameter($parameterName)) {
             $container->setParameter($parameterName, $config);
         }
 
         $definition = new Definition();
-        $definition->setClass('IrishDan\NotificationBundle\Channel\DirectChannel');
+
+        // Create a Channel or an EventChannel depending on the config.
+
+        $definition->setClass('IrishDan\NotificationBundle\Channel\Channel');
         $definition->setArguments(
             [
                 '%' . $parameterName . '%',
@@ -59,12 +66,19 @@ class ChannelFactory
             ]
         );
 
-        $definition->addMethodCall('setDispatchToEvent', [empty($config['direct_dispatch'])]);
+        // @TODO We need to allow for both formatting and dispatching to be offloaded else where via events
+        // @TODO The architecture used by event channel might be better suited to this. eg
+        // every notification goes through the direct channel
+        //
+
+        // $definition->addMethodCall('setFormatAsEvent', [$config['channel_type'] === 'event']);
+        $definition->addMethodCall('setDispatchAsEvent', [$config['channel_type'] === 'event']);
 
         $serviceName = 'notification.channel.' . $channel;
         $container->setDefinition($serviceName, $definition);
 
-        $this->adapterConfiguration = $parameterName;
+        $this->adapterConfigurationId = $parameterName;
+        $this->adapterConfiguration = $config;
         $this->adapterName = $adapterName;
         $this->channelKey = $type;
 
@@ -77,6 +91,10 @@ class ChannelFactory
             case 'mail':
                 $node
                     ->children()
+                    ->enumNode('channel_type')
+                    ->values(['direct', 'event'])
+                    ->defaultValue('direct')
+                    ->end()
                     ->scalarNode('default_sender')->defaultValue('')->end()
                     ->arrayNode('cc')->end()
                     ->arrayNode('bcc')->end()
@@ -86,12 +104,19 @@ class ChannelFactory
             case 'database':
                 $node
                     ->children()
-                    ->scalarNode('entity')->defaultValue('AppBundle:Notification')->end()
+                    ->enumNode('channel_type')
+                    ->values(['direct', 'event'])
+                    ->end()
+                    ->scalarNode('entity')->defaultValue('App:Notification')->end()
                     ->end();
                 break;
             case 'pusher':
                 $node
                     ->children()
+                    ->enumNode('channel_type')
+                    ->values(['direct', 'event'])
+                    ->defaultValue('direct')
+                    ->end()
                     ->scalarNode('auth_key')->defaultValue('')->end()
                     ->scalarNode('secret')->defaultValue('')->end()
                     ->scalarNode('app_id')->defaultValue('')->end()
@@ -104,6 +129,10 @@ class ChannelFactory
             case 'nexmo':
                 $node
                     ->children()
+                    ->enumNode('channel_type')
+                    ->values(['direct', 'event'])
+                    ->defaultValue('direct')
+                    ->end()
                     ->scalarNode('api_key')->defaultValue('')->end()
                     ->scalarNode('api_secret')->defaultValue('')->end()
                     ->scalarNode('from')->defaultValue('')->end()
@@ -112,12 +141,20 @@ class ChannelFactory
             case 'slack':
                 $node
                     ->children()
+                    ->enumNode('channel_type')
+                    ->values(['direct', 'event'])
+                    ->defaultValue('direct')
+                    ->end()
                     ->scalarNode('webhook')->defaultNull()->end()
                     ->end();
                 break;
             case 'logger':
                 $node
                     ->children()
+                    ->enumNode('channel_type')
+                    ->values(['direct', 'event'])
+                    ->defaultValue('direct')
+                    ->end()
                     ->scalarNode('severity')->defaultValue('info')->end()
                     ->end();
                 break;

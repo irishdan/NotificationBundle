@@ -52,25 +52,26 @@ To enable a channel simple add its configuration to your config.yml
 ```yml
 # app/config/config.yml
 notification:
-    mail:
-        default_sender: 'hi@jim.bob'
-    database:
-        entity: 'AppBundle:Notification'
-    pusher:
-        app_id: "12"
-        auth_key: "1111SECURE222KEY"
-        secret: "SeCrEt"
-        cluster: "eu"
-        encrypted: true
-        event: 'notification'
-        channel_name: 'private-direct_' # This is a private channel
-    slack:
-    nexmo:
-        api_key: 7654321
-        api_secret: oiCHOIoi
-        from: "YourApp"
-    logger:
-        severity: 'info'
+    channels
+        mail:
+            default_sender: 'hi@jim.bob'
+        database:
+            entity: 'App:Notification'
+        pusher:
+            app_id: "12"
+            auth_key: "1111SECURE222KEY"
+            secret: "SeCrEt"
+            cluster: "eu"
+            encrypted: true
+            event: 'notification'
+            channel_name: 'private-direct_' # This is a private channel
+        slack:
+        nexmo:
+            api_key: 7654321
+            api_secret: oiCHOIoi
+            from: "YourApp"
+        logger:
+            severity: 'info'
 ```
 
 It's also possible to create [custom channels](Resources/doc/channels.md) or [alter an existing channel's behavior](Resources/doc/channels.md)
@@ -226,3 +227,9 @@ For more advanced setup read the Documentation
 ## Attribution
 
 - This bundle was inspired by the [Laravel](https://laravel.com/) notification system
+
+- TODO:
+Should add Notification directory to exclude...
+App\:
+    resource: '../src/*'
+    exclude: '../src/{Entity,Migrations,Tests,Notification}'

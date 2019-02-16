@@ -4,7 +4,9 @@ namespace IrishDan\NotificationBundle\Message;
 
 /**
  * Interface MessageInterface
+ *
  * Message objects should contain all the information required by a channel to successfully send the message.
+ *
  * This information is divided as such:
  * 1 - Message data
  *     Contains the actual contents of the message.
@@ -14,7 +16,7 @@ namespace IrishDan\NotificationBundle\Message;
  *     This data is retrieved with the getDispatchData method.
  * 3 - The Channel name
  *     Multiple channels can use the same type of adapter so it is necessary to know what channel the message is intended for
- *    This data is retrieved with the getChannel method.
+ *     This data is retrieved with the getChannel method.
  *
  * @package IrishDan\NotificationBundle\Message
  */

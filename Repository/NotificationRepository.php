@@ -2,11 +2,19 @@
 
 namespace IrishDan\NotificationBundle\Repository;
 
-use Doctrine\ORM\EntityRepository;
+use App\Entity\Notification;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Persistence\ManagerRegistry;
 use IrishDan\NotificationBundle\DatabaseNotifiableInterface;
 
-class NotificationRepository extends EntityRepository implements DatabaseNotificationRepositoryInterface
+class NotificationRepository extends ServiceEntityRepository implements DatabaseNotificationRepositoryInterface
 {
+    public function __construct(ManagerRegistry $registry)
+    {
+        // @TODO: Get the calss name from the config
+        parent::__construct($registry, Notification::class);
+    }
+
     public function getNotificationsCount(DatabaseNotifiableInterface $user, $status = '')
     {
         $dq = $this->createQueryBuilder('n')

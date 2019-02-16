@@ -27,6 +27,7 @@ abstract class BaseChannel implements ChannelInterface
     public function __construct(array $channelConfiguration = [], $channelName = null, MessageAdapterInterface $adapter = null)
     {
         $this->channelConfiguration = $channelConfiguration;
+
         $this->channelName = $channelName;
 
         if (!empty($adapter)) {
@@ -36,6 +37,27 @@ abstract class BaseChannel implements ChannelInterface
 
             $this->adapter = $adapter;
         }
+    }
+
+    /**
+     * @param array $channelConfiguration
+     */
+    public function setChannelConfiguration(array $channelConfiguration): void
+    {
+        $this->channelConfiguration = $channelConfiguration;
+    }
+
+    /**
+     * @param mixed $channelName
+     */
+    public function setChannelName(string $channelName): void
+    {
+        $this->channelName = $channelName;
+    }
+
+    public function setAdapter(MessageAdapterInterface $adapter): void
+    {
+        $this->adapter = $adapter;
     }
 
     /**

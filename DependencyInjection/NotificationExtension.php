@@ -5,6 +5,7 @@ namespace IrishDan\NotificationBundle\DependencyInjection;
 use IrishDan\NotificationBundle\DependencyInjection\Factory\BroadcasterFactory;
 use IrishDan\NotificationBundle\DependencyInjection\Factory\ChannelFactory;
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
@@ -27,6 +28,7 @@ class NotificationExtension extends Extension
     {
         $this->channelKeyAdapterMappings[$maps['channel']] = [
             'adapter' => $maps['adapter'],
+            'config_id' => $maps['config_id'],
             'config' => $maps['config'],
         ];
     }
@@ -45,7 +47,13 @@ class NotificationExtension extends Extension
             $config = array_merge($config, $subConfig);
         }
 
+        // Create the adapterless channel
+        $this->createChannel($container, 'notification.channel');
+
+
         $enabledChannels = [];
+
+        // For each enabled channel build a channel service..
         if (!empty($config['channels'])) {
             foreach ($config['channels'] as $channel => $channelConfig) {
                 $enabledChannels[] = $channel;
@@ -77,7 +85,7 @@ class NotificationExtension extends Extension
         }
 
         // Create the Event driven channel service
-        $this->createEventDrivenChannel($container);
+        // $this->createEventDrivenChannel($container);
 
         // @TODO: Check that required parameters are set.
         foreach ($this->defaultAdapters as $type) {
@@ -86,19 +94,38 @@ class NotificationExtension extends Extension
                 $container->setParameter('notification.channel.' . $type . '.enabled', false);
             }
         }
+
+        // Build the message crud listener unless its set to false
+        // @TODO: Add this to documentation
+        if ($config['use_default_message_subscriber']) {
+            $this->createNotificationChannelSubscriber($container);
+        }
     }
 
-    private function createEventDrivenChannel(ContainerBuilder $container)
+    private function createNotificationChannelSubscriber(ContainerBuilder $container) {
+        $definition = new Definition();
+        $definition->setClass('IrishDan\NotificationBundle\Subscriber\NotificationChannelSubscriber');
+
+        // $config = [];
+        // foreach ($this->channelKeyAdapterMappings as $channel => $data) {
+        //     $config[$channel] = $data['config'];
+        // }
+        // create a paramater with all of the channel data.
+        $container->setParameter('notification.channel_adapter_map', $this->channelKeyAdapterMappings);
+
+        $definition->setArguments([new Reference('event_dispatcher'), new Reference('notification.channel'), '%notification.channel_adapter_map%']);
+        $definition->addTag('kernel.event_subscriber');
+
+        $container->setDefinition('notification.channel_subscriber', $definition);
+    }
+
+    private function createChannel(ContainerBuilder $container, string $id, $adapter = null)
     {
         $definition = new Definition();
-        $definition->setClass('IrishDan\NotificationBundle\Channel\EventChannel');
-        $definition->setArguments([new Reference('event_dispatcher')]);
+        $definition->setClass('IrishDan\NotificationBundle\Channel\Channel');
+        $definition->addMethodCall('setEventDispatcher', [new Reference('event_dispatcher')]);
 
-        foreach ($this->channelKeyAdapterMappings as $key => $channel) {
-            $definition->addMethodCall('setAdapters', [$key, new Reference($channel['adapter']), $container->getParameter($channel['config'])]);
-        }
-
-        $container->setDefinition('notification.channel.event_channel', $definition);
+        $container->setDefinition($id, $definition);
     }
 
     private function createChannelService($channel, ContainerBuilder $container, array $config)
@@ -124,6 +151,8 @@ class NotificationExtension extends Extension
                 new Reference('notification.database_notification_manager'),
             ]
         );
+        $definition->setPublic(true);
+
         $container->setDefinition('notification.manager', $definition);
     }
 

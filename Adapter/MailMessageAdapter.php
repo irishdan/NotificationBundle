@@ -23,7 +23,7 @@ class MailMessageAdapter extends BaseMessageAdapter implements MessageAdapterInt
      */
     public function format(NotificationInterface $notification)
     {
-        $notification->setChannel($this->channelName);
+        // $notification->setChannel($this->channelName);
         parent::format($notification);
 
         /** @var EmailableInterface $notifiable */
@@ -75,8 +75,10 @@ class MailMessageAdapter extends BaseMessageAdapter implements MessageAdapterInt
         $dispatchData = $message->getDispatchData();
         $messageData = $message->getMessageData();
 
-        $mail = \Swift_Message::newInstance()
-            ->setSubject($messageData['title'])
+        // has been remocved in swiftmailer 6.0.0,
+        // @TODO updatebundle depenedencies to reflex this.
+        // $mail = \Swift_Message::newInstance()
+        $mail = (new \Swift_Message($messageData['title']))
             ->setBody($messageData['body']);
 
         $mail->setFrom($dispatchData['from']);

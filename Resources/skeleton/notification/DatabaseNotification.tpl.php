@@ -1,14 +1,13 @@
-<?php
+<?= "<?php\n" ?>
 
-
-namespace AppBundle\Entity;
+namespace <?= $namespace; ?>;
 
 use Doctrine\ORM\Mapping as ORM;
 use IrishDan\NotificationBundle\Notification\DatabaseNotificationInterface;
 use IrishDan\NotificationBundle\Notification\NotifiableInterface;
 
 /**
- * @ORM\Table(name="notification")
+ * @ORM\Table(name="notifications")
  * @ORM\Entity(repositoryClass="NotificationBundle\Repository\NotificationRepository")
  * @ORM\HasLifecycleCallbacks()
  */
@@ -20,44 +19,53 @@ class Notification implements DatabaseNotificationInterface
      * @ORM\Column(type="integer")
      */
     private $id;
+
     /**
      * @ORM\Column(type="guid")
      */
     private $uuid;
+
     /**
      * @ORM\ManyToOne(targetEntity="User")
      * @ORM\JoinColumn(nullable=false)
      */
     private $notifiable;
+
     /**
      * @ORM\Column(type="string", unique=false)
      */
     private $type;
+
     /**
      * @ORM\Column(type="string", unique=false)
      */
     private $title;
+
     /**
      * @var string
      * @ORM\Column(name="body", type="text", nullable=true)
      */
     private $body;
+
     /**
      * @var string
-     * @ORM\Column(name="body", type="json_array", nullable=true)
+     * @ORM\Column(name="data", type="json_array", nullable=true)
      */
     private $data;
+
     /**
-     * Starting date and time
+     * Read at date and time
      *
      * @var \DateTime
      * @ORM\Column(name="read_at", type="datetime", nullable=true)
      */
     private $readAt;
+
     /**
      * @ORM\Column(type="datetime", unique=false, nullable=true)
      */
     private $created;
+
     /**
      * @var \DateTime
      * @ORM\Column(name="updated", type="datetime")
@@ -179,7 +187,7 @@ class Notification implements DatabaseNotificationInterface
     /**
      * @param \DateTime $readAt
      */
-    public function setReadAt($readAt)
+    public function setReadAt(\DateTime $readAt)
     {
         $this->readAt = $readAt;
     }

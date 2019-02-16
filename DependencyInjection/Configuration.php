@@ -15,27 +15,44 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
  */
 class Configuration implements ConfigurationInterface
 {
-    private $defaultAdapterTypes;
+    private $defaultAdapterTypes = [
+        'mail',
+        'logger',
+        'database',
+        'nexmo',
+        'pusher',
+        'slack',
+        'custom'
+    ];
     private $broadcasters;
 
     public function __construct(array $defaultAdapterTypes = [], $broadcasters = [])
     {
-        $this->defaultAdapterTypes = $defaultAdapterTypes;
+        // @TODO: Nothing is passed in so no services defined...
+        // $this->defaultAdapterTypes = $defaultAdapterTypes;
         $this->broadcasters = $broadcasters;
     }
 
     private function addChannelsSection(ArrayNodeDefinition $node)
     {
-        $channelNodeBuilder = $node
-            ->children()
+        if (!empty($this->defaultAdapterTypes)) {
+            $channelNodeBuilder = $node
+                ->children()
+                ->booleanNode('use_default_message_subscriber')
+                    ->defaultTrue()
+                ->end()
                 ->arrayNode('channels')
                 ->performNoDeepMerging()
                 ->children();
 
-        $factory = new ChannelFactory();
-        foreach ($this->defaultAdapterTypes as $type) {
-            $factoryNode = $channelNodeBuilder->arrayNode($type)->canBeUnset();
-            $factory->addConfiguration($factoryNode, $type);
+            $factory = new ChannelFactory();
+            foreach ($this->defaultAdapterTypes as $type) {
+                $factoryNode = $channelNodeBuilder->arrayNode($type)->canBeUnset();
+                $factory->addConfiguration($factoryNode, $type);
+            }
+
+            // all for custom channels.
+            // $factory->addCustomChannel()
         }
     }
 

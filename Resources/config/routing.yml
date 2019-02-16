@@ -1,4 +1,4 @@
-# Route for generating images
+# Route for pusher authentication
 notification.pusher_auth:
     path:     /pusher/auth
     defaults: { _controller: NotificationBundle:PusherAuth:connect }

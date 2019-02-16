@@ -2,11 +2,11 @@
 
 namespace IrishDan\NotificationBundle\Test\Channel;
 
-use IrishDan\NotificationBundle\Channel\DirectChannel;
+use IrishDan\NotificationBundle\Channel\Channel;
 use IrishDan\NotificationBundle\Test\Adapter\DummyAdapter;
 use IrishDan\NotificationBundle\Test\NotificationTestCase;
 
-class DirectChannelTest extends NotificationTestCase
+class ChannelTest extends NotificationTestCase
 {
     protected $notification;
 
@@ -19,7 +19,7 @@ class DirectChannelTest extends NotificationTestCase
 
         $channelName = 'test_channel';
 
-        return new DirectChannel($config, $channelName, $adapter);
+        return new Channel($config, $channelName, $adapter);
     }
 
     public function setUp()

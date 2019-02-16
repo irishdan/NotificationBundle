@@ -2,6 +2,7 @@
 
 namespace IrishDan\NotificationBundle\Channel;
 
+use IrishDan\NotificationBundle\Adapter\MessageAdapterInterface;
 use IrishDan\NotificationBundle\Message\MessageInterface;
 use IrishDan\NotificationBundle\Notification\NotificationInterface;
 
@@ -19,7 +20,13 @@ interface ChannelInterface
      * @param NotificationInterface $notification
      * @return boolean
      */
-    public function formatAndDispatch(NotificationInterface $notification);
+    public function formatAndDispatch(NotificationInterface $notification, $dispatchReadyEvent = true);
 
     public function channelName();
+
+    public function setAdapter(MessageAdapterInterface $adapter): void;
+
+    public function setChannelName(string $channelName): void;
+
+    public function setChannelConfiguration(array $config): void;
 }

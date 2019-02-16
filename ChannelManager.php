@@ -2,13 +2,13 @@
 
 namespace IrishDan\NotificationBundle;
 
-
 use IrishDan\NotificationBundle\Channel\ChannelInterface;
 use IrishDan\NotificationBundle\Event\NotificationFailedEvent;
 use IrishDan\NotificationBundle\Event\NotificationSentEvent;
 use IrishDan\NotificationBundle\Notification\NotifiableInterface;
 use IrishDan\NotificationBundle\Notification\NotificationInterface;
 use IrishDan\NotificationBundle\Event\NotificationSendingEvent;
+use Ramsey\Uuid\Uuid;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
@@ -60,10 +60,10 @@ class ChannelManager
 
         // Set a uuid so notifications from different channels can be grouped.
         // Needed when marking as read across all channels.
-        $uuid = uniqid();
+        $uuid = Uuid::uuid4();
 
         foreach ($recipients as $notifiable) {
-            // Get all of the channels the notification would like to be send on.
+            // Get all of the channels the notification would like to be sent on.
             // Then check each channel against what is configured in the system,
             // and which channels the notifiable is subscribed to.
             $viaChannels = $notification->getChannels();
@@ -77,8 +77,8 @@ class ChannelManager
 
                 try {
                     // Dispatch sending event.
-                    $sendingEvent = new NotificationSendingEvent($currentNotification);
-                    $this->eventDispatcher->dispatch(NotificationSendingEvent::NAME, $sendingEvent);
+                    // $sendingEvent = new NotificationSendingEvent($currentNotification);
+                    // $this->eventDispatcher->dispatch(NotificationSendingEvent::NAME, $sendingEvent);
 
                     $response = $this->channels[$channel]->formatAndDispatch($currentNotification);
 
@@ -110,13 +110,14 @@ class ChannelManager
     protected function shouldSendNotification(NotifiableInterface $notifiable, NotificationInterface $notification, $channel)
     {
         $notifiableChannels = $notifiable->getSubscribedChannels();
-        $configuredChannels = $notification->getChannels();
+        $notificationChannels = $notification->getChannels();
 
         if (
-            in_array($channel, $configuredChannels)
+            in_array($channel, $notificationChannels)
             && in_array($channel, $notifiableChannels)
+            //@TODO: Sometimes its 'mail' other times its 'email', check the maker command.
             && in_array($channel, $this->configuredChannels)
-            && in_array($channel, array_keys($this->channels))
+            // && in_array($channel, array_keys($this->channels))
         ) {
             return true;
         }

@@ -1,23 +1,17 @@
-<?php
+<?= "<?php\n" ?>
 
-namespace {{ namespace }}\Notification;
+namespace <?= $namespace; ?>;
 
-{% block use_statements %}
 use IrishDan\NotificationBundle\Notification\NotificationInterface;
 use IrishDan\NotificationBundle\Notification\NotifiableInterface;
-{% endblock use_statements %}
 
-{% block class_definition %}
 /**
- * Class {{ class_name }}
- *
- * @package {{ namespace }}\Notification
- */
-class {{ class_name }} implements NotificationInterface
-{% endblock class_definition %}
+* Class <?= $class_name ?>
+*
+* @package <?= $class_name ?> \Notification
+*/
+class <?= $class_name ?> implements NotificationInterface
 {
-{% block class_body %}
-
     protected $data = [
         'title' => 'New member',
         'body' => 'New member, %s, just joined',
@@ -47,6 +41,18 @@ class {{ class_name }} implements NotificationInterface
     protected $uuid;
 
     /**
+     * {name} constructor.
+     *
+     * @param array $data
+     */
+    public function __construct(array $data = [])
+    {
+        foreach ($data as $name => $value) {
+            $this->addData($name, $value);
+        }
+    }
+
+    /**
      * Sets the channel that this notification instance is sent using
      *
      * @param $channel
@@ -65,8 +71,8 @@ class {{ class_name }} implements NotificationInterface
     }
 
     /**
-     * @param string $uuid
-     */
+    * @param string $uuid
+    */
     public function setUuid($uuid)
     {
         $this->uuid = $uuid;
@@ -106,7 +112,8 @@ class {{ class_name }} implements NotificationInterface
      */
     public function getChannels()
     {
-        return ['{{ channels |join("', '") }}'];
+        // @TODO: Use enabled channels...
+        return ['mail'];
     }
 
     /**
@@ -134,5 +141,7 @@ class {{ class_name }} implements NotificationInterface
         $this->data = $data;
     }
 
-{% endblock class_body %}
+    public function addData($name, $data) {
+        $this->data[$name] = $data;
+    }
 }

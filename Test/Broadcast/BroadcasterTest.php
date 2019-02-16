@@ -19,11 +19,11 @@ class BroadcasterTest extends NotificationTestCase
         ];
 
         $channel = $this->getMockBuilder(ChannelInterface::class)
-            ->setMethods(['channelName', 'setDispatchToEvent', 'formatAndDispatch'])
+            ->setMethods(['channelName', 'setDispatchAsEvent', 'formatAndDispatch'])
             ->disableOriginalConstructor()
             ->getMock();
         $channel->expects($this->once())->method('channelName');
-        $channel->expects($this->once())->method('setDispatchToEvent');
+        $channel->expects($this->once())->method('setDispatchAsEvent');
         $channel->expects($this->once())->method('formatAndDispatch');
 
         $notification = $this->getMockBuilder(NotificationInterface::class)

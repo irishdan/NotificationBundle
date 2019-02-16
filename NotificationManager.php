@@ -11,6 +11,7 @@ use Symfony\Component\PropertyAccess\PropertyAccess;
 
 /**
  * Class NotificationManager
+ *
  * This the primary public service.
  * From here all notifications can be dispatched.
  * Essentially is just a wrapper around the ContainerManager and DatabaseNotificationManager

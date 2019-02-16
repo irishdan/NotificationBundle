@@ -13,7 +13,9 @@ services:
         arguments: [ '@notification.database_notification_manager']
         public: false
         calls:
-            - [setTemplating, ['@twig']]
+            - [setTemplating, ['@twig']] # @TODO: This needs defined only if configured
+        tags:
+            - { name: notification.adapter }
 
     notification.adapter.mail:
         class: IrishDan\NotificationBundle\Adapter\MailMessageAdapter
@@ -21,6 +23,8 @@ services:
         public: false
         calls:
             - [setTemplating, ['@twig']]
+        tags:
+            - { name: notification.adapter }
 
     notification.adapter.pusher:
         class: IrishDan\NotificationBundle\Adapter\PusherMessageAdapter
@@ -28,6 +32,8 @@ services:
         public: false
         calls:
             - [setTemplating, ['@twig']]
+        tags:
+            - { name: notification.adapter }
 
     notification.adapter.nexmo:
         class: IrishDan\NotificationBundle\Adapter\NexmoMessageAdapter
@@ -35,17 +41,23 @@ services:
         public: false
         calls:
             - [setTemplating, ['@twig']]
+        tags:
+            - { name: notification.adapter }
 
     notification.adapter.slack:
         class: IrishDan\NotificationBundle\Adapter\SlackWebhookMessageAdapter
         public: false
         calls:
             - [setTemplating, ['@twig']]
+        tags:
+            - { name: notification.adapter }
 
     notification.adapter.logger:
         class: IrishDan\NotificationBundle\Adapter\LoggerMessageAdapter
         arguments: [ '@logger' ]
         public: false
+        tags:
+            - { name: notification.adapter }
 
     # Voters
     notification.pusher_channel_voter:
@@ -64,28 +76,49 @@ services:
           - { name: twig.extension }
 
     # Commands
-    notification.command.generate_notification:
-        class: IrishDan\NotificationBundle\Command\CreateNotificationCommand
-        calls:
-            - [setEnabledChannels, ['%notification.available_channels%']]
-        tags:
-            - { name: console.command }
+    # notification.command.generate_notification:
+    #     class: IrishDan\NotificationBundle\Command\CreateNotificationCommand
+    #     calls:
+    #         - [setEnabledChannels, ['%notification.available_channels%']]
+    #     tags:
+    #         - { name: console.command }
 
-    notification.command.generate_database_notification:
-        class: IrishDan\NotificationBundle\Command\CreateDatabaseNotificationCommand
-        calls:
-            - [setEntityName, ['%notification.channel.database.configuration%']]
-        tags:
-            - { name: console.command }
+    # notification.command.generate_database_notification:
+    #     class: IrishDan\NotificationBundle\Command\CreateDatabaseNotificationCommand
+    #     calls:
+    #         - [setEntityName, ['%notification.channel.database.configuration%']]
+    #     tags:
+    #         - { name: console.command }
 
     # Event subscribers
-    notification.message_crud_subscriber:
-        class: IrishDan\NotificationBundle\EventListener\MessageCRUDSubscriber
-        arguments: [ '@notification.channel.event_channel', '@logger']
-        tags:
-            - { name: kernel.event_subscriber }
+    # notification.channel_subscriber:
+    #     class: IrishDan\NotificationBundle\EventListener\MessageCRUDSubscriber
+    #     arguments: [ '@notification.channel.event_channel', '@logger']
+    #     tags:
+    #         - { name: kernel.event_subscriber }
 
     # Broadcasting
     notification.broadcast.notifiable:
         public: false
         class: IrishDan\NotificationBundle\Broadcast\Broadcast
+
+    # Maker commands
+    notification.notification_maker:
+        public: true
+        class: IrishDan\NotificationBundle\Maker\NotificationMaker
+        tags:
+            - { name: maker.command }
+
+    notification.database_notification_maker:
+        public: true
+        class: IrishDan\NotificationBundle\Maker\DatabaseNotificationMaker
+        tags:
+            - { name: maker.command }
+
+    # vendor bundle: should not be using autowiring etc...
+    IrishDan\NotificationBundle\Repository\NotificationRepository:
+        autowire: true
+        tags: ['doctrine.repository_service']
+
+    # Aliases
+    IrishDan\NotificationBundle\NotificationManager: '@notification.manager'
